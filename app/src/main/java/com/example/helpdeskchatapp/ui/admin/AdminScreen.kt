@@ -1,24 +1,19 @@
 package com.example.helpdeskchatapp.ui.admin
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.helpdeskchatapp.domain.model.ChatInfo
 import com.example.helpdeskchatapp.domain.viewmodel.AdminViewModel
 import com.example.helpdeskchatapp.ui.common.StateHandler
+import com.example.helpdeskchatapp.ui.common.components.CommonLazyColumn
 import com.example.helpdeskchatapp.ui.model.AdminState
+import com.example.helpdeskchatapp.ui.model.ListRowEntity
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.helpdeskchatapp.theme.MyApplicationTheme
 
 @Composable
 fun AdminRoute(
@@ -42,53 +37,32 @@ fun AdminScreen(
     paddingValues: PaddingValues,
     onNavigateToChat: (Int) -> Unit
 ) {
-    LazyColumn(
+    val listItems = state.chats.map { entity ->
+        entity.copy(onClick = { onNavigateToChat(entity.id) })
+    }
+
+    CommonLazyColumn(
+        items = listItems,
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues),
         contentPadding = PaddingValues(bottom = 16.dp)
-    ) {
-        items(state.chats) { chat ->
-            ChatItem(chat, onClick = { onNavigateToChat(chat.id) })
-            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
-        }
-    }
+    )
 }
 
+@Preview(showBackground = true)
 @Composable
-fun ChatItem(chat: ChatInfo, onClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = Icons.Default.AccountCircle,
-            contentDescription = null,
-            modifier = Modifier.size(40.dp),
-            tint = MaterialTheme.colorScheme.primary
-        )
-        
-        Spacer(modifier = Modifier.width(16.dp))
-        
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = chat.senderName,
-                style = MaterialTheme.typography.titleMedium
-            )
-            Text(
-                text = chat.lastMessage,
-                style = MaterialTheme.typography.bodySmall,
-                maxLines = 1
-            )
-        }
-        
-        Icon(
-            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-            contentDescription = "Open chat",
-            tint = MaterialTheme.colorScheme.outline
+fun AdminScreenPreview() {
+    MyApplicationTheme {
+        AdminScreen(
+            state = AdminState(
+                chats = listOf(
+                    ListRowEntity(1, "John Doe", "Hello!"),
+                    ListRowEntity(2, "Jane Smith", "I have a question.")
+                )
+            ),
+            paddingValues = PaddingValues(0.dp),
+            onNavigateToChat = {}
         )
     }
 }

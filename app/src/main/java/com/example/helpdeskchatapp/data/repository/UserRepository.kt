@@ -1,11 +1,8 @@
-package com.example.helpdeskchatapp.data
+package com.example.helpdeskchatapp.data.repository
 
+import com.example.helpdeskchatapp.data.interfaces.UserRepository
 import com.example.helpdeskchatapp.domain.model.LoginParams
 import kotlinx.coroutines.delay
-
-interface UserRepository {
-    suspend fun login(params: LoginParams): Result<String>
-}
 
 class FakeUserRepository : UserRepository {
     override suspend fun login(params: LoginParams): Result<String> {
