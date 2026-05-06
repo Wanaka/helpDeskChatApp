@@ -1,6 +1,6 @@
 package com.example.helpdeskchatapp.domain.model
 
-data class ChatMessage(
+data class ChatMessageViewEntity(
     val id: Int,
     val text: String,
     val senderId: String,

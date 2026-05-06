@@ -1,13 +1,13 @@
 package com.example.helpdeskchatapp.domain.usecase
 
-import com.example.helpdeskchatapp.data.ChatRepository
-import com.example.helpdeskchatapp.data.FakeChatRepository
-import com.example.helpdeskchatapp.domain.model.ChatMessage
+import com.example.helpdeskchatapp.data.interfaces.ChatRepository
+import com.example.helpdeskchatapp.data.repository.FakeChatRepository
+import com.example.helpdeskchatapp.domain.model.ChatMessageViewEntity
 
 class GetChatMessagesUseCase(
     private val repository: ChatRepository = FakeChatRepository()
-) : UseCase<Int, List<ChatMessage>>() {
-    override suspend fun invoke(params: Int): List<ChatMessage> {
+) : UseCase<Int, List<ChatMessageViewEntity>>() {
+    override suspend fun invoke(params: Int): List<ChatMessageViewEntity> {
         return repository.getMessages(params)
     }
 }

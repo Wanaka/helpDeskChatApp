@@ -1,7 +1,7 @@
 package com.example.helpdeskchatapp.domain.usecase
 
-import com.example.helpdeskchatapp.data.FakeUserRepository
-import com.example.helpdeskchatapp.data.UserRepository
+import com.example.helpdeskchatapp.data.interfaces.UserRepository
+import com.example.helpdeskchatapp.data.repository.FakeUserRepository
 import com.example.helpdeskchatapp.domain.model.LoginParams
 
 class LoginUseCase(
