@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.ui.login
+package com.example.helpdeskchatapp.ui.register
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.helpdeskchatapp.domain.model.LoginParams
-import com.example.helpdeskchatapp.domain.viewmodel.LoginViewModel
+import com.example.helpdeskchatapp.domain.viewmodel.RegisterViewModel
 import com.example.helpdeskchatapp.theme.MyApplicationTheme
 import com.example.helpdeskchatapp.ui.common.StateHandler
 import com.example.helpdeskchatapp.ui.common.components.CommonButton
@@ -30,37 +30,37 @@ import com.example.helpdeskchatapp.ui.common.components.CommonInputTextField
 import com.example.helpdeskchatapp.ui.model.LoginState
 
 @Composable
-fun LoginRoute(
+fun RegisterRoute(
     onNavigateToAdmin: () -> Unit,
-    onNavigateToRegister: () -> Unit,
-    viewModel: LoginViewModel = hiltViewModel()
+    onNavigateToLogin: () -> Unit,
+    viewModel: RegisterViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     StateHandler(
         uiState = uiState,
-        title = "Helpdesk Chat App",
+        title = "Create Account",
         onRetry = { viewModel.loadData() }
     ) { state, paddingValues ->
-        LoginScreen(
+        RegisterScreen(
             state = state,
             paddingValues = paddingValues,
-            onLogin = viewModel::login,
-            onNavigateToAdmin = onNavigateToAdmin,
-            onNavigateToRegister = onNavigateToRegister
+            onRegister = viewModel::register,
+            onNavigateToLogin = onNavigateToLogin,
+            onNavigateToAdmin = onNavigateToAdmin
         )
     }
 }
 
 @Composable
-fun LoginScreen(
+fun RegisterScreen(
     state: LoginState,
     paddingValues: PaddingValues,
-    onLogin: (LoginParams) -> Unit,
-    onNavigateToAdmin: () -> Unit,
-    onNavigateToRegister: () -> Unit
+    onRegister: (LoginParams) -> Unit,
+    onNavigateToLogin: () -> Unit,
+    onNavigateToAdmin: () -> Unit
 ) {
-    var name by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
     LaunchedEffect(state.loginResult) {
@@ -78,13 +78,13 @@ fun LoginScreen(
     ) {
         Spacer(modifier = Modifier.height(16.dp))
 
-        CommonHeader("Login as Admin")
+        CommonHeader("Register Admin")
 
         Spacer(modifier = Modifier.height(20.dp))
 
         CommonInputTextField(
-            value = name,
-            onValueChange = { name = it },
+            value = email,
+            onValueChange = { email = it },
             label = "Email",
         )
 
@@ -100,31 +100,28 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(40.dp))
 
         CommonButton(
-            text = "Login",
-            onClick = { onLogin(LoginParams(name, password)) }
+            text = "Create Account",
+            onClick = { onRegister(LoginParams(email, password)) }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextButton(
-            onClick = onNavigateToRegister
-        ) {
-            Text("Don't have an account? Register")
+        TextButton(onClick = onNavigateToLogin) {
+            Text("Already have an account? Login")
         }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun LoginScreenPreview() {
+fun RegisterScreenPreview() {
     MyApplicationTheme {
-        LoginScreen(
+        RegisterScreen(
             state = LoginState(),
             paddingValues = PaddingValues(0.dp),
-            onLogin = {},
-            onNavigateToAdmin = {},
-            onNavigateToRegister = {}
+            onRegister = {},
+            onNavigateToLogin = {},
+            onNavigateToAdmin = {}
         )
     }
 }
-

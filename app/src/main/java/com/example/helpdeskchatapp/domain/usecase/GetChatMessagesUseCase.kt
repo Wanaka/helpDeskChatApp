@@ -1,13 +1,14 @@
 package com.example.helpdeskchatapp.domain.usecase
 
 import com.example.helpdeskchatapp.data.interfaces.ChatRepository
-import com.example.helpdeskchatapp.data.repository.FakeChatRepository
 import com.example.helpdeskchatapp.domain.model.ChatMessageViewEntity
+import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class GetChatMessagesUseCase(
-    private val repository: ChatRepository = FakeChatRepository()
-) : UseCase<Int, List<ChatMessageViewEntity>>() {
-    override suspend fun invoke(params: Int): List<ChatMessageViewEntity> {
+class GetChatMessagesUseCase @Inject constructor(
+    private val repository: ChatRepository
+) : UseCase<String, Flow<List<ChatMessageViewEntity>>>() {
+    override suspend fun invoke(params: String): Flow<List<ChatMessageViewEntity>> {
         return repository.getMessages(params)
     }
 }
