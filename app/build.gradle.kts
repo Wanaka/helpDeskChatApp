@@ -1,7 +1,10 @@
 plugins {
-  alias(libs.plugins.android.application)
-  alias(libs.plugins.compose.compiler)
-  alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -44,7 +47,8 @@ kotlin {
 }
 
 dependencies {
-  val composeBom = platform(libs.androidx.compose.bom)
+  implementation(libs.firebase.auth)
+    val composeBom = platform(libs.androidx.compose.bom)
   implementation(composeBom)
   androidTestImplementation(composeBom)
 
@@ -84,4 +88,15 @@ dependencies {
   implementation(libs.androidx.navigation3.runtime)
   implementation(libs.androidx.navigation.compose)
   implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
+    
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
 }

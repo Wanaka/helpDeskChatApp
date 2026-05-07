@@ -7,7 +7,10 @@ import kotlinx.serialization.Serializable
 data object LoginRouteKey : NavKey
 
 @Serializable
+data object RegisterRouteKey : NavKey
+
+@Serializable
 data object AdminRouteKey : NavKey
 
 @Serializable
-data class ChatRouteKey(val conversationId: Int) : NavKey
+data class ChatRouteKey(val conversationId: String) : NavKey

@@ -8,18 +8,29 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import com.example.helpdeskchatapp.domain.viewmodel.MainViewModel
 import com.example.helpdeskchatapp.ui.admin.AdminRoute
 import com.example.helpdeskchatapp.ui.chat.ChatRoute
 import com.example.helpdeskchatapp.ui.login.LoginRoute
+import com.example.helpdeskchatapp.ui.register.RegisterRoute
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 
 @Composable
-fun AppNavigation() {
-    val backStack = rememberNavBackStack(LoginRouteKey)
+fun AppNavigation(
+    viewModel: MainViewModel = hiltViewModel()
+) {
+    val backStack = rememberNavBackStack(viewModel.getInitialRoute())
 
     NavDisplay(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },
+        entryDecorators = listOf(
+            rememberSaveableStateHolderNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator()
+        ),
         transitionSpec = {
             slideInHorizontally(initialOffsetX = { it }) + fadeIn() togetherWith
                     slideOutHorizontally(targetOffsetX = { -it }) + fadeOut()
@@ -33,6 +44,20 @@ fun AppNavigation() {
                 LoginRoute(
                     onNavigateToAdmin = {
                         backStack.add(AdminRouteKey)
+                    },
+                    onNavigateToRegister = {
+                        backStack.add(RegisterRouteKey)
+                    }
+                )
+            }
+
+            entry<RegisterRouteKey> {
+                RegisterRoute(
+                    onNavigateToAdmin = {
+                        backStack.add(AdminRouteKey)
+                    },
+                    onNavigateToLogin = {
+                        backStack.removeLastOrNull()
                     }
                 )
             }
@@ -41,6 +66,10 @@ fun AppNavigation() {
                 AdminRoute(
                     onNavigateToChat = { chatId ->
                         backStack.add(ChatRouteKey(chatId))
+                    },
+                    onLogout = {
+                        backStack.clear()
+                        backStack.add(LoginRouteKey)
                     }
                 )
             }

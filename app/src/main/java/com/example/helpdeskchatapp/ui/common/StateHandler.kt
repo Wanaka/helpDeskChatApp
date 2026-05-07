@@ -15,7 +15,8 @@ fun <T> StateHandler(
     canNavigateBack: Boolean = false,
     onBackClick: () -> Unit = {},
     onRetry: (() -> Unit)? = null,
-    content: @Composable (T, PaddingValues) -> Unit,
+    staticContent: @Composable (T, PaddingValues) -> Unit,
+    content: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -63,8 +64,12 @@ fun <T> StateHandler(
                     }
                 }
 
-                is UiState.Success -> {
-                    content(state.data, paddingValues)
+                is UiState.StaticSuccess -> {
+                    staticContent(state.data, paddingValues)
+                }
+
+                UiState.Success -> {
+                    content(paddingValues)
                 }
             }
         }

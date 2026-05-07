@@ -1,53 +1,81 @@
 package com.example.helpdeskchatapp.ui.admin
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.helpdeskchatapp.domain.viewmodel.AdminViewModel
+import com.example.helpdeskchatapp.theme.MyApplicationTheme
 import com.example.helpdeskchatapp.ui.common.StateHandler
+import com.example.helpdeskchatapp.ui.common.components.CommonButton
 import com.example.helpdeskchatapp.ui.common.components.CommonLazyColumn
 import com.example.helpdeskchatapp.ui.model.AdminState
 import com.example.helpdeskchatapp.ui.model.ListRowEntity
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.helpdeskchatapp.theme.MyApplicationTheme
 
 @Composable
 fun AdminRoute(
-    onNavigateToChat: (Int) -> Unit,
-    viewModel: AdminViewModel = viewModel()
+    onNavigateToChat: (String) -> Unit,
+    onLogout: () -> Unit,
+    viewModel: AdminViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     StateHandler(
         uiState = uiState,
         title = "Admin Chats",
-        onRetry = { viewModel.loadData() }
-    ) { state, paddingValues ->
-        AdminScreen(state, paddingValues, onNavigateToChat)
-    }
+        onRetry = { viewModel.loadData() },
+        content = {},
+        staticContent = { state, paddingValues ->
+            AdminScreen(
+                state = state,
+                paddingValues = paddingValues,
+                onNavigateToChat = onNavigateToChat,
+                onLogout = {
+                    viewModel.logout(onLogout)
+                }
+            )
+        },
+    )
 }
 
 @Composable
 fun AdminScreen(
-    state: AdminState, 
+    state: AdminState,
     paddingValues: PaddingValues,
-    onNavigateToChat: (Int) -> Unit
+    onNavigateToChat: (String) -> Unit,
+    onLogout: () -> Unit
 ) {
     val listItems = state.chats.map { entity ->
         entity.copy(onClick = { onNavigateToChat(entity.id) })
     }
 
-    CommonLazyColumn(
-        items = listItems,
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(paddingValues),
-        contentPadding = PaddingValues(bottom = 16.dp)
-    )
+            .padding(paddingValues)
+    ) {
+        CommonLazyColumn(
+            items = listItems,
+            modifier = Modifier.weight(1f),
+            contentPadding = PaddingValues(bottom = 16.dp)
+        )
+
+        CommonButton(
+            text = "Logout",
+            onClick = onLogout,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        )
+    }
 }
 
 @Preview(showBackground = true)
@@ -57,12 +85,13 @@ fun AdminScreenPreview() {
         AdminScreen(
             state = AdminState(
                 chats = listOf(
-                    ListRowEntity(1, "John Doe", "Hello!"),
-                    ListRowEntity(2, "Jane Smith", "I have a question.")
+                    ListRowEntity("1", "John Doe", "Hello!"),
+                    ListRowEntity("2", "Jane Smith", "I have a question.")
                 )
             ),
             paddingValues = PaddingValues(0.dp),
-            onNavigateToChat = {}
+            onNavigateToChat = {},
+            onLogout = {}
         )
     }
 }
