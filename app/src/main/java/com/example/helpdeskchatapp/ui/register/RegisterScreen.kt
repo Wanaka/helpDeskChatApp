@@ -40,16 +40,18 @@ fun RegisterRoute(
     StateHandler(
         uiState = uiState,
         title = "Create Account",
-        onRetry = { viewModel.loadData() }
-    ) { state, paddingValues ->
-        RegisterScreen(
-            state = state,
-            paddingValues = paddingValues,
-            onRegister = viewModel::register,
-            onNavigateToLogin = onNavigateToLogin,
-            onNavigateToAdmin = onNavigateToAdmin
-        )
-    }
+        onRetry = { viewModel.loadData() },
+        content = {},
+        staticContent = { state, paddingValues ->
+            RegisterScreen(
+                state = state,
+                paddingValues = paddingValues,
+                onRegister = viewModel::register,
+                onNavigateToLogin = onNavigateToLogin,
+                onNavigateToAdmin = onNavigateToAdmin
+            )
+        }
+    )
 }
 
 @Composable

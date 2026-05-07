@@ -40,16 +40,18 @@ fun LoginRoute(
     StateHandler(
         uiState = uiState,
         title = "Helpdesk Chat App",
-        onRetry = { viewModel.loadData() }
-    ) { state, paddingValues ->
-        LoginScreen(
-            state = state,
-            paddingValues = paddingValues,
-            onLogin = viewModel::login,
-            onNavigateToAdmin = onNavigateToAdmin,
-            onNavigateToRegister = onNavigateToRegister
-        )
-    }
+        onRetry = { viewModel.loadData() },
+        content = {},
+        staticContent = { state, paddingValues ->
+            LoginScreen(
+                state = state,
+                paddingValues = paddingValues,
+                onLogin = viewModel::login,
+                onNavigateToAdmin = onNavigateToAdmin,
+                onNavigateToRegister = onNavigateToRegister
+            )
+        },
+    )
 }
 
 @Composable

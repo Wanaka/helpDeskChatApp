@@ -1,20 +1,24 @@
 package com.example.helpdeskchatapp.ui.admin
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.helpdeskchatapp.domain.viewmodel.AdminViewModel
+import com.example.helpdeskchatapp.theme.MyApplicationTheme
 import com.example.helpdeskchatapp.ui.common.StateHandler
+import com.example.helpdeskchatapp.ui.common.components.CommonButton
 import com.example.helpdeskchatapp.ui.common.components.CommonLazyColumn
 import com.example.helpdeskchatapp.ui.model.AdminState
 import com.example.helpdeskchatapp.ui.model.ListRowEntity
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.helpdeskchatapp.theme.MyApplicationTheme
-import com.example.helpdeskchatapp.ui.common.components.CommonButton
 
 @Composable
 fun AdminRoute(
@@ -27,22 +31,24 @@ fun AdminRoute(
     StateHandler(
         uiState = uiState,
         title = "Admin Chats",
-        onRetry = { viewModel.loadData() }
-    ) { state, paddingValues ->
-        AdminScreen(
-            state = state,
-            paddingValues = paddingValues,
-            onNavigateToChat = onNavigateToChat,
-            onLogout = {
-                viewModel.logout(onLogout)
-            }
-        )
-    }
+        onRetry = { viewModel.loadData() },
+        content = {},
+        staticContent = { state, paddingValues ->
+            AdminScreen(
+                state = state,
+                paddingValues = paddingValues,
+                onNavigateToChat = onNavigateToChat,
+                onLogout = {
+                    viewModel.logout(onLogout)
+                }
+            )
+        },
+    )
 }
 
 @Composable
 fun AdminScreen(
-    state: AdminState, 
+    state: AdminState,
     paddingValues: PaddingValues,
     onNavigateToChat: (String) -> Unit,
     onLogout: () -> Unit

@@ -40,16 +40,8 @@ class ChatViewModel @Inject constructor(
             _uiState.value = UiState.Loading
             try {
                 getChatMessagesUseCase(currentConversationId)
-                    .collect { messages ->
-                        _uiState.value = UiState.Success(
-                            ChatState(
-                                messages = messages.map {
-                                    it.chatDetailsMapper(
-                                        currentUserId = CURRENT_USER_ID
-                                    )
-                                }
-                            )
-                        )
+                    .collect {
+                        _uiState.value = UiState.Success
                     }
             } catch (e: Exception) {
 

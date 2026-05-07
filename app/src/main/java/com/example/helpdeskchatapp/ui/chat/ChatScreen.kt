@@ -25,7 +25,6 @@ import com.example.helpdeskchatapp.ui.common.components.CommonButton
 import com.example.helpdeskchatapp.ui.common.components.CommonInputTextField
 import com.example.helpdeskchatapp.ui.common.components.CommonLazyColumn
 import com.example.helpdeskchatapp.ui.common.composeContext
-import com.example.helpdeskchatapp.ui.model.ChatState
 import com.example.helpdeskchatapp.ui.model.ListRowEntity
 
 @Composable
@@ -35,6 +34,7 @@ fun ChatRoute(
     viewModel: ChatViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val messages by viewModel.messages.collectAsStateWithLifecycle()
     val context = composeContext()
 
     LaunchedEffect(viewModel.toastEvent) {
@@ -51,19 +51,21 @@ fun ChatRoute(
         title = "Chat $conversationId",
         canNavigateBack = true,
         onBackClick = onBack,
-        onRetry = { viewModel.loadData() }
-    ) { state, paddingValues ->
-        ChatScreen(
-            state,
-            paddingValues,
-            sendMessage = viewModel::sendMessage
-        )
-    }
+        onRetry = { viewModel.loadData() },
+        staticContent = { _, _ -> },
+        content = { paddingValues ->
+            ChatScreen(
+                messages,
+                paddingValues,
+                sendMessage = viewModel::sendMessage
+            )
+        }
+    )
 }
 
 @Composable
 fun ChatScreen(
-    state: ChatState,
+    messages: List<ListRowEntity>,
     paddingValues: PaddingValues,
     sendMessage: (Message) -> Unit,
 ) {
@@ -75,7 +77,7 @@ fun ChatScreen(
             .padding(paddingValues)
     ) {
         CommonLazyColumn(
-            items = state.messages,
+            items = messages,
             modifier = Modifier.weight(1f),
             contentPadding = PaddingValues(16.dp),
             showDividers = false,
@@ -94,36 +96,21 @@ fun ChatScreen(
                 sendMessage(
                     Message(message = message)
                 )
+                message = ""
             }
         )
 
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun ChatScreenPreview() {
     MyApplicationTheme {
         ChatScreen(
-            state = ChatState(
-                messages = listOf(
-                    ListRowEntity(
-                        id = "1",
-                        title = "Hello!",
-                        showLeftIcon = true,
-                        isChatLayout = true
-                    ),
-                    ListRowEntity(
-                        id = "2",
-                        title = "Hi there, how can I help you?",
-                        showRightIcon = true,
-                        isChatLayout = true
-                    )
-                ),
-            ),
             paddingValues = PaddingValues(0.dp),
-            sendMessage = {}
+            sendMessage = {},
+            messages = emptyList()
         )
     }
 }

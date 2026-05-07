@@ -30,7 +30,7 @@ class AdminViewModel @Inject constructor(
             _uiState.value = UiState.Loading
             try {
                 val chats = getChatsUseCase()
-                _uiState.value = UiState.Success(AdminState(chats = chats.map { it.adminMapper() }))
+                _uiState.value = UiState.StaticSuccess(AdminState(chats = chats.map { it.adminMapper() }))
             } catch (e: Exception) {
                 _uiState.value = UiState.Error(e.message ?: "Failed to load chats")
             }

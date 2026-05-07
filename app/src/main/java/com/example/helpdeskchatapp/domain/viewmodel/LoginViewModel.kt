@@ -22,7 +22,7 @@ class LoginViewModel @Inject constructor(
     }
 
     override fun loadData() {
-        _uiState.value = UiState.Success(LoginState())
+        _uiState.value = UiState.StaticSuccess(LoginState())
     }
 
     fun login(params: LoginParams) {
@@ -36,7 +36,7 @@ class LoginViewModel @Inject constructor(
                     userRepository.getCurrentUser()?.let { uid ->
                         CurrentUserId.CURRENT_USER_ID = uid
                     }
-                    _uiState.value = UiState.Success(LoginState(loginResult = message))
+                    _uiState.value = UiState.StaticSuccess(LoginState(loginResult = message))
                 },
                 onFailure = { error ->
                     _uiState.value = UiState.Error(error.message ?: "Login failed")
