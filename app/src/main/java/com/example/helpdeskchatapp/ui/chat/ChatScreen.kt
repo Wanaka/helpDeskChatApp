@@ -32,6 +32,7 @@ import com.example.helpdeskchatapp.ui.model.ListRowEntity
 fun ChatRoute(
     conversationId: String,
     onBack: () -> Unit,
+    canNavigateBack: Boolean = true,
     viewModel: ChatViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -50,8 +51,8 @@ fun ChatRoute(
 
     StateHandler(
         uiState = uiState,
-        title = "Chat $conversationId",
-        canNavigateBack = true,
+        title = conversationId,
+        canNavigateBack = canNavigateBack,
         onBackClick = onBack,
         onRetry = { viewModel.loadData() },
         staticContent = { _, _ -> },

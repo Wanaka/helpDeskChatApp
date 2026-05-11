@@ -3,7 +3,8 @@ package com.example.helpdeskchatapp.domain.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.example.helpdeskchatapp.domain.mapper.adminMapper
 import com.example.helpdeskchatapp.domain.usecase.GetChatsUseCase
-import com.example.helpdeskchatapp.data.interfaces.UserRepository
+import com.example.helpdeskchatapp.domain.usecase.GetCurrentUserUseCase
+import com.example.helpdeskchatapp.domain.usecase.LogoutUseCase
 import com.example.helpdeskchatapp.ui.common.UiState
 import com.example.helpdeskchatapp.ui.model.AdminState
 import com.example.helpdeskchatapp.ui.model.ListRowEntity
@@ -16,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AdminViewModel @Inject constructor(
     private val getChatsUseCase: GetChatsUseCase,
-    private val userRepository: UserRepository
+    private val logoutUseCase: LogoutUseCase,
 ) : BaseViewModel<AdminState>() {
 
     private val _chats = MutableStateFlow<List<ListRowEntity>>(emptyList())
@@ -27,8 +28,10 @@ class AdminViewModel @Inject constructor(
     }
 
     fun logout(onSuccess: () -> Unit) {
-        userRepository.logout()
-        onSuccess()
+        viewModelScope.launch {
+            logoutUseCase()
+            onSuccess()
+        }
     }
 
     override fun loadData() {
