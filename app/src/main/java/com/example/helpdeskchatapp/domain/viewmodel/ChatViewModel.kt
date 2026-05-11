@@ -38,29 +38,21 @@ class ChatViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.value = UiState.Loading
-            try {
-                getChatMessagesUseCase(currentConversationId)
-                    .collect {
-                        _uiState.value = UiState.Success
-                    }
-            } catch (e: Exception) {
-
-                _uiState.value =
-                    UiState.Error(e.message ?: "Failed to load messages")
-            }
+            observeMessages()
         }
     }
 
     private fun observeMessages() {
         viewModelScope.launch {
-
             getChatMessagesUseCase(currentConversationId)
                 .collect { messages ->
-
                     _messages.value = messages.map {
                         it.chatDetailsMapper(
                             currentUserId = CURRENT_USER_ID
                         )
+                    }
+                    if (_uiState.value is UiState.Loading) {
+                        _uiState.value = UiState.Success
                     }
                 }
         }

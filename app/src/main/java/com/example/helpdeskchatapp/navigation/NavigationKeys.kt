@@ -13,4 +13,7 @@ data object RegisterRouteKey : NavKey
 data object AdminRouteKey : NavKey
 
 @Serializable
+data object DeepLinkLoadingKey : NavKey
+
+@Serializable
 data class ChatRouteKey(val conversationId: String) : NavKey
