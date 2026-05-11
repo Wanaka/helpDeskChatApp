@@ -1,7 +1,8 @@
 package com.example.helpdeskchatapp.data.interfaces
 
 import com.example.helpdeskchatapp.domain.model.ChatViewEntity
+import kotlinx.coroutines.flow.Flow
 
 interface AdminRepository {
-    suspend fun getChats(): List<ChatViewEntity>
+    fun getChats(): Flow<List<ChatViewEntity>>
 }

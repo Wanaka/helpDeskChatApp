@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -42,6 +43,7 @@ fun ChatRoute(
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         }
     }
+
     LaunchedEffect(conversationId) {
         viewModel.initConversation(conversationId)
     }
@@ -70,6 +72,13 @@ fun ChatScreen(
     sendMessage: (Message) -> Unit,
 ) {
     var message by remember { mutableStateOf("") }
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(messages.size) {
+        if (messages.isNotEmpty()) {
+            listState.animateScrollToItem(messages.size - 1)
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -81,25 +90,25 @@ fun ChatScreen(
             modifier = Modifier.weight(1f),
             contentPadding = PaddingValues(16.dp),
             showDividers = false,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            state = listState
         )
 
         CommonInputTextField(
             value = message,
             onValueChange = { message = it },
-            label = "Email",
+            label = "Message",
         )
 
         CommonButton(
-            text = "Login",
+            text = "Send",
             onClick = {
-                sendMessage(
-                    Message(message = message)
-                )
-                message = ""
+                if (message.isNotBlank()) {
+                    sendMessage(Message(message = message))
+                    message = ""
+                }
             }
         )
-
     }
 }
 

@@ -5,8 +5,15 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.QrCode
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -17,8 +24,9 @@ import com.example.helpdeskchatapp.theme.MyApplicationTheme
 import com.example.helpdeskchatapp.ui.common.StateHandler
 import com.example.helpdeskchatapp.ui.common.components.CommonButton
 import com.example.helpdeskchatapp.ui.common.components.CommonLazyColumn
-import com.example.helpdeskchatapp.ui.model.AdminState
+import com.example.helpdeskchatapp.ui.common.components.QrCodeDialog
 import com.example.helpdeskchatapp.ui.model.ListRowEntity
+import com.example.helpdeskchatapp.util.CurrentUserId
 
 @Composable
 fun AdminRoute(
@@ -27,33 +35,50 @@ fun AdminRoute(
     viewModel: AdminViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val chats by viewModel.chats.collectAsStateWithLifecycle()
+    var showQrCode by remember { mutableStateOf(false) }
+
 
     StateHandler(
         uiState = uiState,
         title = "Admin Chats",
         onRetry = { viewModel.loadData() },
-        content = {},
-        staticContent = { state, paddingValues ->
+        staticContent = { _, _ -> },
+        actions = {
+            IconButton(onClick = { showQrCode = true }) {
+                Icon(imageVector = Icons.Default.QrCode, contentDescription = "Show QR Code")
+            }
+        },
+        content = { paddingValues ->
             AdminScreen(
-                state = state,
+                chats = chats,
                 paddingValues = paddingValues,
                 onNavigateToChat = onNavigateToChat,
                 onLogout = {
                     viewModel.logout(onLogout)
                 }
             )
+
         },
     )
+
+    if (showQrCode) {
+        QrCodeDialog(
+            adminId = CurrentUserId.CURRENT_USER_ID,
+            onDismiss = { showQrCode = false }
+        )
+    }
 }
+
 
 @Composable
 fun AdminScreen(
-    state: AdminState,
+    chats: List<ListRowEntity>,
     paddingValues: PaddingValues,
     onNavigateToChat: (String) -> Unit,
     onLogout: () -> Unit
 ) {
-    val listItems = state.chats.map { entity ->
+    val listItems = chats.map { entity ->
         entity.copy(onClick = { onNavigateToChat(entity.id) })
     }
 
@@ -83,11 +108,9 @@ fun AdminScreen(
 fun AdminScreenPreview() {
     MyApplicationTheme {
         AdminScreen(
-            state = AdminState(
-                chats = listOf(
-                    ListRowEntity("1", "John Doe", "Hello!"),
-                    ListRowEntity("2", "Jane Smith", "I have a question.")
-                )
+            chats = listOf(
+                ListRowEntity("1", "John Doe", "Hello!"),
+                ListRowEntity("2", "Jane Smith", "I have a question.")
             ),
             paddingValues = PaddingValues(0.dp),
             onNavigateToChat = {},

@@ -15,6 +15,7 @@ fun <T> StateHandler(
     canNavigateBack: Boolean = false,
     onBackClick: () -> Unit = {},
     onRetry: (() -> Unit)? = null,
+    actions: @Composable RowScope.() -> Unit = {},
     staticContent: @Composable (T, PaddingValues) -> Unit,
     content: @Composable (PaddingValues) -> Unit,
 ) {
@@ -23,7 +24,8 @@ fun <T> StateHandler(
             NavToolbar(
                 title = title,
                 canNavigateBack = canNavigateBack,
-                onBackClick = onBackClick
+                onBackClick = onBackClick,
+                actions = actions
             )
         }
     ) { paddingValues ->

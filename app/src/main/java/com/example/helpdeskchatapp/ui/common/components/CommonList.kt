@@ -11,18 +11,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.helpdeskchatapp.ui.model.ListRowEntity
 
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
+
 @Composable
 fun CommonLazyColumn(
     items: List<ListRowEntity>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     showDividers: Boolean = true,
-    verticalArrangement: Arrangement.Vertical = Arrangement.Top
+    verticalArrangement: Arrangement.Vertical = Arrangement.Top,
+    state: LazyListState = rememberLazyListState()
 ) {
     LazyColumn(
         modifier = modifier,
         contentPadding = contentPadding,
-        verticalArrangement = verticalArrangement
+        verticalArrangement = verticalArrangement,
+        state = state
     ) {
         items(items) { item ->
             if (item.isChatLayout) {
