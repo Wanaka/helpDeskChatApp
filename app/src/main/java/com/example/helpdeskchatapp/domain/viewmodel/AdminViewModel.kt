@@ -2,8 +2,9 @@ package com.example.helpdeskchatapp.domain.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.example.helpdeskchatapp.domain.mapper.adminMapper
-import com.example.helpdeskchatapp.domain.usecase.GetAdminNameUseCase
+import com.example.helpdeskchatapp.domain.usecase.GetUserNameUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetChatsUseCase
+import com.example.helpdeskchatapp.domain.usecase.GetCurrentUserUseCase
 import com.example.helpdeskchatapp.domain.usecase.LogoutUseCase
 import com.example.helpdeskchatapp.domain.usecase.UpdateUserNameUseCase
 import com.example.helpdeskchatapp.ui.common.UiState
@@ -20,7 +21,7 @@ import javax.inject.Inject
 class AdminViewModel @Inject constructor(
     private val getChatsUseCase: GetChatsUseCase,
     private val logoutUseCase: LogoutUseCase,
-    private val getAdminNameUseCase: GetAdminNameUseCase,
+    private val getUserNameUseCase: GetUserNameUseCase,
     private val updateUserNameUseCase: UpdateUserNameUseCase
 ) : BaseViewModel<AdminState>() {
 
@@ -37,7 +38,7 @@ class AdminViewModel @Inject constructor(
 
     private fun checkAdminName() {
         viewModelScope.launch {
-            val name = getAdminNameUseCase(CurrentUserId.CURRENT_USER_ID)
+            val name = getUserNameUseCase(CurrentUserId.CURRENT_USER_ID)
             if (name.isEmpty() || name == "Admin") {
                 _showNameOverlay.value = true
             }

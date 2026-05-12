@@ -43,7 +43,19 @@ class FirebaseUserRepository @Inject constructor(
     override suspend fun updateUserName(name: String): Result<Unit> {
         return try {
             val uid = auth.currentUser?.uid ?: throw Exception("No user logged in")
-            firestore.collection("users").document(uid).update("name", name).await()
+            val userRef = firestore.collection("users").document(uid)
+            val doc = userRef.get().await()
+            
+            if (doc.exists()) {
+                userRef.update("name", name).await()
+            } else {
+                val userData = mapOf(
+                    "userId" to uid,
+                    "name" to name,
+                    "email" to (auth.currentUser?.email ?: "")
+                )
+                userRef.set(userData).await()
+            }
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -23,6 +24,8 @@ import com.example.helpdeskchatapp.ui.admin.AdminRoute
 import com.example.helpdeskchatapp.ui.chat.ChatRoute
 import com.example.helpdeskchatapp.ui.login.LoginRoute
 import com.example.helpdeskchatapp.ui.register.RegisterRoute
+import com.example.helpdeskchatapp.ui.common.components.NameEntryDialog
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun AppNavigation(
@@ -30,6 +33,11 @@ fun AppNavigation(
     viewModel: MainViewModel = hiltViewModel()
 ) {
     val backStack = rememberNavBackStack(viewModel.getInitialRoute(conversationId))
+    val showNameOverlay by viewModel.showNameOverlay.collectAsStateWithLifecycle()
+
+    if (showNameOverlay) {
+        NameEntryDialog(onConfirm = viewModel::updateName)
+    }
 
     LaunchedEffect(conversationId) {
         if (conversationId != null) {

@@ -47,7 +47,7 @@ class FirestoreAdminRepository @Inject constructor(
 
     override suspend fun createChat(adminId: String, userId: String, senderName: String): Result<String> {
         return try {
-            val adminName = getAdminName(adminId)
+            val adminName = getUserName(adminId)
             
             val chatData = mapOf(
                 "adminId" to adminId,
@@ -65,12 +65,12 @@ class FirestoreAdminRepository @Inject constructor(
         }
     }
 
-    override suspend fun getAdminName(adminId: String): String {
+    override suspend fun getUserName(userId: String): String {
         return try {
-            val doc = firestore.collection("users").document(adminId).get().await()
-            doc.getString("name") ?: "Admin"
+            val doc = firestore.collection("users").document(userId).get().await()
+            doc.getString("name") ?: ""
         } catch (e: Exception) {
-            "Admin"
+            ""
         }
     }
 
