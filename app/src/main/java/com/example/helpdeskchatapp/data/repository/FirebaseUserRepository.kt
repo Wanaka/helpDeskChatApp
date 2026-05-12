@@ -15,7 +15,7 @@ class FirebaseUserRepository @Inject constructor(
     
     override suspend fun login(params: LoginParams): Result<String> {
         return try {
-            val result = auth.signInWithEmailAndPassword(params.username, params.password).await()
+            val result = auth.signInWithEmailAndPassword(params.email, params.password).await()
             Result.success("Welcome, ${result.user?.email}!")
         } catch (e: Exception) {
             Result.failure(e)
@@ -24,17 +24,40 @@ class FirebaseUserRepository @Inject constructor(
 
     override suspend fun register(params: LoginParams): Result<String> {
         return try {
-            val result = auth.createUserWithEmailAndPassword(params.username, params.password).await()
+            val result = auth.createUserWithEmailAndPassword(params.email, params.password).await()
             val user = result.user
             if (user != null) {
-                // Create user document in Firestore
                 val userData = mapOf(
-                    "email" to params.username,
-                    "name" to params.username.substringBefore("@") // Default name from email
+                    "userId" to user.uid,
+                    "email" to params.email,
+                    "name" to "" 
                 )
                 firestore.collection("users").document(user.uid).set(userData).await()
             }
             Result.success("Account created for ${result.user?.email}!")
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun updateUserName(params: Pair<String, String>): Result<Unit> {
+        return try {
+            val uid = auth.currentUser?.uid ?: throw Exception("No user logged in")
+            val userRef = firestore.collection("users").document(uid)
+            val doc = userRef.get().await()
+            
+            if (doc.exists()) {
+                userRef.update("name", params.first).await()
+            } else {
+                val userData = mapOf(
+                    "userId" to uid,
+                    "name" to params.first,
+                    "company" to params.second,
+                    "email" to (auth.currentUser?.email ?: "")
+                )
+                userRef.set(userData).await()
+            }
+            Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }

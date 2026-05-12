@@ -24,6 +24,7 @@ import com.example.helpdeskchatapp.theme.MyApplicationTheme
 import com.example.helpdeskchatapp.ui.common.StateHandler
 import com.example.helpdeskchatapp.ui.common.components.CommonButton
 import com.example.helpdeskchatapp.ui.common.components.CommonLazyColumn
+import com.example.helpdeskchatapp.ui.common.components.NameEntryDialog
 import com.example.helpdeskchatapp.ui.common.components.QrCodeDialog
 import com.example.helpdeskchatapp.ui.model.ListRowEntity
 import com.example.helpdeskchatapp.util.CurrentUserId
@@ -36,8 +37,14 @@ fun AdminRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val chats by viewModel.chats.collectAsStateWithLifecycle()
+    val showNameOverlay by viewModel.showNameOverlay.collectAsStateWithLifecycle()
     var showQrCode by remember { mutableStateOf(false) }
 
+    if (showNameOverlay) {
+        NameEntryDialog(
+            onConfirm = viewModel::updateName
+        )
+    }
 
     StateHandler(
         uiState = uiState,

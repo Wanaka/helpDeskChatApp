@@ -37,6 +37,7 @@ fun ChatRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val messages by viewModel.messages.collectAsStateWithLifecycle()
+    val chatTitleData by viewModel.chatTitle.collectAsStateWithLifecycle()
     val context = composeContext()
 
     LaunchedEffect(viewModel.toastEvent) {
@@ -51,7 +52,8 @@ fun ChatRoute(
 
     StateHandler(
         uiState = uiState,
-        title = conversationId,
+        title = chatTitleData.first,
+        subtitle = chatTitleData.second,
         canNavigateBack = canNavigateBack,
         onBackClick = onBack,
         onRetry = { viewModel.loadData() },

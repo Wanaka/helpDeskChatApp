@@ -47,30 +47,32 @@ class FirestoreAdminRepository @Inject constructor(
 
     override suspend fun createChat(adminId: String, userId: String, senderName: String): Result<String> {
         return try {
-            val adminName = getAdminName(adminId)
+            val adminName = getUserName(adminId)
             
             val chatData = mapOf(
                 "adminId" to adminId,
                 "userId" to userId,
                 "senderName" to senderName,
-                "adminName" to adminName,
+                "adminName" to adminName.first,
                 "lastMessage" to "New chat started",
                 "timestamp" to Timestamp.now()
             )
             
-            val docRef = firestore.collection("conversations").add(chatData).await()
-            Result.success(docRef.id)
+            firestore.collection("conversations").document(userId).set(chatData).await()
+            Result.success(userId)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    override suspend fun getAdminName(adminId: String): String {
+    override suspend fun getUserName(userId: String): Pair<String, String> {
         return try {
-            val doc = firestore.collection("users").document(adminId).get().await()
-            doc.getString("name") ?: "Admin"
+            val doc = firestore.collection("users").document(userId).get().await()
+            val name = doc.getString("name") ?: ""
+            val company = doc.getString("company") ?: ""
+            Pair(name, company)
         } catch (e: Exception) {
-            "Admin"
+            Pair(e.message.toString(), "")
         }
     }
 

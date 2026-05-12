@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 fun <T> StateHandler(
     uiState: UiState<T>,
     title: String,
+    subtitle: String? = null,
     canNavigateBack: Boolean = false,
     onBackClick: () -> Unit = {},
     onRetry: (() -> Unit)? = null,
@@ -23,6 +24,7 @@ fun <T> StateHandler(
         topBar = {
             NavToolbar(
                 title = title,
+                subtitle = subtitle,
                 canNavigateBack = canNavigateBack,
                 onBackClick = onBackClick,
                 actions = actions
