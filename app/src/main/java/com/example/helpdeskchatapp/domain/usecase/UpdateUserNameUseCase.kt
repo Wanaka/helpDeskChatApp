@@ -5,8 +5,8 @@ import javax.inject.Inject
 
 class UpdateUserNameUseCase @Inject constructor(
     private val repository: UserRepository
-) : UseCase<String, Result<Unit>>() {
-    override suspend fun invoke(params: String): Result<Unit> {
+) : UseCase<Pair<String, String>, Result<Unit>>() {
+    override suspend fun invoke(params: Pair<String, String>): Result<Unit> {
         return repository.updateUserName(params)
     }
 }

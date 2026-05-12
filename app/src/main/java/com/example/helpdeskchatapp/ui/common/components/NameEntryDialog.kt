@@ -21,9 +21,11 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NameEntryDialog(
-    onConfirm: (String) -> Unit
+    onConfirm: (Pair<String, String>) -> Unit,
+    isAnonymous: Boolean = false
 ) {
     var name by remember { mutableStateOf("") }
+    var company by remember { mutableStateOf(if (isAnonymous) "" else "_") }
 
     BasicAlertDialog(
         onDismissRequest = { },
@@ -48,14 +50,23 @@ fun NameEntryDialog(
                     onValueChange = { name = it },
                     label = "Your Name"
                 )
-                
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                if (isAnonymous)
+                    CommonInputTextField(
+                        value = company,
+                        onValueChange = { company = it },
+                        label = "Company name"
+                    )
+
                 Spacer(modifier = Modifier.height(24.dp))
                 
                 CommonButton(
                     text = "Start",
                     onClick = {
-                        if (name.isNotBlank()) {
-                            onConfirm(name)
+                        if (name.isNotBlank() && company.isNotBlank()) {
+                            onConfirm(Pair(name, company))
                         }
                     }
                 )

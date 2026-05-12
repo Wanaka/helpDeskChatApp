@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -22,10 +23,9 @@ import androidx.navigation3.ui.NavDisplay
 import com.example.helpdeskchatapp.domain.viewmodel.MainViewModel
 import com.example.helpdeskchatapp.ui.admin.AdminRoute
 import com.example.helpdeskchatapp.ui.chat.ChatRoute
+import com.example.helpdeskchatapp.ui.common.components.NameEntryDialog
 import com.example.helpdeskchatapp.ui.login.LoginRoute
 import com.example.helpdeskchatapp.ui.register.RegisterRoute
-import com.example.helpdeskchatapp.ui.common.components.NameEntryDialog
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun AppNavigation(
@@ -34,9 +34,10 @@ fun AppNavigation(
 ) {
     val backStack = rememberNavBackStack(viewModel.getInitialRoute(conversationId))
     val showNameOverlay by viewModel.showNameOverlay.collectAsStateWithLifecycle()
+    val isAnonymous by viewModel.isAnonymous.collectAsStateWithLifecycle()
 
     if (showNameOverlay) {
-        NameEntryDialog(onConfirm = viewModel::updateName)
+        NameEntryDialog(onConfirm = viewModel::updateName, isAnonymous = isAnonymous)
     }
 
     LaunchedEffect(conversationId) {

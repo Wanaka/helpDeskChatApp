@@ -45,9 +45,9 @@ class AdminViewModel @Inject constructor(
         }
     }
 
-    fun updateName(name: String) {
+    fun updateName(data: Pair<String, String>) {
         viewModelScope.launch {
-            val result = updateUserNameUseCase(name)
+            val result = updateUserNameUseCase(data)
             result.onSuccess {
                 _showNameOverlay.value = false
             }.onFailure {

@@ -2,6 +2,7 @@ package com.example.helpdeskchatapp.domain.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation3.runtime.NavKey
 import com.example.helpdeskchatapp.domain.model.CreateChatParams
 import com.example.helpdeskchatapp.domain.usecase.CreateChatUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetChatForUserUseCase
@@ -14,7 +15,6 @@ import com.example.helpdeskchatapp.domain.usecase.UpdateUserNameUseCase
 import com.example.helpdeskchatapp.navigation.AdminRouteKey
 import com.example.helpdeskchatapp.navigation.DeepLinkLoadingKey
 import com.example.helpdeskchatapp.navigation.LoginRouteKey
-import androidx.navigation3.runtime.NavKey
 import com.example.helpdeskchatapp.util.CurrentUserId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
@@ -49,6 +49,9 @@ class MainViewModel @Inject constructor(
     private val _showNameOverlay = MutableStateFlow(false)
     val showNameOverlay = _showNameOverlay.asStateFlow()
 
+    private val _isAnonymous = MutableStateFlow(false)
+    val isAnonymous = _isAnonymous.asStateFlow()
+
     private var pendingAdminId: String? = null
 
     fun handleDeepLink(adminId: String) {
@@ -65,6 +68,7 @@ class MainViewModel @Inject constructor(
                 if (name.isEmpty()) {
                     pendingAdminId = adminId
                     _showNameOverlay.value = true
+                    _isAnonymous.value = true
                 } else {
                     startChat(adminId, userId, name)
                 }
@@ -75,14 +79,14 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun updateName(name: String) {
+    fun updateName(data: Pair<String, String>) {
         viewModelScope.launch {
             val userId = getCurrentUserUseCase() ?: return@launch
-            val result = updateUserNameUseCase(name)
+            val result = updateUserNameUseCase(data)
             result.onSuccess {
                 _showNameOverlay.value = false
                 pendingAdminId?.let { adminId ->
-                    startChat(adminId, userId, name)
+                    startChat(adminId, userId, data.first)
                     pendingAdminId = null
                 }
             }.onFailure {
@@ -99,7 +103,7 @@ class MainViewModel @Inject constructor(
                 senderName = name
             )
         )
-        
+
         result.onSuccess { chatId ->
             _navigateToChat.emit(chatId)
         }.onFailure {
@@ -113,7 +117,7 @@ class MainViewModel @Inject constructor(
             val userId = getCurrentUserUseCase()
             if (userId != null && isAnonymousUseCase()) {
                 CurrentUserId.CURRENT_USER_ID = userId
-                
+
                 val name = getUserNameUseCase(userId)
                 if (name.isEmpty()) {
                     _showNameOverlay.value = true
@@ -138,7 +142,7 @@ class MainViewModel @Inject constructor(
 
     fun getInitialRoute(conversationId: String? = null): NavKey {
         if (conversationId != null) return DeepLinkLoadingKey
-        
+
         val userId = getCurrentUserUseCase()
         return if (userId != null) {
             CurrentUserId.CURRENT_USER_ID = userId
