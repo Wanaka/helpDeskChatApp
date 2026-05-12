@@ -4,7 +4,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.helpdeskchatapp.domain.mapper.adminMapper
 import com.example.helpdeskchatapp.domain.usecase.GetUserNameUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetChatsUseCase
-import com.example.helpdeskchatapp.domain.usecase.GetCurrentUserUseCase
 import com.example.helpdeskchatapp.domain.usecase.LogoutUseCase
 import com.example.helpdeskchatapp.domain.usecase.UpdateUserNameUseCase
 import com.example.helpdeskchatapp.ui.common.UiState

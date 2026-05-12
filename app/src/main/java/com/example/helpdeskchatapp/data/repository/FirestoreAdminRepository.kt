@@ -70,7 +70,7 @@ class FirestoreAdminRepository @Inject constructor(
             val doc = firestore.collection("users").document(userId).get().await()
             doc.getString("name") ?: ""
         } catch (e: Exception) {
-            ""
+            e.message.toString()
         }
     }
 
