@@ -53,7 +53,7 @@ class FirestoreAdminRepository @Inject constructor(
                 "adminId" to adminId,
                 "userId" to userId,
                 "senderName" to senderName,
-                "adminName" to adminName,
+                "adminName" to adminName.first,
                 "lastMessage" to "New chat started",
                 "timestamp" to Timestamp.now()
             )
@@ -65,12 +65,14 @@ class FirestoreAdminRepository @Inject constructor(
         }
     }
 
-    override suspend fun getUserName(userId: String): String {
+    override suspend fun getUserName(userId: String): Pair<String, String> {
         return try {
             val doc = firestore.collection("users").document(userId).get().await()
-            doc.getString("name") ?: ""
+            val name = doc.getString("name") ?: ""
+            val company = doc.getString("company") ?: ""
+            Pair(name, company)
         } catch (e: Exception) {
-            e.message.toString()
+            Pair(e.message.toString(), "")
         }
     }
 

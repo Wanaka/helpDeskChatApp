@@ -31,7 +31,7 @@ class ChatViewModel @Inject constructor(
     val messages = _messages.asStateFlow()
 
     private val _chatTitle =
-        MutableStateFlow("Admin Chat")
+        MutableStateFlow<Pair<String, String?>>("Admin Chat" to null)
     val chatTitle = _chatTitle.asStateFlow()
 
     fun initConversation(id: String) {
@@ -61,8 +61,9 @@ class ChatViewModel @Inject constructor(
 
     private fun getUserNameSetTitle() {
         viewModelScope.launch {
-            val chatTitle = getUserNameUseCase(currentConversationId)
-            _chatTitle.value = chatTitle
+
+            val chatTitleData = getUserNameUseCase(currentConversationId)
+            _chatTitle.value = chatTitleData
         }
     }
 

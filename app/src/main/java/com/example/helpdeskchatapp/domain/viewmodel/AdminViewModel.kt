@@ -38,7 +38,7 @@ class AdminViewModel @Inject constructor(
     private fun checkAdminName() {
         viewModelScope.launch {
             val name = getUserNameUseCase(CurrentUserId.CURRENT_USER_ID)
-            if (name.isEmpty() || name == "Admin") {
+            if (name.first.isEmpty() || name.first == "Admin") {
                 _showNameOverlay.value = true
             }
         }

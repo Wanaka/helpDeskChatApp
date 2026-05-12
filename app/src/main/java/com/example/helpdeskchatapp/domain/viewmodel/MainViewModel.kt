@@ -65,12 +65,12 @@ class MainViewModel @Inject constructor(
                 CurrentUserId.CURRENT_USER_ID = userId
                 
                 val name = getUserNameUseCase(userId)
-                if (name.isEmpty()) {
+                if (name.first.isEmpty()) {
                     pendingAdminId = adminId
                     _showNameOverlay.value = true
                     _isAnonymous.value = true
                 } else {
-                    startChat(adminId, userId, name)
+                    startChat(adminId, userId, name.first)
                 }
             } else {
                 logoutUseCase()
@@ -119,7 +119,7 @@ class MainViewModel @Inject constructor(
                 CurrentUserId.CURRENT_USER_ID = userId
 
                 val name = getUserNameUseCase(userId)
-                if (name.isEmpty()) {
+                if (name.first.isEmpty()) {
                     _showNameOverlay.value = true
                     return@launch
                 }
