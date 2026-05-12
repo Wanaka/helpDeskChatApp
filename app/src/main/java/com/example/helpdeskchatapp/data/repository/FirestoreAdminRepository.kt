@@ -58,8 +58,8 @@ class FirestoreAdminRepository @Inject constructor(
                 "timestamp" to Timestamp.now()
             )
             
-            val docRef = firestore.collection("conversations").add(chatData).await()
-            Result.success(docRef.id)
+            firestore.collection("conversations").document(userId).set(chatData).await()
+            Result.success(userId)
         } catch (e: Exception) {
             Result.failure(e)
         }
