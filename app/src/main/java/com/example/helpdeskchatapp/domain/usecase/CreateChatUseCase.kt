@@ -1,13 +1,8 @@
 package com.example.helpdeskchatapp.domain.usecase
 
 import com.example.helpdeskchatapp.data.interfaces.AdminRepository
+import com.example.helpdeskchatapp.domain.model.CreateChatParams
 import javax.inject.Inject
-
-data class CreateChatParams(
-    val adminId: String,
-    val userId: String,
-    val senderName: String
-)
 
 class CreateChatUseCase @Inject constructor(
     private val repository: AdminRepository

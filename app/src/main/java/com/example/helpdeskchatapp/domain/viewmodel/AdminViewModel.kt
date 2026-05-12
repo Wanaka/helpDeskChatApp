@@ -28,10 +28,8 @@ class AdminViewModel @Inject constructor(
     }
 
     fun logout(onSuccess: () -> Unit) {
-        viewModelScope.launch {
-            logoutUseCase()
-            onSuccess()
-        }
+        logoutUseCase()
+        onSuccess()
     }
 
     override fun loadData() {

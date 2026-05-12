@@ -2,7 +2,7 @@ package com.example.helpdeskchatapp.domain.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.helpdeskchatapp.domain.usecase.CreateChatParams
+import com.example.helpdeskchatapp.domain.model.CreateChatParams
 import com.example.helpdeskchatapp.domain.usecase.CreateChatUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetChatForUserUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetCurrentUserUseCase
@@ -19,7 +19,6 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -97,10 +96,10 @@ class MainViewModel @Inject constructor(
     fun getInitialRoute(conversationId: String? = null): NavKey {
         if (conversationId != null) return DeepLinkLoadingKey
         
-        val userId = runBlocking { getCurrentUserUseCase() }
+        val userId = getCurrentUserUseCase()
         return if (userId != null) {
             CurrentUserId.CURRENT_USER_ID = userId
-            if (runBlocking { isAnonymousUseCase() }) {
+            if (isAnonymousUseCase()) {
                 DeepLinkLoadingKey
             } else {
                 AdminRouteKey
