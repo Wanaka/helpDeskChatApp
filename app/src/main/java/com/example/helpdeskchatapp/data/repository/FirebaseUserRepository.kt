@@ -5,7 +5,13 @@ import com.example.helpdeskchatapp.domain.model.LoginParams
 import com.example.helpdeskchatapp.util.CurrentUserId
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
+import com.google.firebase.messaging.FirebaseMessaging
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withTimeoutOrNull
 import javax.inject.Inject
 
 class FirebaseUserRepository @Inject constructor(
@@ -82,7 +88,40 @@ class FirebaseUserRepository @Inject constructor(
     }
 
     override fun logout() {
-        auth.signOut()
+        val uid = auth.currentUser?.uid
         CurrentUserId.CURRENT_USER_ID = ""
+        
+        if (uid != null) {
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    // Delete token from device and clear from Firestore
+                    FirebaseMessaging.getInstance().deleteToken().await()
+
+                    // Give it a timeout so it doesn't hang forever if offline
+                    withTimeoutOrNull(2000) {
+                        firestore.collection("users").document(uid)
+                            .update("fcmToken", null).await()
+                    }
+                } catch (e: Exception) {
+                    // Ignore errors during token clearing
+                } finally {
+                    auth.signOut()
+                }
+            }
+        } else {
+            auth.signOut()
+        }
+    }
+
+    override suspend fun updateFcmToken(token: String): Result<Unit> {
+        return try {
+            val uid = auth.currentUser?.uid ?: return Result.success(Unit)
+            // Use set with merge so it works even if the document doesn't exist yet
+            firestore.collection("users").document(uid)
+                .set(mapOf("fcmToken" to token), SetOptions.merge()).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }

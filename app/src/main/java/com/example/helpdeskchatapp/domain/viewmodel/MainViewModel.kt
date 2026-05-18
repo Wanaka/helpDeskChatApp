@@ -11,11 +11,13 @@ import com.example.helpdeskchatapp.domain.usecase.GetUserNameUseCase
 import com.example.helpdeskchatapp.domain.usecase.IsAnonymousUseCase
 import com.example.helpdeskchatapp.domain.usecase.LoginAnonymouslyUseCase
 import com.example.helpdeskchatapp.domain.usecase.LogoutUseCase
+import com.example.helpdeskchatapp.domain.usecase.UpdateFcmTokenUseCase
 import com.example.helpdeskchatapp.domain.usecase.UpdateUserNameUseCase
 import com.example.helpdeskchatapp.navigation.AdminRouteKey
 import com.example.helpdeskchatapp.navigation.DeepLinkLoadingKey
 import com.example.helpdeskchatapp.navigation.LoginRouteKey
 import com.example.helpdeskchatapp.util.CurrentUserId
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,6 +25,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,7 +37,8 @@ class MainViewModel @Inject constructor(
     private val createChatUseCase: CreateChatUseCase,
     private val getChatForUserUseCase: GetChatForUserUseCase,
     private val getUserNameUseCase: GetUserNameUseCase,
-    private val updateUserNameUseCase: UpdateUserNameUseCase
+    private val updateUserNameUseCase: UpdateUserNameUseCase,
+    private val updateFcmTokenUseCase: UpdateFcmTokenUseCase
 ) : ViewModel() {
 
     private val _navigateToChat = MutableSharedFlow<String>(
@@ -62,6 +66,12 @@ class MainViewModel @Inject constructor(
 
             val userId = getCurrentUserUseCase()
             if (userId != null) {
+                try {
+                    val token = FirebaseMessaging.getInstance().token.await()
+                    updateFcmTokenUseCase(token)
+                } catch (e: Exception) {
+                }
+
                 CurrentUserId.CURRENT_USER_ID = userId
                 
                 val name = getUserNameUseCase(userId)
