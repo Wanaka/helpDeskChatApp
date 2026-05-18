@@ -7,6 +7,7 @@ interface UserRepository {
     suspend fun register(params: LoginParams): Result<String>
     suspend fun loginAnonymously(): Result<String>
     suspend fun updateUserName(params: Pair<String, String>): Result<Unit>
+    suspend fun updateFcmToken(token: String): Result<Unit>
     fun getCurrentUser(): String?
     fun isAnonymous(): Boolean
     fun logout()
