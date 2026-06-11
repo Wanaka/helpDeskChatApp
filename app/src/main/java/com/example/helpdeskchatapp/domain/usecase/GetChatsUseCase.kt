@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class GetChatsUseCase @Inject constructor(
     private val repository: AdminRepository
-) : NoParamUseCase<Flow<List<ChatViewEntity>>>() {
+) : ProducerUseCase<Flow<List<ChatViewEntity>>>() {
     override suspend fun invoke(): Flow<List<ChatViewEntity>> {
         return repository.getChats()
     }
