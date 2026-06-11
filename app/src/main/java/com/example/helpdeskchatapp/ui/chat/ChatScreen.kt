@@ -52,8 +52,8 @@ fun ChatRoute(
 
     StateHandler(
         uiState = uiState,
-        title = chatTitleData.first,
-        subtitle = chatTitleData.second,
+        title = chatTitleData.name,
+        subtitle = chatTitleData.company,
         canNavigateBack = canNavigateBack,
         onBackClick = onBack,
         onRetry = { viewModel.loadData() },
