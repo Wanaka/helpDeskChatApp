@@ -12,8 +12,8 @@ import androidx.compose.ui.unit.dp
 import com.example.helpdeskchatapp.ui.model.ListRowEntity
 
 @Composable
-fun ChatBubbleRow(entity: ListRowEntity) {
-    val isFromMe = entity.showRightIcon
+fun ChatBubbleRow(entity: ListRowEntity) = with(entity) {
+    val isFromMe = showRightIcon
     val alignment = if (isFromMe) Alignment.CenterEnd else Alignment.CenterStart
     val color = if (isFromMe) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer
     val contentColor = if (isFromMe) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondaryContainer
@@ -36,7 +36,7 @@ fun ChatBubbleRow(entity: ListRowEntity) {
             modifier = Modifier.widthIn(max = 280.dp)
         ) {
             Text(
-                text = entity.title,
+                text = title,
                 modifier = Modifier.padding(12.dp),
                 style = MaterialTheme.typography.bodyMedium
             )

@@ -10,17 +10,20 @@ import androidx.compose.ui.unit.dp
 import com.example.helpdeskchatapp.ui.model.ListRowEntity
 
 @Composable
-fun StandardListRow(entity: ListRowEntity) {
+fun StandardListRow(
+    entity: ListRowEntity,
+    onClick: () -> Unit = {}
+) = with(entity) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = entity.onClick)
+            .clickable(onClick = onClick)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (entity.showLeftIcon && entity.leftIcon != null) {
+        if (showLeftIcon && leftIcon != null) {
             Icon(
-                imageVector = entity.leftIcon,
+                imageVector = leftIcon,
                 contentDescription = null,
                 modifier = Modifier.size(40.dp),
                 tint = MaterialTheme.colorScheme.primary
@@ -30,10 +33,10 @@ fun StandardListRow(entity: ListRowEntity) {
 
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = entity.title,
+                text = title,
                 style = MaterialTheme.typography.titleMedium
             )
-            entity.subtitle?.let {
+            subtitle?.let {
                 Text(
                     text = it,
                     style = MaterialTheme.typography.bodySmall,
@@ -42,9 +45,9 @@ fun StandardListRow(entity: ListRowEntity) {
             }
         }
 
-        if (entity.showRightIcon && entity.rightIcon != null) {
+        if (showRightIcon && rightIcon != null) {
             Icon(
-                imageVector = entity.rightIcon,
+                imageVector = rightIcon,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.outline
             )
