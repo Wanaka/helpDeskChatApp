@@ -1,7 +1,7 @@
 package com.example.helpdeskchatapp.domain.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.example.helpdeskchatapp.domain.model.consumer.LoginParams
+import com.example.helpdeskchatapp.domain.model.consumer.Login
 import com.example.helpdeskchatapp.domain.usecase.GetCurrentUserUseCase
 import com.example.helpdeskchatapp.domain.usecase.RegisterUseCase
 import com.example.helpdeskchatapp.domain.usecase.UpdateFcmTokenUseCase
@@ -29,7 +29,7 @@ class RegisterViewModel @Inject constructor(
         _uiState.value = UiState.StaticSuccess(LoginState())
     }
 
-    fun register(params: LoginParams) {
+    fun register(params: Login) {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
             

@@ -1,7 +1,7 @@
 package com.example.helpdeskchatapp.data.repository
 
 import com.example.helpdeskchatapp.data.interfaces.UserRepository
-import com.example.helpdeskchatapp.domain.model.consumer.LoginParams
+import com.example.helpdeskchatapp.domain.model.consumer.Login
 import com.example.helpdeskchatapp.domain.model.consumer.UserName
 import com.example.helpdeskchatapp.util.CurrentUserId
 import com.google.firebase.auth.FirebaseAuth
@@ -20,7 +20,7 @@ class FirebaseUserRepository @Inject constructor(
     private val firestore: FirebaseFirestore,
 ) : UserRepository {
     
-    override suspend fun login(params: LoginParams): Result<String> {
+    override suspend fun login(params: Login): Result<String> {
         return try {
             val result = auth.signInWithEmailAndPassword(params.email, params.password).await()
             Result.success("Welcome, ${result.user?.email}!")
@@ -29,7 +29,7 @@ class FirebaseUserRepository @Inject constructor(
         }
     }
 
-    override suspend fun register(params: LoginParams): Result<String> {
+    override suspend fun register(params: Login): Result<String> {
         return try {
             val result = auth.createUserWithEmailAndPassword(params.email, params.password).await()
             val user = result.user

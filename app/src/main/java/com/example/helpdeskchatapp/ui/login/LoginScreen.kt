@@ -20,7 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.helpdeskchatapp.domain.model.consumer.LoginParams
+import com.example.helpdeskchatapp.domain.model.consumer.Login
 import com.example.helpdeskchatapp.domain.viewmodel.LoginViewModel
 import com.example.helpdeskchatapp.theme.MyApplicationTheme
 import com.example.helpdeskchatapp.ui.common.StateHandler
@@ -58,7 +58,7 @@ fun LoginRoute(
 fun LoginScreen(
     state: LoginState,
     paddingValues: PaddingValues,
-    onLogin: (LoginParams) -> Unit,
+    onLogin: (Login) -> Unit,
     onNavigateToAdmin: () -> Unit,
     onNavigateToRegister: () -> Unit
 ) {
@@ -103,7 +103,7 @@ fun LoginScreen(
 
         CommonButton(
             text = "Login",
-            onClick = { onLogin(LoginParams(name, password)) }
+            onClick = { onLogin(Login(name, password)) }
         )
 
         Spacer(modifier = Modifier.height(16.dp))

@@ -3,7 +3,7 @@ package com.example.helpdeskchatapp.domain.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation3.runtime.NavKey
-import com.example.helpdeskchatapp.domain.model.consumer.CreateChatParams
+import com.example.helpdeskchatapp.domain.model.consumer.CreateChat
 import com.example.helpdeskchatapp.domain.model.consumer.UserName
 import com.example.helpdeskchatapp.domain.usecase.CreateChatUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetChatForUserUseCase
@@ -108,7 +108,7 @@ class MainViewModel @Inject constructor(
 
     private suspend fun startChat(adminId: String, userId: String, name: String) {
         val result = createChatUseCase(
-            CreateChatParams(
+            CreateChat(
                 adminId = adminId,
                 userId = userId,
                 senderName = name
