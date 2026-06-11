@@ -84,19 +84,16 @@ fun AdminScreen(
     onNavigateToChat: (String) -> Unit,
     onLogout: () -> Unit
 ) {
-    val listItems = chats.map { entity ->
-        entity.copy(onClick = { onNavigateToChat(entity.id) })
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues)
     ) {
         CommonLazyColumn(
-            items = listItems,
+            items = chats,
             modifier = Modifier.weight(1f),
-            contentPadding = PaddingValues(bottom = 16.dp)
+            contentPadding = PaddingValues(bottom = 16.dp),
+            onItemClick = { onNavigateToChat(it.id) }
         )
 
         CommonButton(

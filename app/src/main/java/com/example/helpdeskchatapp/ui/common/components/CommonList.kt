@@ -21,7 +21,8 @@ fun CommonLazyColumn(
     contentPadding: PaddingValues = PaddingValues(0.dp),
     showDividers: Boolean = true,
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
-    state: LazyListState = rememberLazyListState()
+    state: LazyListState = rememberLazyListState(),
+    onItemClick: (ListRowEntity) -> Unit = {}
 ) {
     LazyColumn(
         modifier = modifier,
@@ -29,11 +30,11 @@ fun CommonLazyColumn(
         verticalArrangement = verticalArrangement,
         state = state
     ) {
-        items(items) { item ->
+        items(items, key = { it.id }) { item ->
             if (item.isChatLayout) {
                 ChatBubbleRow(item)
             } else {
-                StandardListRow(item)
+                StandardListRow(item, onClick = { onItemClick(item) })
             }
             if (showDividers && !item.isChatLayout) {
                 HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
