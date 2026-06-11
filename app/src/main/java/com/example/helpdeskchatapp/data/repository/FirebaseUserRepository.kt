@@ -20,16 +20,16 @@ class FirebaseUserRepository @Inject constructor(
     private val firestore: FirebaseFirestore,
 ) : UserRepository {
     
-    override suspend fun login(params: Login): Result<String> {
+    override suspend fun login(params: Login): Result<Unit> {
         return try {
-            val result = auth.signInWithEmailAndPassword(params.email, params.password).await()
-            Result.success("Welcome, ${result.user?.email}!")
+            auth.signInWithEmailAndPassword(params.email, params.password).await()
+            Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    override suspend fun register(params: Login): Result<String> {
+    override suspend fun register(params: Login): Result<Unit> {
         return try {
             val result = auth.createUserWithEmailAndPassword(params.email, params.password).await()
             val user = result.user
@@ -37,11 +37,11 @@ class FirebaseUserRepository @Inject constructor(
                 val userData = mapOf(
                     "userId" to user.uid,
                     "email" to params.email,
-                    "name" to "" 
+                    "name" to ""
                 )
                 firestore.collection("users").document(user.uid).set(userData).await()
             }
-            Result.success("Account created for ${result.user?.email}!")
+            Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }

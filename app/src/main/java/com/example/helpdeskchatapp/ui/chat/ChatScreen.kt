@@ -57,7 +57,6 @@ fun ChatRoute(
         canNavigateBack = canNavigateBack,
         onBackClick = onBack,
         onRetry = { viewModel.loadData() },
-        staticContent = { _, _ -> },
         content = { paddingValues ->
             ChatScreen(
                 messages,

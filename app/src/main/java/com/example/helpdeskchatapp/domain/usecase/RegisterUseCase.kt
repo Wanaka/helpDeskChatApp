@@ -6,9 +6,9 @@ import javax.inject.Inject
 
 class RegisterUseCase @Inject constructor(
     private val repository: UserRepository
-) : UseCase<Login, Result<String>>() {
+) : UseCase<Login, Result<Unit>>() {
 
-    override suspend fun invoke(params: Login): Result<String> {
+    override suspend fun invoke(params: Login): Result<Unit> {
         return repository.register(params)
     }
 }
