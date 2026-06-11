@@ -1,7 +1,7 @@
 package com.example.helpdeskchatapp.domain.usecase
 
 import com.example.helpdeskchatapp.data.interfaces.AdminRepository
-import com.example.helpdeskchatapp.domain.model.CreateChatParams
+import com.example.helpdeskchatapp.domain.model.consumer.CreateChatParams
 import javax.inject.Inject
 
 class CreateChatUseCase @Inject constructor(

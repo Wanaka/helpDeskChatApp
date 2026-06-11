@@ -1,7 +1,7 @@
 package com.example.helpdeskchatapp.domain.usecase
 
 import com.example.helpdeskchatapp.data.interfaces.UserRepository
-import com.example.helpdeskchatapp.domain.model.LoginParams
+import com.example.helpdeskchatapp.domain.model.consumer.LoginParams
 import javax.inject.Inject
 
 class LoginUseCase @Inject constructor(

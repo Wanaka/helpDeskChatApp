@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.domain.model
+package com.example.helpdeskchatapp.domain.model.producer
 
 data class ChatViewEntity(
     val id: String,

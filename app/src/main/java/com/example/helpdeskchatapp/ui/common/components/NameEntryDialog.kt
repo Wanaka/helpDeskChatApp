@@ -17,11 +17,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.helpdeskchatapp.domain.model.consumer.UserName
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NameEntryDialog(
-    onConfirm: (Pair<String, String>) -> Unit,
+    onConfirm: (UserName) -> Unit,
     isAnonymous: Boolean = false
 ) {
     var name by remember { mutableStateOf("") }
@@ -66,7 +67,7 @@ fun NameEntryDialog(
                     text = "Start",
                     onClick = {
                         if (name.isNotBlank() && company.isNotBlank()) {
-                            onConfirm(Pair(name, company))
+                            onConfirm(UserName(name, company))
                         }
                     }
                 )

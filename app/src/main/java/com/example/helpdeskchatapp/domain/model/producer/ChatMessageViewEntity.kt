@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.domain.model
+package com.example.helpdeskchatapp.domain.model.producer
 
 import com.google.firebase.Timestamp
 

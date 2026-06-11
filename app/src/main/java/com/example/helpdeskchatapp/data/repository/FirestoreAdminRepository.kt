@@ -1,7 +1,8 @@
 package com.example.helpdeskchatapp.data.repository
 
 import com.example.helpdeskchatapp.data.interfaces.AdminRepository
-import com.example.helpdeskchatapp.domain.model.ChatViewEntity
+import com.example.helpdeskchatapp.domain.model.consumer.UserName
+import com.example.helpdeskchatapp.domain.model.producer.ChatViewEntity
 import com.example.helpdeskchatapp.util.CurrentUserId
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
@@ -53,7 +54,7 @@ class FirestoreAdminRepository @Inject constructor(
                 "adminId" to adminId,
                 "userId" to userId,
                 "senderName" to senderName,
-                "adminName" to adminName.first,
+                "adminName" to adminName.name,
                 "lastMessage" to "New chat started",
                 "timestamp" to Timestamp.now()
             )
@@ -65,14 +66,14 @@ class FirestoreAdminRepository @Inject constructor(
         }
     }
 
-    override suspend fun getUserName(userId: String): Pair<String, String> {
+    override suspend fun getUserName(userId: String): UserName {
         return try {
             val doc = firestore.collection("users").document(userId).get().await()
             val name = doc.getString("name") ?: ""
             val company = doc.getString("company") ?: ""
-            Pair(name, company)
+            UserName(name, company)
         } catch (e: Exception) {
-            Pair(e.message.toString(), "")
+            UserName(e.message.toString(), "")
         }
     }
 

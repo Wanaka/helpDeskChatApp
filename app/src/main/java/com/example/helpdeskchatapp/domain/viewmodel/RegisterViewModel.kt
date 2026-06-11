@@ -1,7 +1,7 @@
 package com.example.helpdeskchatapp.domain.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.example.helpdeskchatapp.domain.model.LoginParams
+import com.example.helpdeskchatapp.domain.model.consumer.LoginParams
 import com.example.helpdeskchatapp.domain.usecase.GetCurrentUserUseCase
 import com.example.helpdeskchatapp.domain.usecase.RegisterUseCase
 import com.example.helpdeskchatapp.domain.usecase.UpdateFcmTokenUseCase

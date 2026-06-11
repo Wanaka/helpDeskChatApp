@@ -1,7 +1,7 @@
 package com.example.helpdeskchatapp.domain.usecase
 
 import com.example.helpdeskchatapp.data.interfaces.ChatRepository
-import com.example.helpdeskchatapp.domain.model.ChatMessageViewEntity
+import com.example.helpdeskchatapp.domain.model.producer.ChatMessageViewEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

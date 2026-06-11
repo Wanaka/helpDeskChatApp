@@ -1,7 +1,7 @@
 package com.example.helpdeskchatapp.data.interfaces
 
-import com.example.helpdeskchatapp.domain.model.ChatMessageViewEntity
-import com.example.helpdeskchatapp.domain.model.Message
+import com.example.helpdeskchatapp.domain.model.producer.ChatMessageViewEntity
+import com.example.helpdeskchatapp.domain.model.consumer.Message
 import kotlinx.coroutines.flow.Flow
 
 interface ChatRepository {

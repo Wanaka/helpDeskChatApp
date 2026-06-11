@@ -3,7 +3,8 @@ package com.example.helpdeskchatapp.domain.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation3.runtime.NavKey
-import com.example.helpdeskchatapp.domain.model.CreateChatParams
+import com.example.helpdeskchatapp.domain.model.consumer.CreateChatParams
+import com.example.helpdeskchatapp.domain.model.consumer.UserName
 import com.example.helpdeskchatapp.domain.usecase.CreateChatUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetChatForUserUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetCurrentUserUseCase
@@ -75,12 +76,12 @@ class MainViewModel @Inject constructor(
                 CurrentUserId.CURRENT_USER_ID = userId
                 
                 val name = getUserNameUseCase(userId)
-                if (name.first.isEmpty()) {
+                if (name.name.isEmpty()) {
                     pendingAdminId = adminId
                     _showNameOverlay.value = true
                     _isAnonymous.value = true
                 } else {
-                    startChat(adminId, userId, name.first)
+                    startChat(adminId, userId, name.name)
                 }
             } else {
                 logoutUseCase()
@@ -89,14 +90,14 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun updateName(data: Pair<String, String>) {
+    fun updateName(data: UserName) {
         viewModelScope.launch {
             val userId = getCurrentUserUseCase() ?: return@launch
             val result = updateUserNameUseCase(data)
             result.onSuccess {
                 _showNameOverlay.value = false
                 pendingAdminId?.let { adminId ->
-                    startChat(adminId, userId, data.first)
+                    startChat(adminId, userId, data.name)
                     pendingAdminId = null
                 }
             }.onFailure {
@@ -129,7 +130,7 @@ class MainViewModel @Inject constructor(
                 CurrentUserId.CURRENT_USER_ID = userId
 
                 val name = getUserNameUseCase(userId)
-                if (name.first.isEmpty()) {
+                if (name.name.isEmpty()) {
                     _showNameOverlay.value = true
                     return@launch
                 }

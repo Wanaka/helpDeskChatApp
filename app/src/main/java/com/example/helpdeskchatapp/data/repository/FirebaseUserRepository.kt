@@ -1,7 +1,8 @@
 package com.example.helpdeskchatapp.data.repository
 
 import com.example.helpdeskchatapp.data.interfaces.UserRepository
-import com.example.helpdeskchatapp.domain.model.LoginParams
+import com.example.helpdeskchatapp.domain.model.consumer.LoginParams
+import com.example.helpdeskchatapp.domain.model.consumer.UserName
 import com.example.helpdeskchatapp.util.CurrentUserId
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -46,19 +47,19 @@ class FirebaseUserRepository @Inject constructor(
         }
     }
 
-    override suspend fun updateUserName(params: Pair<String, String>): Result<Unit> {
+    override suspend fun updateUserName(params: UserName): Result<Unit> {
         return try {
             val uid = auth.currentUser?.uid ?: throw Exception("No user logged in")
             val userRef = firestore.collection("users").document(uid)
             val doc = userRef.get().await()
             
             if (doc.exists()) {
-                userRef.update("name", params.first).await()
+                userRef.update("name", params.name).await()
             } else {
                 val userData = mapOf(
                     "userId" to uid,
-                    "name" to params.first,
-                    "company" to params.second,
+                    "name" to params.name,
+                    "company" to params.company,
                     "email" to (auth.currentUser?.email ?: "")
                 )
                 userRef.set(userData).await()
