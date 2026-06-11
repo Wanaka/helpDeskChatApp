@@ -17,7 +17,6 @@ fun <T> StateHandler(
     onBackClick: () -> Unit = {},
     onRetry: (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},
-    staticContent: @Composable (T, PaddingValues) -> Unit,
     content: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(
@@ -66,10 +65,6 @@ fun <T> StateHandler(
                             }
                         }
                     }
-                }
-
-                is UiState.StaticSuccess -> {
-                    staticContent(state.data, paddingValues)
                 }
 
                 UiState.Success -> {

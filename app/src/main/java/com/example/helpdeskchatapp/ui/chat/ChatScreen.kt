@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.helpdeskchatapp.domain.model.Message
+import com.example.helpdeskchatapp.domain.model.consumer.Message
 import com.example.helpdeskchatapp.domain.viewmodel.ChatViewModel
 import com.example.helpdeskchatapp.theme.MyApplicationTheme
 import com.example.helpdeskchatapp.ui.common.StateHandler
@@ -52,12 +52,11 @@ fun ChatRoute(
 
     StateHandler(
         uiState = uiState,
-        title = chatTitleData.first,
-        subtitle = chatTitleData.second,
+        title = chatTitleData.name,
+        subtitle = chatTitleData.company,
         canNavigateBack = canNavigateBack,
         onBackClick = onBack,
         onRetry = { viewModel.loadData() },
-        staticContent = { _, _ -> },
         content = { paddingValues ->
             ChatScreen(
                 messages,

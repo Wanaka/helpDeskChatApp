@@ -20,14 +20,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.helpdeskchatapp.domain.model.LoginParams
+import com.example.helpdeskchatapp.domain.model.consumer.Login
 import com.example.helpdeskchatapp.domain.viewmodel.LoginViewModel
 import com.example.helpdeskchatapp.theme.MyApplicationTheme
 import com.example.helpdeskchatapp.ui.common.StateHandler
 import com.example.helpdeskchatapp.ui.common.components.CommonButton
 import com.example.helpdeskchatapp.ui.common.components.CommonHeader
 import com.example.helpdeskchatapp.ui.common.components.CommonInputTextField
-import com.example.helpdeskchatapp.ui.model.LoginState
 
 @Composable
 fun LoginRoute(
@@ -37,17 +36,18 @@ fun LoginRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    LaunchedEffect(Unit) {
+        viewModel.navigateToAdmin.collect { onNavigateToAdmin() }
+    }
+
     StateHandler(
         uiState = uiState,
         title = "Helpdesk Chat App",
         onRetry = { viewModel.loadData() },
-        content = {},
-        staticContent = { state, paddingValues ->
+        content = { paddingValues ->
             LoginScreen(
-                state = state,
                 paddingValues = paddingValues,
                 onLogin = viewModel::login,
-                onNavigateToAdmin = onNavigateToAdmin,
                 onNavigateToRegister = onNavigateToRegister
             )
         },
@@ -56,20 +56,12 @@ fun LoginRoute(
 
 @Composable
 fun LoginScreen(
-    state: LoginState,
     paddingValues: PaddingValues,
-    onLogin: (LoginParams) -> Unit,
-    onNavigateToAdmin: () -> Unit,
+    onLogin: (Login) -> Unit,
     onNavigateToRegister: () -> Unit
 ) {
-    var name by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-
-    LaunchedEffect(state.loginResult) {
-        if (state.loginResult != null) {
-            onNavigateToAdmin()
-        }
-    }
 
     Column(
         modifier = Modifier
@@ -85,8 +77,8 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(20.dp))
 
         CommonInputTextField(
-            value = name,
-            onValueChange = { name = it },
+            value = email,
+            onValueChange = { email = it },
             label = "Email",
         )
 
@@ -103,7 +95,7 @@ fun LoginScreen(
 
         CommonButton(
             text = "Login",
-            onClick = { onLogin(LoginParams(name, password)) }
+            onClick = { onLogin(Login(email, password)) }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -121,12 +113,9 @@ fun LoginScreen(
 fun LoginScreenPreview() {
     MyApplicationTheme {
         LoginScreen(
-            state = LoginState(),
             paddingValues = PaddingValues(0.dp),
             onLogin = {},
-            onNavigateToAdmin = {},
             onNavigateToRegister = {}
         )
     }
 }
-

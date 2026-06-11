@@ -2,7 +2,8 @@ package com.example.helpdeskchatapp.domain.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.example.helpdeskchatapp.domain.mapper.chatDetailsMapper
-import com.example.helpdeskchatapp.domain.model.Message
+import com.example.helpdeskchatapp.domain.model.consumer.Message
+import com.example.helpdeskchatapp.domain.model.consumer.UserName
 import com.example.helpdeskchatapp.domain.usecase.GetChatMessagesUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetUserNameUseCase
 import com.example.helpdeskchatapp.domain.usecase.IsAnonymousUseCase
@@ -31,7 +32,7 @@ class ChatViewModel @Inject constructor(
     val messages = _messages.asStateFlow()
 
     private val _chatTitle =
-        MutableStateFlow<Pair<String, String?>>("Admin Chat" to null)
+        MutableStateFlow(UserName(name = "Admin Chat", company = "Company Name"))
     val chatTitle = _chatTitle.asStateFlow()
 
     fun initConversation(id: String) {

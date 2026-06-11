@@ -2,6 +2,7 @@ package com.example.helpdeskchatapp.domain.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.example.helpdeskchatapp.domain.mapper.adminMapper
+import com.example.helpdeskchatapp.domain.model.consumer.UserName
 import com.example.helpdeskchatapp.domain.usecase.GetUserNameUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetChatsUseCase
 import com.example.helpdeskchatapp.domain.usecase.LogoutUseCase
@@ -38,13 +39,13 @@ class AdminViewModel @Inject constructor(
     private fun checkAdminName() {
         viewModelScope.launch {
             val name = getUserNameUseCase(CurrentUserId.CURRENT_USER_ID)
-            if (name.first.isEmpty() || name.first == "Admin") {
+            if (name.name.isEmpty() || name.name == "Admin") {
                 _showNameOverlay.value = true
             }
         }
     }
 
-    fun updateName(data: Pair<String, String>) {
+    fun updateName(data: UserName) {
         viewModelScope.launch {
             val result = updateUserNameUseCase(data)
             result.onSuccess {

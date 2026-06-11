@@ -1,7 +1,8 @@
 package com.example.helpdeskchatapp.data.repository
 
 import com.example.helpdeskchatapp.data.interfaces.UserRepository
-import com.example.helpdeskchatapp.domain.model.LoginParams
+import com.example.helpdeskchatapp.domain.model.consumer.Login
+import com.example.helpdeskchatapp.domain.model.consumer.UserName
 import com.example.helpdeskchatapp.util.CurrentUserId
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -19,16 +20,16 @@ class FirebaseUserRepository @Inject constructor(
     private val firestore: FirebaseFirestore,
 ) : UserRepository {
     
-    override suspend fun login(params: LoginParams): Result<String> {
+    override suspend fun login(params: Login): Result<Unit> {
         return try {
-            val result = auth.signInWithEmailAndPassword(params.email, params.password).await()
-            Result.success("Welcome, ${result.user?.email}!")
+            auth.signInWithEmailAndPassword(params.email, params.password).await()
+            Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    override suspend fun register(params: LoginParams): Result<String> {
+    override suspend fun register(params: Login): Result<Unit> {
         return try {
             val result = auth.createUserWithEmailAndPassword(params.email, params.password).await()
             val user = result.user
@@ -36,29 +37,29 @@ class FirebaseUserRepository @Inject constructor(
                 val userData = mapOf(
                     "userId" to user.uid,
                     "email" to params.email,
-                    "name" to "" 
+                    "name" to ""
                 )
                 firestore.collection("users").document(user.uid).set(userData).await()
             }
-            Result.success("Account created for ${result.user?.email}!")
+            Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    override suspend fun updateUserName(params: Pair<String, String>): Result<Unit> {
+    override suspend fun updateUserName(params: UserName): Result<Unit> {
         return try {
             val uid = auth.currentUser?.uid ?: throw Exception("No user logged in")
             val userRef = firestore.collection("users").document(uid)
             val doc = userRef.get().await()
             
             if (doc.exists()) {
-                userRef.update("name", params.first).await()
+                userRef.update("name", params.name).await()
             } else {
                 val userData = mapOf(
                     "userId" to uid,
-                    "name" to params.first,
-                    "company" to params.second,
+                    "name" to params.name,
+                    "company" to params.company,
                     "email" to (auth.currentUser?.email ?: "")
                 )
                 userRef.set(userData).await()

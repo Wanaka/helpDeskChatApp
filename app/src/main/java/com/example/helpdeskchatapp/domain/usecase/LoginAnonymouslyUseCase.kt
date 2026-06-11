@@ -5,7 +5,7 @@ import javax.inject.Inject
 
 class LoginAnonymouslyUseCase @Inject constructor(
     private val repository: UserRepository
-) : NoParamUseCase<Result<String>>() {
+) : ProducerUseCase<Result<String>>() {
 
     override suspend fun invoke(): Result<String> {
         return repository.loginAnonymously()

@@ -8,8 +8,15 @@ abstract class UseCase<in P, out R> {
 }
 
 /**
- * Base UseCase with no input parameters and a result.
+ * Base UseCase that produces a value with no input parameters.
  */
-abstract class NoParamUseCase<out R> {
+abstract class ProducerUseCase<out R> {
     abstract suspend operator fun invoke(): R
+}
+
+/**
+ * Base UseCase that consumes input parameters with no result.
+ */
+abstract class ConsumerUseCase<in P> {
+    abstract suspend operator fun invoke(params: P)
 }

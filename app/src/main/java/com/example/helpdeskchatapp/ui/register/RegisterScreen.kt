@@ -20,14 +20,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.helpdeskchatapp.domain.model.LoginParams
+import com.example.helpdeskchatapp.domain.model.consumer.Login
 import com.example.helpdeskchatapp.domain.viewmodel.RegisterViewModel
 import com.example.helpdeskchatapp.theme.MyApplicationTheme
 import com.example.helpdeskchatapp.ui.common.StateHandler
 import com.example.helpdeskchatapp.ui.common.components.CommonButton
 import com.example.helpdeskchatapp.ui.common.components.CommonHeader
 import com.example.helpdeskchatapp.ui.common.components.CommonInputTextField
-import com.example.helpdeskchatapp.ui.model.LoginState
 
 @Composable
 fun RegisterRoute(
@@ -37,18 +36,19 @@ fun RegisterRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    LaunchedEffect(Unit) {
+        viewModel.navigateToAdmin.collect { onNavigateToAdmin() }
+    }
+
     StateHandler(
         uiState = uiState,
         title = "Create Account",
         onRetry = { viewModel.loadData() },
-        content = {},
-        staticContent = { state, paddingValues ->
+        content = { paddingValues ->
             RegisterScreen(
-                state = state,
                 paddingValues = paddingValues,
                 onRegister = viewModel::register,
-                onNavigateToLogin = onNavigateToLogin,
-                onNavigateToAdmin = onNavigateToAdmin
+                onNavigateToLogin = onNavigateToLogin
             )
         }
     )
@@ -56,20 +56,12 @@ fun RegisterRoute(
 
 @Composable
 fun RegisterScreen(
-    state: LoginState,
     paddingValues: PaddingValues,
-    onRegister: (LoginParams) -> Unit,
-    onNavigateToLogin: () -> Unit,
-    onNavigateToAdmin: () -> Unit
+    onRegister: (Login) -> Unit,
+    onNavigateToLogin: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-
-    LaunchedEffect(state.loginResult) {
-        if (state.loginResult != null) {
-            onNavigateToAdmin()
-        }
-    }
 
     Column(
         modifier = Modifier
@@ -103,7 +95,7 @@ fun RegisterScreen(
 
         CommonButton(
             text = "Create Account",
-            onClick = { onRegister(LoginParams(email, password)) }
+            onClick = { onRegister(Login(email, password)) }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -119,11 +111,9 @@ fun RegisterScreen(
 fun RegisterScreenPreview() {
     MyApplicationTheme {
         RegisterScreen(
-            state = LoginState(),
             paddingValues = PaddingValues(0.dp),
             onRegister = {},
-            onNavigateToLogin = {},
-            onNavigateToAdmin = {}
+            onNavigateToLogin = {}
         )
     }
 }

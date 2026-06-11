@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.domain.model
+package com.example.helpdeskchatapp.domain.model.consumer
 
 data class Message(
     val message: String?,
