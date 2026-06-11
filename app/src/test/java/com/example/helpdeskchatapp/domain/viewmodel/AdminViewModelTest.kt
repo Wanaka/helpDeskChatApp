@@ -1,0 +1,105 @@
+package com.example.helpdeskchatapp.domain.viewmodel
+
+import app.cash.turbine.test
+import com.example.helpdeskchatapp.domain.model.consumer.UserName
+import com.example.helpdeskchatapp.domain.usecase.GetChatsUseCase
+import com.example.helpdeskchatapp.domain.usecase.GetUserNameUseCase
+import com.example.helpdeskchatapp.domain.usecase.LogoutUseCase
+import com.example.helpdeskchatapp.domain.usecase.UpdateUserNameUseCase
+import com.example.helpdeskchatapp.fakes.FakeAdminRepository
+import com.example.helpdeskchatapp.fakes.FakeUserRepository
+import com.example.helpdeskchatapp.util.MainDispatcherRule
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
+import org.junit.Rule
+import org.junit.Test
+
+@OptIn(ExperimentalCoroutinesApi::class)
+class AdminViewModelTest {
+
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
+    private val adminRepository = FakeAdminRepository()
+    private val userRepository = FakeUserRepository()
+
+    // init {} runs loadData() + checkAdminName(); configure fakes before constructing.
+    private fun viewModel() = AdminViewModel(
+        GetChatsUseCase(adminRepository),
+        LogoutUseCase(userRepository),
+        GetUserNameUseCase(adminRepository),
+        UpdateUserNameUseCase(userRepository)
+    )
+
+    @Test
+    fun init_whenStoredNameIsBlank_showsNameOverlay() =
+        runTest(mainDispatcherRule.testDispatcher) {
+            adminRepository.userName = UserName(name = "", company = "")
+
+            val vm = viewModel()
+
+            assertTrue(vm.showNameOverlay.value)
+        }
+
+    @Test
+    fun init_whenStoredNameIsDefaultAdmin_showsNameOverlay() =
+        runTest(mainDispatcherRule.testDispatcher) {
+            adminRepository.userName = UserName(name = "Admin", company = "")
+
+            val vm = viewModel()
+
+            assertTrue(vm.showNameOverlay.value)
+        }
+
+    @Test
+    fun init_whenStoredNameIsSet_doesNotShowOverlay() =
+        runTest(mainDispatcherRule.testDispatcher) {
+            adminRepository.userName = UserName(name = "Bob", company = "Acme")
+
+            val vm = viewModel()
+
+            assertFalse(vm.showNameOverlay.value)
+        }
+
+    @Test
+    fun updateName_success_hidesOverlay() =
+        runTest(mainDispatcherRule.testDispatcher) {
+            adminRepository.userName = UserName(name = "", company = "")
+            userRepository.updateUserNameResult = Result.success(Unit)
+            val vm = viewModel()
+
+            vm.updateName(UserName(name = "Bob", company = "Acme"))
+
+            assertFalse(vm.showNameOverlay.value)
+        }
+
+    @Test
+    fun updateName_failure_emitsToast() =
+        runTest(mainDispatcherRule.testDispatcher) {
+            adminRepository.userName = UserName(name = "Bob", company = "Acme")
+            userRepository.updateUserNameResult = Result.failure(RuntimeException("nope"))
+            val vm = viewModel()
+
+            vm.toastEvent.test {
+                vm.updateName(UserName(name = "Bob", company = "Acme"))
+                assertEquals("Failed to update name", awaitItem())
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+
+    @Test
+    fun logout_invokesUseCaseAndCallback() =
+        runTest(mainDispatcherRule.testDispatcher) {
+            adminRepository.userName = UserName(name = "Bob", company = "Acme")
+            val vm = viewModel()
+            var calledBack = false
+
+            vm.logout { calledBack = true }
+
+            assertTrue(userRepository.logoutCalled)
+            assertTrue(calledBack)
+        }
+}
