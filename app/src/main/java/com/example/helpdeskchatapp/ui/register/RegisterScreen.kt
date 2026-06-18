@@ -95,7 +95,7 @@ fun RegisterScreen(
 
         CommonButton(
             text = "Create Account",
-            onClick = { onRegister(Login(email, password)) }
+            onClick = { onRegister(Login(email.trim(), password.trim())) }
         )
 
         Spacer(modifier = Modifier.height(16.dp))

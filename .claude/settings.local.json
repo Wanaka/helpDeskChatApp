@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(open -a \"Android Studio\" /Users/bengt.haag/Documents/Developer/android/helpdesk_chat_app)",
+      "Bash(mkdir -p /Users/bengt.haag/Documents/Developer/android/helpdesk_chat_app/.claude/ai)",
+      "Bash(cp /Users/bengt.haag/Documents/Developer/android/helpdesk_chat_app/.claude/ai/architect.md /Users/bengt.haag/Documents/Developer/android/helpdesk_chat_app/.claude/agents/architect.md)",
+      "Bash(cp /Users/bengt.haag/Documents/Developer/android/helpdesk_chat_app/.claude/ai/developer.md /Users/bengt.haag/Documents/Developer/android/helpdesk_chat_app/.claude/agents/developer.md)",
+      "Bash(cp /Users/bengt.haag/Documents/Developer/android/helpdesk_chat_app/.claude/ai/firebase.md /Users/bengt.haag/Documents/Developer/android/helpdesk_chat_app/.claude/agents/firebase.md)",
+      "Bash(cp /Users/bengt.haag/Documents/Developer/android/helpdesk_chat_app/.claude/ai/tester.md /Users/bengt.haag/Documents/Developer/android/helpdesk_chat_app/.claude/agents/tester.md)",
+      "Bash(rm -rf /Users/bengt.haag/Documents/Developer/android/helpdesk_chat_app/.claude/ai)",
+      "Bash(rm /Users/bengt.haag/Documents/Developer/android/helpdesk_chat_app/.claude/agents/ci.md && find /Users/bengt.haag/Documents/Developer/android/helpdesk_chat_app/.claude -type f | sort)",
+      "Bash(rm /Users/bengt.haag/Documents/Developer/android/helpdesk_chat_app/.claude/agents/developer.md /Users/bengt.haag/Documents/Developer/android/helpdesk_chat_app/.claude/agents/tester.md && find /Users/bengt.haag/Documents/Developer/android/helpdesk_chat_app/.claude/agents -type f | sort)",
+      "Bash(./gradlew :app:compileDebugKotlin)",
+      "Bash(./gradlew :app:compileDebugKotlin --quiet)"
+    ]
+  }
+}
