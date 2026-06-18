@@ -5,8 +5,8 @@ import javax.inject.Inject
 
 class GetCurrentUserUseCase @Inject constructor(
     private val repository: UserRepository
-) {
-    operator fun invoke(): String? {
+) : ProducerUseCase<String?>() {
+    override suspend operator fun invoke(): String? {
         return repository.getCurrentUser()
     }
 }

@@ -20,6 +20,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.example.helpdeskchatapp.domain.viewmodel.DeepLinkViewModel
 import com.example.helpdeskchatapp.domain.viewmodel.MainViewModel
 import com.example.helpdeskchatapp.ui.admin.AdminRoute
 import com.example.helpdeskchatapp.ui.chat.ChatRoute
@@ -30,33 +31,42 @@ import com.example.helpdeskchatapp.ui.register.RegisterRoute
 @Composable
 fun AppNavigation(
     conversationId: String? = null,
-    viewModel: MainViewModel = hiltViewModel()
+    mainViewModel: MainViewModel = hiltViewModel(),
+    deepLinkViewModel: DeepLinkViewModel = hiltViewModel()
 ) {
-    val backStack = rememberNavBackStack(viewModel.getInitialRoute(conversationId))
-    val showNameOverlay by viewModel.showNameOverlay.collectAsStateWithLifecycle()
-    val isAnonymous by viewModel.isAnonymous.collectAsStateWithLifecycle()
+    val initialRoute by mainViewModel.initialRoute.collectAsStateWithLifecycle()
+    val showNameOverlay by deepLinkViewModel.showNameOverlay.collectAsStateWithLifecycle()
+    val isAnonymous by deepLinkViewModel.isAnonymous.collectAsStateWithLifecycle()
+
+    LaunchedEffect(conversationId) {
+        mainViewModel.resolveInitialRoute(conversationId)
+    }
+
+    val resolvedRoute = initialRoute ?: return
+
+    val backStack = rememberNavBackStack(resolvedRoute)
 
     if (showNameOverlay) {
-        NameEntryDialog(onConfirm = viewModel::updateName, isAnonymous = isAnonymous)
+        NameEntryDialog(onConfirm = deepLinkViewModel::updateName, isAnonymous = isAnonymous)
     }
 
     LaunchedEffect(conversationId) {
         if (conversationId != null) {
-            viewModel.handleDeepLink(conversationId)
+            deepLinkViewModel.handleDeepLink(conversationId)
         } else {
-            viewModel.findExistingChat()
+            deepLinkViewModel.findExistingChat()
         }
     }
 
     LaunchedEffect(Unit) {
-        viewModel.logoutEvent.collect {
+        deepLinkViewModel.logoutEvent.collect {
             backStack.clear()
             backStack.add(LoginRouteKey)
         }
     }
 
     LaunchedEffect(Unit) {
-        viewModel.navigateToChat.collect { chatId ->
+        deepLinkViewModel.navigateToChat.collect { chatId ->
             val chatKey = ChatRouteKey(chatId)
             if (backStack.lastOrNull() != chatKey) {
                 backStack.clear()

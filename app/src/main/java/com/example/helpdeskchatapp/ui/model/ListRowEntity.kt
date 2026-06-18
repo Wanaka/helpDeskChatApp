@@ -3,7 +3,7 @@ package com.example.helpdeskchatapp.ui.model
 import androidx.compose.ui.graphics.vector.ImageVector
 
 data class ListRowEntity(
-    val id: String = "",
+    val id: String,
     val title: String,
     val subtitle: String? = null,
     val leftIcon: ImageVector? = null,

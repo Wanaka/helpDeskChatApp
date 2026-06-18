@@ -18,20 +18,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
-import com.example.helpdeskchatapp.domain.usecase.UpdateFcmTokenUseCase
 import com.example.helpdeskchatapp.navigation.AppNavigation
 import com.example.helpdeskchatapp.theme.MyApplicationTheme
-import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    @Inject
-    lateinit var updateFcmTokenUseCase: UpdateFcmTokenUseCase
 
     private var conversationIdState by mutableStateOf<String?>(null)
 
@@ -50,7 +42,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         askNotificationPermission()
-        fetchAndSaveFcmToken()
 
         conversationIdState = getConversationIdFromIntent(intent)
 
@@ -77,22 +68,6 @@ class MainActivity : ComponentActivity() {
                 PackageManager.PERMISSION_GRANTED
             ) {
                 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-            }
-        }
-    }
-
-    private fun fetchAndSaveFcmToken() {
-        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                Log.w("MainActivity", "Fetching FCM registration token failed", task.exception)
-                return@addOnCompleteListener
-            }
-
-            val token = task.result
-            Log.d("MainActivity", "FCM Token: $token")
-            
-            CoroutineScope(Dispatchers.IO).launch {
-                updateFcmTokenUseCase(token)
             }
         }
     }

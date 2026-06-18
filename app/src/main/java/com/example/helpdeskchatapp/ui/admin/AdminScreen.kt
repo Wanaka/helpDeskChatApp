@@ -9,7 +9,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.QrCode
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import android.widget.Toast
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.helpdeskchatapp.ui.common.composeContext
 import com.example.helpdeskchatapp.domain.viewmodel.AdminViewModel
 import com.example.helpdeskchatapp.theme.MyApplicationTheme
 import com.example.helpdeskchatapp.ui.common.StateHandler
@@ -27,7 +30,6 @@ import com.example.helpdeskchatapp.ui.common.components.CommonLazyColumn
 import com.example.helpdeskchatapp.ui.common.components.NameEntryDialog
 import com.example.helpdeskchatapp.ui.common.components.QrCodeDialog
 import com.example.helpdeskchatapp.ui.model.ListRowEntity
-import com.example.helpdeskchatapp.util.CurrentUserId
 
 @Composable
 fun AdminRoute(
@@ -38,7 +40,15 @@ fun AdminRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val chats by viewModel.chats.collectAsStateWithLifecycle()
     val showNameOverlay by viewModel.showNameOverlay.collectAsStateWithLifecycle()
+    val adminId by viewModel.adminId.collectAsStateWithLifecycle()
     var showQrCode by remember { mutableStateOf(false) }
+    val context = composeContext()
+
+    LaunchedEffect(viewModel.toastEvent) {
+        viewModel.toastEvent.collect { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
+    }
 
     if (showNameOverlay) {
         NameEntryDialog(
@@ -70,7 +80,7 @@ fun AdminRoute(
 
     if (showQrCode) {
         QrCodeDialog(
-            adminId = CurrentUserId.CURRENT_USER_ID,
+            adminId = adminId,
             onDismiss = { showQrCode = false }
         )
     }

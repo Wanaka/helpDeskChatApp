@@ -5,7 +5,7 @@ import com.example.helpdeskchatapp.domain.model.producer.ChatMessageViewEntity
 
 fun ChatMessageResponse.toDomain(): ChatMessageViewEntity {
     return ChatMessageViewEntity(
-        id = id.toString(),
+        id = id,
         text = text,
         senderId = senderId,
         timestamp = timestamp,

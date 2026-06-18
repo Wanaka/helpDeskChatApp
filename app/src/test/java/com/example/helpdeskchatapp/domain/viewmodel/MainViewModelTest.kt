@@ -1,79 +1,73 @@
 package com.example.helpdeskchatapp.domain.viewmodel
 
-import com.example.helpdeskchatapp.domain.usecase.CreateChatUseCase
-import com.example.helpdeskchatapp.domain.usecase.GetChatForUserUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetCurrentUserUseCase
-import com.example.helpdeskchatapp.domain.usecase.GetUserNameUseCase
 import com.example.helpdeskchatapp.domain.usecase.IsAnonymousUseCase
-import com.example.helpdeskchatapp.domain.usecase.LoginAnonymouslyUseCase
-import com.example.helpdeskchatapp.domain.usecase.LogoutUseCase
-import com.example.helpdeskchatapp.domain.usecase.UpdateFcmTokenUseCase
-import com.example.helpdeskchatapp.domain.usecase.UpdateUserNameUseCase
+import com.example.helpdeskchatapp.fakes.FakeUserRepository
 import com.example.helpdeskchatapp.navigation.AdminRouteKey
 import com.example.helpdeskchatapp.navigation.DeepLinkLoadingKey
 import com.example.helpdeskchatapp.navigation.LoginRouteKey
-import io.mockk.every
-import io.mockk.mockk
+import com.example.helpdeskchatapp.util.MainDispatcherRule
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Rule
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class MainViewModelTest {
 
-    private val getCurrentUserUseCase = mockk<GetCurrentUserUseCase>()
-    private val isAnonymousUseCase = mockk<IsAnonymousUseCase>()
-    private val logoutUseCase = mockk<LogoutUseCase>(relaxed = true)
-    private val loginAnonymouslyUseCase = mockk<LoginAnonymouslyUseCase>(relaxed = true)
-    private val createChatUseCase = mockk<CreateChatUseCase>(relaxed = true)
-    private val getChatForUserUseCase = mockk<GetChatForUserUseCase>(relaxed = true)
-    private val getUserNameUseCase = mockk<GetUserNameUseCase>(relaxed = true)
-    private val updateUserNameUseCase = mockk<UpdateUserNameUseCase>(relaxed = true)
-    private val updateFcmTokenUseCase = mockk<UpdateFcmTokenUseCase>(relaxed = true)
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
+    private val userRepository = FakeUserRepository()
 
     private fun viewModel() = MainViewModel(
-        getCurrentUserUseCase,
-        isAnonymousUseCase,
-        logoutUseCase,
-        loginAnonymouslyUseCase,
-        createChatUseCase,
-        getChatForUserUseCase,
-        getUserNameUseCase,
-        updateUserNameUseCase,
-        updateFcmTokenUseCase
+        GetCurrentUserUseCase(userRepository),
+        IsAnonymousUseCase(userRepository)
     )
 
     @Test
-    fun getInitialRoute_withConversationId_returnsDeepLinkLoading() {
-        val route = viewModel().getInitialRoute(conversationId = "abc")
+    fun `resolveInitialRoute_withConversationId_setsDeepLinkLoading`() =
+        runTest(mainDispatcherRule.testDispatcher) {
+            val vm = viewModel()
 
-        assertEquals(DeepLinkLoadingKey, route)
-    }
+            vm.resolveInitialRoute(conversationId = "abc")
 
-    @Test
-    fun getInitialRoute_noLoggedInUser_returnsLogin() {
-        every { getCurrentUserUseCase() } returns null
-
-        val route = viewModel().getInitialRoute(conversationId = null)
-
-        assertEquals(LoginRouteKey, route)
-    }
+            assertEquals(DeepLinkLoadingKey, vm.initialRoute.value)
+        }
 
     @Test
-    fun getInitialRoute_anonymousUser_returnsDeepLinkLoading() {
-        every { getCurrentUserUseCase() } returns "uid-1"
-        every { isAnonymousUseCase() } returns true
+    fun `resolveInitialRoute_noLoggedInUser_setsLogin`() =
+        runTest(mainDispatcherRule.testDispatcher) {
+            userRepository.currentUserId = null
+            val vm = viewModel()
 
-        val route = viewModel().getInitialRoute(conversationId = null)
+            vm.resolveInitialRoute(conversationId = null)
 
-        assertEquals(DeepLinkLoadingKey, route)
-    }
+            assertEquals(LoginRouteKey, vm.initialRoute.value)
+        }
 
     @Test
-    fun getInitialRoute_authenticatedAdmin_returnsAdmin() {
-        every { getCurrentUserUseCase() } returns "uid-1"
-        every { isAnonymousUseCase() } returns false
+    fun `resolveInitialRoute_anonymousUser_setsDeepLinkLoading`() =
+        runTest(mainDispatcherRule.testDispatcher) {
+            userRepository.currentUserId = "uid-1"
+            userRepository.anonymous = true
+            val vm = viewModel()
 
-        val route = viewModel().getInitialRoute(conversationId = null)
+            vm.resolveInitialRoute(conversationId = null)
 
-        assertEquals(AdminRouteKey, route)
-    }
+            assertEquals(DeepLinkLoadingKey, vm.initialRoute.value)
+        }
+
+    @Test
+    fun `resolveInitialRoute_authenticatedAdmin_setsAdmin`() =
+        runTest(mainDispatcherRule.testDispatcher) {
+            userRepository.currentUserId = "uid-1"
+            userRepository.anonymous = false
+            val vm = viewModel()
+
+            vm.resolveInitialRoute(conversationId = null)
+
+            assertEquals(AdminRouteKey, vm.initialRoute.value)
+        }
 }

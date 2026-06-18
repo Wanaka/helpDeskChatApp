@@ -2,8 +2,9 @@ package com.example.helpdeskchatapp.domain.viewmodel
 
 import app.cash.turbine.test
 import com.example.helpdeskchatapp.domain.model.consumer.Message
-import com.example.helpdeskchatapp.domain.model.consumer.UserName
+import com.example.helpdeskchatapp.domain.model.producer.UserNameViewEntity
 import com.example.helpdeskchatapp.domain.usecase.GetChatMessagesUseCase
+import com.example.helpdeskchatapp.domain.usecase.GetCurrentUserUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetUserNameUseCase
 import com.example.helpdeskchatapp.domain.usecase.IsAnonymousUseCase
 import com.example.helpdeskchatapp.domain.usecase.SendMessageUseCase
@@ -31,11 +32,12 @@ class ChatViewModelTest {
         GetChatMessagesUseCase(chatRepository),
         SendMessageUseCase(chatRepository),
         IsAnonymousUseCase(userRepository),
-        GetUserNameUseCase(adminRepository)
+        GetUserNameUseCase(adminRepository),
+        GetCurrentUserUseCase(userRepository)
     )
 
     @Test
-    fun sendMessage_delegatesToUseCaseWithMessageText() =
+    fun `sendMessage_delegatesToUseCaseWithMessageText`() =
         runTest(mainDispatcherRule.testDispatcher) {
             chatRepository.sendMessageResult = Result.success("msg-id")
             val vm = viewModel()
@@ -46,7 +48,7 @@ class ChatViewModelTest {
         }
 
     @Test
-    fun sendMessage_failure_emitsToast() =
+    fun `sendMessage_failure_emitsToast`() =
         runTest(mainDispatcherRule.testDispatcher) {
             chatRepository.sendMessageResult = Result.failure(RuntimeException("send failed"))
             val vm = viewModel()
@@ -59,15 +61,17 @@ class ChatViewModelTest {
         }
 
     @Test
-    fun initConversation_whenNotAnonymous_setsChatTitleFromUserName() =
+    fun `initConversation_whenNotAnonymous_setsChatTitleFromUserName`() =
         runTest(mainDispatcherRule.testDispatcher) {
             userRepository.anonymous = false
+            userRepository.currentUserId = "user-1"
             chatRepository.messages = emptyList()
-            adminRepository.userName = UserName(name = "Bob", company = "Acme")
+            adminRepository.getUserNameResult =
+                Result.success(UserNameViewEntity(name = "Bob", company = "Acme"))
             val vm = viewModel()
 
             vm.initConversation("conversation-1")
 
-            assertEquals(UserName(name = "Bob", company = "Acme"), vm.chatTitle.value)
+            assertEquals(UserNameViewEntity(name = "Bob", company = "Acme"), vm.chatTitle.value)
         }
 }

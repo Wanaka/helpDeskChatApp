@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.util
+package com.example.helpdeskchatapp.ui.common
 
 import android.graphics.Bitmap
 import android.graphics.Color

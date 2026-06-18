@@ -9,8 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun <T> StateHandler(
-    uiState: UiState<T>,
+fun StateHandler(
+    uiState: UiState,
     title: String,
     subtitle: String? = null,
     canNavigateBack: Boolean = false,

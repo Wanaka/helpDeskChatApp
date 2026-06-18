@@ -1,6 +1,8 @@
 package com.example.helpdeskchatapp.data.repository
 
 import com.example.helpdeskchatapp.data.interfaces.ChatRepository
+import com.example.helpdeskchatapp.data.mapper.toDomain
+import com.example.helpdeskchatapp.data.model.ChatMessageResponse
 import com.example.helpdeskchatapp.domain.model.producer.ChatMessageViewEntity
 import com.example.helpdeskchatapp.domain.model.consumer.Message
 import com.google.firebase.Timestamp
@@ -16,7 +18,7 @@ class FirestoreChatRepository @Inject constructor(
     private val firestore: FirebaseFirestore
 ) : ChatRepository {
 
-    override suspend fun getMessages(conversationId: String): Flow<List<ChatMessageViewEntity>> = callbackFlow {
+    override fun getMessages(conversationId: String): Flow<List<ChatMessageViewEntity>> = callbackFlow {
         val listener = firestore.collection("conversations")
             .document(conversationId)
             .collection("messages")
@@ -29,12 +31,12 @@ class FirestoreChatRepository @Inject constructor(
                 }
 
                 val messages = snapshot?.documents?.mapNotNull { doc ->
-                    ChatMessageViewEntity(
+                    ChatMessageResponse(
                         id = doc.id,
                         text = doc.getString("messageText") ?: "",
                         senderId = doc.getString("senderId") ?: "",
-                        timestamp = doc.getTimestamp("timestamp") ?: Timestamp.now()
-                    )
+                        timestamp = (doc.getTimestamp("timestamp") ?: Timestamp.now()).toDate().time
+                    ).toDomain()
                 } ?: emptyList()
 
                 trySend(messages)
@@ -46,11 +48,9 @@ class FirestoreChatRepository @Inject constructor(
     }
 
     override suspend fun sendMessage(message: Message): Result<String> {
-        println(",,, sendMessage:  $message")
-
         return try {
             firestore.collection("conversations")
-                .document(message.conversationId.toString())
+                .document(message.conversationId)
                 .collection("messages")
                 .add(
                     mapOf(
@@ -62,7 +62,6 @@ class FirestoreChatRepository @Inject constructor(
                 .await()
             Result.success("Message sent successfully")
         } catch (e: Exception) {
-            println(",,, Message not sent ${e.message}")
             "Message not sent".let { Result.failure(Exception(it)) }
         }
     }

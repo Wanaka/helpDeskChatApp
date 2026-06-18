@@ -3,15 +3,14 @@ package com.example.helpdeskchatapp.domain.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.example.helpdeskchatapp.domain.mapper.chatDetailsMapper
 import com.example.helpdeskchatapp.domain.model.consumer.Message
-import com.example.helpdeskchatapp.domain.model.consumer.UserName
+import com.example.helpdeskchatapp.domain.model.producer.UserNameViewEntity
 import com.example.helpdeskchatapp.domain.usecase.GetChatMessagesUseCase
+import com.example.helpdeskchatapp.domain.usecase.GetCurrentUserUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetUserNameUseCase
 import com.example.helpdeskchatapp.domain.usecase.IsAnonymousUseCase
 import com.example.helpdeskchatapp.domain.usecase.SendMessageUseCase
 import com.example.helpdeskchatapp.ui.common.UiState
-import com.example.helpdeskchatapp.ui.model.ChatState
 import com.example.helpdeskchatapp.ui.model.ListRowEntity
-import com.example.helpdeskchatapp.util.CurrentUserId.CURRENT_USER_ID
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,22 +22,27 @@ class ChatViewModel @Inject constructor(
     private val getChatMessagesUseCase: GetChatMessagesUseCase,
     private val sendMessageUseCase: SendMessageUseCase,
     private val isAnonymousUseCase: IsAnonymousUseCase,
-    private val getUserNameUseCase: GetUserNameUseCase
-) : BaseViewModel<ChatState>() {
+    private val getUserNameUseCase: GetUserNameUseCase,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase
+) : BaseViewModel() {
 
     private var currentConversationId: String = ""
+    private var currentUserId: String = ""
     private val _messages =
         MutableStateFlow<List<ListRowEntity>>(emptyList())
     val messages = _messages.asStateFlow()
 
     private val _chatTitle =
-        MutableStateFlow(UserName(name = "Admin Chat", company = "Company Name"))
+        MutableStateFlow(UserNameViewEntity(name = "Admin Chat", company = "Company Name"))
     val chatTitle = _chatTitle.asStateFlow()
 
     fun initConversation(id: String) {
         currentConversationId = id
-        loadData()
-        if (!isAnonymousUseCase()) getUserNameSetTitle()
+        viewModelScope.launch {
+            currentUserId = getCurrentUserUseCase() ?: ""
+            loadData()
+            if (!isAnonymousUseCase()) getUserNameSetTitle()
+        }
     }
 
     override fun loadData() {
@@ -50,7 +54,7 @@ class ChatViewModel @Inject constructor(
                 .collect { messages ->
                     _messages.value = messages.map {
                         it.chatDetailsMapper(
-                            currentUserId = CURRENT_USER_ID
+                            currentUserId = currentUserId
                         )
                     }
                     if (_uiState.value is UiState.Loading) {
@@ -62,9 +66,13 @@ class ChatViewModel @Inject constructor(
 
     private fun getUserNameSetTitle() {
         viewModelScope.launch {
-
-            val chatTitleData = getUserNameUseCase(currentConversationId)
-            _chatTitle.value = chatTitleData
+            getUserNameUseCase(currentUserId)
+                .onSuccess { userName ->
+                    _chatTitle.value = userName
+                }
+                .onFailure { error ->
+                    _toastEvent.emit(error.message ?: "Failed to load chat title")
+                }
         }
     }
 
@@ -73,7 +81,7 @@ class ChatViewModel @Inject constructor(
             val result = sendMessageUseCase(
                 message.copy(
                     conversationId = currentConversationId,
-                    senderId = CURRENT_USER_ID
+                    senderId = currentUserId
                 )
             )
 

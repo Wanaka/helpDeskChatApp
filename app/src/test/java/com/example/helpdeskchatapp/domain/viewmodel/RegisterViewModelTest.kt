@@ -2,7 +2,7 @@ package com.example.helpdeskchatapp.domain.viewmodel
 
 import app.cash.turbine.test
 import com.example.helpdeskchatapp.domain.model.consumer.Login
-import com.example.helpdeskchatapp.domain.usecase.GetCurrentUserUseCase
+import com.example.helpdeskchatapp.domain.usecase.GetFcmTokenUseCase
 import com.example.helpdeskchatapp.domain.usecase.RegisterUseCase
 import com.example.helpdeskchatapp.domain.usecase.UpdateFcmTokenUseCase
 import com.example.helpdeskchatapp.fakes.FakeUserRepository
@@ -25,15 +25,15 @@ class RegisterViewModelTest {
 
     private fun viewModel() = RegisterViewModel(
         RegisterUseCase(userRepository),
-        GetCurrentUserUseCase(userRepository),
+        GetFcmTokenUseCase(userRepository),
         UpdateFcmTokenUseCase(userRepository)
     )
 
     @Test
-    fun register_success_emitsNavigateToAdminAndSuccessState() =
+    fun `register_success_emitsNavigateToAdminAndSuccessState`() =
         runTest(mainDispatcherRule.testDispatcher) {
             userRepository.registerResult = Result.success(Unit)
-            userRepository.currentUserId = null
+            userRepository.getFcmTokenResult = Result.failure(RuntimeException("no token")) // skip FCM side-effect
             val vm = viewModel()
 
             vm.navigateToAdmin.test {
@@ -45,7 +45,7 @@ class RegisterViewModelTest {
         }
 
     @Test
-    fun register_failure_setsErrorStateWithMessage() =
+    fun `register_failure_setsErrorStateWithMessage`() =
         runTest(mainDispatcherRule.testDispatcher) {
             userRepository.registerResult = Result.failure(RuntimeException("email taken"))
             val vm = viewModel()

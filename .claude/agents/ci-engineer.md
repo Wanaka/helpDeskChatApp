@@ -42,3 +42,7 @@ on:
 - Keep the workflow minimal and cache-friendly; this is a small app — avoid a sprawling matrix unless asked.
 - Don't add steps that need secrets the repo doesn't have. If you introduce one (signing key, Firebase token), reference it via `${{ secrets.* }}` and document the required secret in the PR/commit message.
 - After editing a workflow, validate YAML syntax and confirm the Gradle tasks exist (`./gradlew tasks --all | grep <task>`). Keep the build green: only add a check after confirming it passes locally.
+- Use `concurrency` + `cancel-in-progress: true` on both workflows to avoid redundant runs.
+- Pin action versions to `@v4` major tags — never `@main` or `@latest`.
+- Read `docs/ai/ci-setup.md` (if present) before making structural changes to the pipeline.
+- Run the pre-completion checklist in `docs/ai/ci-setup.md` before marking any CI task done.

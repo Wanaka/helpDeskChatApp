@@ -7,8 +7,8 @@ import javax.inject.Inject
 
 class GetChatMessagesUseCase @Inject constructor(
     private val repository: ChatRepository
-) : UseCase<String, Flow<List<ChatMessageViewEntity>>>() {
-    override suspend fun invoke(params: String): Flow<List<ChatMessageViewEntity>> {
+) : FlowUseCase<String, List<ChatMessageViewEntity>>() {
+    override fun invoke(params: String): Flow<List<ChatMessageViewEntity>> {
         return repository.getMessages(params)
     }
 }

@@ -8,6 +8,7 @@ import com.example.helpdeskchatapp.domain.model.consumer.Message
 import com.example.helpdeskchatapp.domain.model.consumer.UserName
 import com.example.helpdeskchatapp.domain.model.producer.ChatMessageViewEntity
 import com.example.helpdeskchatapp.domain.model.producer.ChatViewEntity
+import com.example.helpdeskchatapp.domain.model.producer.UserNameViewEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
@@ -21,6 +22,7 @@ class FakeUserRepository : UserRepository {
     var registerResult: Result<Unit> = Result.success(Unit)
     var loginAnonymouslyResult: Result<String> = Result.success("anon-uid")
     var updateUserNameResult: Result<Unit> = Result.success(Unit)
+    var getFcmTokenResult: Result<String> = Result.success("fake-fcm-token")
     var currentUserId: String? = null
     var anonymous: Boolean = false
     var logoutCalled: Boolean = false
@@ -30,6 +32,7 @@ class FakeUserRepository : UserRepository {
     override suspend fun register(params: Login): Result<Unit> = registerResult
     override suspend fun loginAnonymously(): Result<String> = loginAnonymouslyResult
     override suspend fun updateUserName(params: UserName): Result<Unit> = updateUserNameResult
+    override suspend fun getFcmToken(): Result<String> = getFcmTokenResult
     override suspend fun updateFcmToken(token: String): Result<Unit> {
         updatedFcmToken = token
         return Result.success(Unit)
@@ -37,25 +40,27 @@ class FakeUserRepository : UserRepository {
 
     override fun getCurrentUser(): String? = currentUserId
     override fun isAnonymous(): Boolean = anonymous
-    override fun logout() {
+    override suspend fun logout(): Result<Unit> {
         logoutCalled = true
+        return Result.success(Unit)
     }
 }
 
 class FakeAdminRepository : AdminRepository {
     var chats: List<ChatViewEntity> = emptyList()
-    var userName: UserName = UserName(name = "", company = "")
+    var userNameViewEntity: UserNameViewEntity = UserNameViewEntity(name = "", company = "")
+    var getUserNameResult: Result<UserNameViewEntity> = Result.success(userNameViewEntity)
     var createChatResult: Result<String> = Result.success("conversation-id")
     var chatForUserResult: Result<String?> = Result.success(null)
 
-    override fun getChats(): Flow<List<ChatViewEntity>> = flowOf(chats)
+    override fun getChats(adminId: String): Flow<List<ChatViewEntity>> = flowOf(chats)
     override suspend fun createChat(
         adminId: String,
         userId: String,
         senderName: String
     ): Result<String> = createChatResult
 
-    override suspend fun getUserName(userId: String): UserName = userName
+    override suspend fun getUserName(userId: String): Result<UserNameViewEntity> = getUserNameResult
     override suspend fun getChatForUser(userId: String): Result<String?> = chatForUserResult
 }
 
@@ -64,7 +69,7 @@ class FakeChatRepository : ChatRepository {
     var sendMessageResult: Result<String> = Result.success("message-id")
     val sentMessages = mutableListOf<Message>()
 
-    override suspend fun getMessages(conversationId: String): Flow<List<ChatMessageViewEntity>> =
+    override fun getMessages(conversationId: String): Flow<List<ChatMessageViewEntity>> =
         flowOf(messages)
 
     override suspend fun sendMessage(message: Message): Result<String> {

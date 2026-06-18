@@ -5,8 +5,8 @@ import javax.inject.Inject
 
 class UpdateFcmTokenUseCase @Inject constructor(
     private val repository: UserRepository
-) : ConsumerUseCase<String>() {
-    override suspend fun invoke(params: String) {
-        repository.updateFcmToken(params)
+) : UseCase<String, Result<Unit>>() {
+    override suspend fun invoke(params: String): Result<Unit> {
+        return repository.updateFcmToken(params)
     }
 }
