@@ -7,4 +7,5 @@ import kotlinx.coroutines.flow.Flow
 interface ChatRepository {
     fun getMessages(conversationId: String): Flow<List<ChatMessageViewEntity>>
     suspend fun sendMessage(message: Message): Result<String>
+    suspend fun getAdminName(conversationId: String): Result<String>
 }

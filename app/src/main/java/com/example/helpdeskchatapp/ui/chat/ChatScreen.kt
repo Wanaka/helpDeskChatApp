@@ -53,7 +53,7 @@ fun ChatRoute(
     StateHandler(
         uiState = uiState,
         title = chatTitleData.name,
-        subtitle = chatTitleData.company,
+        subtitle = chatTitleData.company.takeIf { it.isNotBlank() },
         canNavigateBack = canNavigateBack,
         onBackClick = onBack,
         onRetry = { viewModel.loadData() },

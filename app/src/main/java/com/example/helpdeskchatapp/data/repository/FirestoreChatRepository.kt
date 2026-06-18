@@ -47,6 +47,16 @@ class FirestoreChatRepository @Inject constructor(
         }
     }
 
+    override suspend fun getAdminName(conversationId: String): Result<String> {
+        return try {
+            val doc = firestore.collection("conversations").document(conversationId).get().await()
+            val adminName = doc.getString("adminName") ?: ""
+            Result.success(adminName)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     override suspend fun sendMessage(message: Message): Result<String> {
         return try {
             firestore.collection("conversations")
