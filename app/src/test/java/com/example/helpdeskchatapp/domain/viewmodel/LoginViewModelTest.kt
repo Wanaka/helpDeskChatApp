@@ -2,7 +2,7 @@ package com.example.helpdeskchatapp.domain.viewmodel
 
 import app.cash.turbine.test
 import com.example.helpdeskchatapp.domain.model.consumer.Login
-import com.example.helpdeskchatapp.domain.usecase.GetCurrentUserUseCase
+import com.example.helpdeskchatapp.domain.usecase.GetFcmTokenUseCase
 import com.example.helpdeskchatapp.domain.usecase.LoginUseCase
 import com.example.helpdeskchatapp.domain.usecase.UpdateFcmTokenUseCase
 import com.example.helpdeskchatapp.fakes.FakeUserRepository
@@ -25,15 +25,15 @@ class LoginViewModelTest {
 
     private fun viewModel() = LoginViewModel(
         LoginUseCase(userRepository),
-        GetCurrentUserUseCase(userRepository),
+        GetFcmTokenUseCase(userRepository),
         UpdateFcmTokenUseCase(userRepository)
     )
 
     @Test
-    fun login_success_emitsNavigateToAdminAndSuccessState() =
+    fun `login_success_emitsNavigateToAdminAndSuccessState`() =
         runTest(mainDispatcherRule.testDispatcher) {
             userRepository.loginResult = Result.success(Unit)
-            userRepository.currentUserId = null // skips the FCM/Firebase static branch
+            userRepository.getFcmTokenResult = Result.failure(RuntimeException("no token")) // skip FCM side-effect
             val vm = viewModel()
 
             vm.navigateToAdmin.test {
@@ -45,7 +45,7 @@ class LoginViewModelTest {
         }
 
     @Test
-    fun login_failure_setsErrorStateWithMessage() =
+    fun `login_failure_setsErrorStateWithMessage`() =
         runTest(mainDispatcherRule.testDispatcher) {
             userRepository.loginResult = Result.failure(RuntimeException("bad creds"))
             val vm = viewModel()

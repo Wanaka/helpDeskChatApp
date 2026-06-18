@@ -11,6 +11,7 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class FirestoreAdminRepositoryTest {
@@ -28,7 +29,7 @@ class FirestoreAdminRepositoryTest {
     }
 
     @Test
-    fun getUserName_whenDocumentExists_returnsNameAndCompany() = runTest {
+    fun `getUserName_whenDocumentExists_returnsNameAndCompany`() = runTest {
         val snapshot = mockk<DocumentSnapshot> {
             every { getString("name") } returns "Bob"
             every { getString("company") } returns "Acme"
@@ -37,11 +38,12 @@ class FirestoreAdminRepositoryTest {
 
         val result = repository().getUserName("u1")
 
-        assertEquals(UserNameViewEntity(name = "Bob", company = "Acme"), result)
+        assertTrue(result.isSuccess)
+        assertEquals(UserNameViewEntity(name = "Bob", company = "Acme"), result.getOrNull())
     }
 
     @Test
-    fun getUserName_whenFieldsMissing_defaultsToEmptyStrings() = runTest {
+    fun `getUserName_whenFieldsMissing_defaultsToEmptyStrings`() = runTest {
         val snapshot = mockk<DocumentSnapshot> {
             every { getString("name") } returns null
             every { getString("company") } returns null
@@ -50,18 +52,18 @@ class FirestoreAdminRepositoryTest {
 
         val result = repository().getUserName("u1")
 
-        assertEquals(UserNameViewEntity(name = "", company = ""), result)
+        assertTrue(result.isSuccess)
+        assertEquals(UserNameViewEntity(name = "", company = ""), result.getOrNull())
     }
 
     @Test
-    fun getUserName_whenFirestoreThrows_returnsBlankCompany() = runTest {
+    fun `getUserName_whenFirestoreThrows_returnsFailure`() = runTest {
         every { firestore.collection("users") } returns collection
         every { collection.document("u1") } returns document
         every { document.get() } returns failedTask(RuntimeException("offline"))
 
         val result = repository().getUserName("u1")
 
-        // repository swallows the exception and returns a fallback UserName
-        assertEquals("", result.company)
+        assertTrue(result.isFailure)
     }
 }

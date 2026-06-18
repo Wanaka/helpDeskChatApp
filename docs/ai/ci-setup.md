@@ -6,12 +6,13 @@ This document describes the GitHub Actions CI/CD pipeline for this project — w
 
 ## Overview
 
-Two workflow files live under `.github/workflows/`:
+One workflow file lives under `.github/workflows/`:
 
 | File | Trigger | Purpose |
 |---|---|---|
-| `ci.yml` | Push to `master` and `feature/**` branches | Fast feedback — lint, unit tests, assemble debug |
-| `pr.yml` | Pull request targeting `master` | Full merge gate — everything in ci.yml + stricter checks |
+| `android-ci.yml` | Push to **any** branch; pull request targeting `master` | Lint, unit tests, assemble debug — runs on every relevant commit once |
+
+> **Why a single file with an all-branch push trigger?** Feature branches that never open a PR (e.g. experiments, WIP branches, draft work) would get no CI at all under a `push: master`-only trigger. Adding all branches to push ensures every commit is validated. The duplicate-run problem (GitHub fires both a `push` event and a `pull_request` event for the same commit when a PR is open) is solved by the concurrency group key — see the trigger and concurrency section below.
 
 ---
 
@@ -24,20 +25,35 @@ Two workflow files live under `.github/workflows/`:
 
 ---
 
-## Required triggers
+## Required triggers and concurrency
 
 ```yaml
-# ci.yml
+# android-ci.yml
 on:
-  push:
-    branches: [ master, 'feature/**' ]
-
-# pr.yml
-on:
+  push:                          # no branches filter — runs on every branch
   pull_request:
     branches: [ master ]
     types: [ opened, synchronize, reopened ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
 ```
+
+**Why no branch filter on `push`?**
+Feature branches that have no open PR (experiments, WIP, draft work) would get zero CI coverage under a `master`-only push trigger. Removing the filter ensures every commit to every branch is validated.
+
+**Why `head_ref || ref_name` instead of `ref`?**
+When a feature branch has an open PR, GitHub fires *both* a `push` event *and* a `pull_request` event for the same commit. They would normally land in different concurrency groups (`refs/heads/feature/foo` vs `refs/pull/123/merge`) and neither would cancel the other, wasting CI minutes.
+
+The expression `github.head_ref || github.ref_name` resolves to the same string for both events:
+
+| Event | `github.head_ref` | `github.ref_name` | resolved group |
+|---|---|---|---|
+| `push` to `feature/foo` | *(empty)* | `feature/foo` | `Android CI-feature/foo` |
+| `pull_request` from `feature/foo` | `feature/foo` | *(merge ref)* | `Android CI-feature/foo` |
+
+Both events produce the same group key, so the later run cancels the earlier one — only one CI run executes per commit.
 
 ---
 
@@ -95,7 +111,7 @@ Configure the following on `master` in GitHub (Settings → Branches → Add rul
 - **Concurrency groups** — both workflows set `concurrency` with `cancel-in-progress: true` to cancel stale runs.
 - **`if: always()`** on all artifact upload steps so reports survive test failures.
 - **No secrets hardcoded** — use `${{ secrets.* }}`. The committed `google-services.json` is intentional.
-- **Adding a new check** — add the Gradle task first, confirm it passes locally (`./gradlew tasks --all | grep <task>`), then add it to both `ci.yml` and `pr.yml`, update the branch protection required checks list, and document the change in `README.md`.
+- **Adding a new check** — add the Gradle task first, confirm it passes locally (`./gradlew tasks --all | grep <task>`), then add it to `android-ci.yml`, update the branch protection required checks list, and document the change in `README.md`.
 - **Don't add steps that need secrets the repo doesn't have.** If you introduce one (signing key, Firebase service account), reference it via `${{ secrets.* }}` and document the required secret in the PR.
 
 ---

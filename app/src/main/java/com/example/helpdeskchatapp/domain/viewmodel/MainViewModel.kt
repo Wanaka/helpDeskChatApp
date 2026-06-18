@@ -21,14 +21,10 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val isAnonymousUseCase: IsAnonymousUseCase,
-    private val logoutUseCase: LogoutUseCase
 ) : BaseViewModel() {
 
     private val _initialRoute = MutableStateFlow<NavKey?>(null)
     val initialRoute = _initialRoute.asStateFlow()
-
-    private val _logoutEvent = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
-    val logoutEvent = _logoutEvent.asSharedFlow()
 
     init {
         loadData()

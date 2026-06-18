@@ -2,7 +2,9 @@ package com.example.helpdeskchatapp.domain.viewmodel
 
 import app.cash.turbine.test
 import com.example.helpdeskchatapp.domain.model.consumer.UserName
+import com.example.helpdeskchatapp.domain.model.producer.UserNameViewEntity
 import com.example.helpdeskchatapp.domain.usecase.GetChatsUseCase
+import com.example.helpdeskchatapp.domain.usecase.GetCurrentUserUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetUserNameUseCase
 import com.example.helpdeskchatapp.domain.usecase.LogoutUseCase
 import com.example.helpdeskchatapp.domain.usecase.UpdateUserNameUseCase
@@ -26,18 +28,24 @@ class AdminViewModelTest {
     private val adminRepository = FakeAdminRepository()
     private val userRepository = FakeUserRepository()
 
-    // init {} runs loadData() + checkAdminName(); configure fakes before constructing.
-    private fun viewModel() = AdminViewModel(
-        GetChatsUseCase(adminRepository),
-        LogoutUseCase(userRepository),
-        GetUserNameUseCase(adminRepository),
-        UpdateUserNameUseCase(userRepository)
-    )
+    // init {} runs checkAdminName() + loadData(); configure fakes before constructing.
+    private fun viewModel(): AdminViewModel {
+        // AdminViewModel.init calls getCurrentUserUseCase() — provide a user id
+        userRepository.currentUserId = "admin-uid"
+        return AdminViewModel(
+            GetChatsUseCase(adminRepository),
+            LogoutUseCase(userRepository),
+            GetUserNameUseCase(adminRepository),
+            UpdateUserNameUseCase(userRepository),
+            GetCurrentUserUseCase(userRepository)
+        )
+    }
 
     @Test
-    fun init_whenStoredNameIsBlank_showsNameOverlay() =
+    fun `init_whenStoredNameIsBlank_showsNameOverlay`() =
         runTest(mainDispatcherRule.testDispatcher) {
-            adminRepository.userName = UserName(name = "", company = "")
+            adminRepository.getUserNameResult =
+                Result.success(UserNameViewEntity(name = "", company = ""))
 
             val vm = viewModel()
 
@@ -45,9 +53,10 @@ class AdminViewModelTest {
         }
 
     @Test
-    fun init_whenStoredNameIsDefaultAdmin_showsNameOverlay() =
+    fun `init_whenStoredNameIsDefaultAdmin_showsNameOverlay`() =
         runTest(mainDispatcherRule.testDispatcher) {
-            adminRepository.userName = UserName(name = "Admin", company = "")
+            adminRepository.getUserNameResult =
+                Result.success(UserNameViewEntity(name = "Admin", company = ""))
 
             val vm = viewModel()
 
@@ -55,9 +64,10 @@ class AdminViewModelTest {
         }
 
     @Test
-    fun init_whenStoredNameIsSet_doesNotShowOverlay() =
+    fun `init_whenStoredNameIsSet_doesNotShowOverlay`() =
         runTest(mainDispatcherRule.testDispatcher) {
-            adminRepository.userName = UserName(name = "Bob", company = "Acme")
+            adminRepository.getUserNameResult =
+                Result.success(UserNameViewEntity(name = "Bob", company = "Acme"))
 
             val vm = viewModel()
 
@@ -65,9 +75,10 @@ class AdminViewModelTest {
         }
 
     @Test
-    fun updateName_success_hidesOverlay() =
+    fun `updateName_success_hidesOverlay`() =
         runTest(mainDispatcherRule.testDispatcher) {
-            adminRepository.userName = UserName(name = "", company = "")
+            adminRepository.getUserNameResult =
+                Result.success(UserNameViewEntity(name = "", company = ""))
             userRepository.updateUserNameResult = Result.success(Unit)
             val vm = viewModel()
 
@@ -77,9 +88,10 @@ class AdminViewModelTest {
         }
 
     @Test
-    fun updateName_failure_emitsToast() =
+    fun `updateName_failure_emitsToast`() =
         runTest(mainDispatcherRule.testDispatcher) {
-            adminRepository.userName = UserName(name = "Bob", company = "Acme")
+            adminRepository.getUserNameResult =
+                Result.success(UserNameViewEntity(name = "Bob", company = "Acme"))
             userRepository.updateUserNameResult = Result.failure(RuntimeException("nope"))
             val vm = viewModel()
 
@@ -91,9 +103,10 @@ class AdminViewModelTest {
         }
 
     @Test
-    fun logout_invokesUseCaseAndCallback() =
+    fun `logout_invokesUseCaseAndCallback`() =
         runTest(mainDispatcherRule.testDispatcher) {
-            adminRepository.userName = UserName(name = "Bob", company = "Acme")
+            adminRepository.getUserNameResult =
+                Result.success(UserNameViewEntity(name = "Bob", company = "Acme"))
             val vm = viewModel()
             var calledBack = false
 
