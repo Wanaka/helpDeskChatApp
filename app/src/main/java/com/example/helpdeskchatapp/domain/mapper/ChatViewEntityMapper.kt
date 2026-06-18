@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.ui.admin
+package com.example.helpdeskchatapp.domain.mapper
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight

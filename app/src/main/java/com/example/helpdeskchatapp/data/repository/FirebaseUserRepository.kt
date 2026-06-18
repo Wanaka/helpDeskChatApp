@@ -7,10 +7,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.messaging.FirebaseMessaging
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import javax.inject.Inject
 
@@ -72,7 +71,6 @@ class FirebaseUserRepository @Inject constructor(
 
     override suspend fun loginAnonymously(): Result<String> {
         return try {
-            println(",,, Attempting anonymous login")
             val result = auth.signInAnonymously().await()
             Result.success("Logged in anonymously with ID: ${result.user?.uid}")
         } catch (e: Exception) {
@@ -88,27 +86,32 @@ class FirebaseUserRepository @Inject constructor(
         return auth.currentUser?.isAnonymous ?: false
     }
 
-    override fun logout() {
-        val uid = auth.currentUser?.uid
-        if (uid != null) {
-            CoroutineScope(Dispatchers.IO).launch {
-                try {
-                    // Delete token from device and clear from Firestore
-                    messaging.deleteToken().await()
+    override suspend fun logout(): Result<Unit> {
+        return try {
+            val uid = auth.currentUser?.uid
+            if (uid != null) {
+                withContext(Dispatchers.IO) {
+                    try {
+                        // Delete token from device and clear from Firestore
+                        messaging.deleteToken().await()
 
-                    // Give it a timeout so it doesn't hang forever if offline
-                    withTimeoutOrNull(2000) {
-                        firestore.collection("users").document(uid)
-                            .update("fcmToken", null).await()
+                        // Give it a timeout so it doesn't hang forever if offline
+                        withTimeoutOrNull(2000) {
+                            firestore.collection("users").document(uid)
+                                .update("fcmToken", null).await()
+                        }
+                    } catch (e: Exception) {
+                        // Ignore errors during token clearing — sign-out still proceeds
+                    } finally {
+                        auth.signOut()
                     }
-                } catch (e: Exception) {
-                    // Ignore errors during token clearing
-                } finally {
-                    auth.signOut()
                 }
+            } else {
+                auth.signOut()
             }
-        } else {
-            auth.signOut()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 

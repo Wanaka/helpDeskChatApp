@@ -17,7 +17,7 @@ class RegisterViewModel @Inject constructor(
     private val registerUseCase: RegisterUseCase,
     private val getFcmTokenUseCase: GetFcmTokenUseCase,
     private val updateFcmTokenUseCase: UpdateFcmTokenUseCase
-) : BaseViewModel<Unit>() {
+) : BaseViewModel() {
 
     // One-shot navigation event (replay = 0) so returning to this screen
     // with a retained ViewModel does not re-trigger navigation.
@@ -40,11 +40,7 @@ class RegisterViewModel @Inject constructor(
 
             result.fold(
                 onSuccess = {
-                    viewModelScope.launch {
-                        getFcmTokenUseCase().onSuccess { token ->
-                            updateFcmTokenUseCase(token)
-                        }
-                    }
+                    performPostAuthSetup()
                     _uiState.value = UiState.Success
                     _navigateToAdmin.emit(Unit)
                 },
@@ -52,6 +48,13 @@ class RegisterViewModel @Inject constructor(
                     _uiState.value = UiState.Error(error.message ?: "Registration failed")
                 }
             )
+        }
+    }
+
+    private suspend fun performPostAuthSetup() {
+        getFcmTokenUseCase().onSuccess { token ->
+            updateFcmTokenUseCase(token)
+                .onFailure { _toastEvent.emit("Failed to update notification token") }
         }
     }
 }

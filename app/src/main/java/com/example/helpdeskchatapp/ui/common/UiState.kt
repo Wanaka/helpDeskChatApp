@@ -1,7 +1,11 @@
 package com.example.helpdeskchatapp.ui.common
 
-sealed class UiState<out T> {
-    data object Loading : UiState<Nothing>()
-    data object Success : UiState<Nothing>()
-    data class Error(val message: String) : UiState<Nothing>()
+// UiState is a pure loading/error/success signal — it carries no data payload.
+// Screen data flows through dedicated StateFlow fields on each ViewModel.
+// The generic parameter has been intentionally removed; parallel data StateFlows
+// are the correct mechanism for typed screen data.
+sealed class UiState {
+    data object Loading : UiState()
+    data object Success : UiState()
+    data class Error(val message: String) : UiState()
 }

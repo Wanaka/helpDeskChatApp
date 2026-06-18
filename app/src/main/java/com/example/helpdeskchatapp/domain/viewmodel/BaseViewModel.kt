@@ -9,9 +9,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-abstract class BaseViewModel<T> : ViewModel() {
-    protected val _uiState = MutableStateFlow<UiState<T>>(UiState.Loading)
-    val uiState: StateFlow<UiState<T>> = _uiState.asStateFlow()
+abstract class BaseViewModel : ViewModel() {
+    protected val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+    val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
     protected val _toastEvent = MutableSharedFlow<String>(extraBufferCapacity = 1)
     val toastEvent = _toastEvent.asSharedFlow()

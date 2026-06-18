@@ -3,8 +3,8 @@ package com.example.helpdeskchatapp.data.repository
 import com.example.helpdeskchatapp.data.interfaces.AdminRepository
 import com.example.helpdeskchatapp.data.mapper.toDomain
 import com.example.helpdeskchatapp.data.model.ChatResponse
-import com.example.helpdeskchatapp.domain.model.consumer.UserName
 import com.example.helpdeskchatapp.domain.model.producer.ChatViewEntity
+import com.example.helpdeskchatapp.domain.model.producer.UserNameViewEntity
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -67,12 +67,12 @@ class FirestoreAdminRepository @Inject constructor(
         }
     }
 
-    override suspend fun getUserName(userId: String): Result<UserName> {
+    override suspend fun getUserName(userId: String): Result<UserNameViewEntity> {
         return try {
             val doc = firestore.collection("users").document(userId).get().await()
             val name = doc.getString("name") ?: ""
             val company = doc.getString("company") ?: ""
-            Result.success(UserName(name, company))
+            Result.success(UserNameViewEntity(name, company))
         } catch (e: Exception) {
             Result.failure(e)
         }

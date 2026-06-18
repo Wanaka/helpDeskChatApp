@@ -36,7 +36,7 @@ fun RegisterRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(viewModel) {
         viewModel.navigateToAdmin.collect { onNavigateToAdmin() }
     }
 

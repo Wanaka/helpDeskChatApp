@@ -5,8 +5,8 @@ import javax.inject.Inject
 
 class LogoutUseCase @Inject constructor(
     private val repository: UserRepository
-) : ProducerUseCase<Unit>() {
-    override suspend operator fun invoke() {
-        repository.logout()
+) : ProducerUseCase<Result<Unit>>() {
+    override suspend operator fun invoke(): Result<Unit> {
+        return repository.logout()
     }
 }

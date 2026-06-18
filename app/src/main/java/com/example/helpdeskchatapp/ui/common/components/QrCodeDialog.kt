@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
 import com.example.helpdeskchatapp.util.Deeplink
-import com.example.helpdeskchatapp.util.QRCodeGenerator
+import com.example.helpdeskchatapp.ui.common.QRCodeGenerator
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

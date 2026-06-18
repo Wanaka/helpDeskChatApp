@@ -1,6 +1,6 @@
 package com.example.helpdeskchatapp.data.repository
 
-import com.example.helpdeskchatapp.domain.model.consumer.UserName
+import com.example.helpdeskchatapp.domain.model.producer.UserNameViewEntity
 import com.example.helpdeskchatapp.util.failedTask
 import com.example.helpdeskchatapp.util.succeededTask
 import com.google.firebase.firestore.CollectionReference
@@ -37,7 +37,7 @@ class FirestoreAdminRepositoryTest {
 
         val result = repository().getUserName("u1")
 
-        assertEquals(UserName(name = "Bob", company = "Acme"), result)
+        assertEquals(UserNameViewEntity(name = "Bob", company = "Acme"), result)
     }
 
     @Test
@@ -50,7 +50,7 @@ class FirestoreAdminRepositoryTest {
 
         val result = repository().getUserName("u1")
 
-        assertEquals(UserName(name = "", company = ""), result)
+        assertEquals(UserNameViewEntity(name = "", company = ""), result)
     }
 
     @Test

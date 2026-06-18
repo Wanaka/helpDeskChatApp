@@ -5,6 +5,6 @@ import com.example.helpdeskchatapp.domain.model.consumer.Message
 import kotlinx.coroutines.flow.Flow
 
 interface ChatRepository {
-    suspend fun getMessages(conversationId: String): Flow<List<ChatMessageViewEntity>>
+    fun getMessages(conversationId: String): Flow<List<ChatMessageViewEntity>>
     suspend fun sendMessage(message: Message): Result<String>
 }

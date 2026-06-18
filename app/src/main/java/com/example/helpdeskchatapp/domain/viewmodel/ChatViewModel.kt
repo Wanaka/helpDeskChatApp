@@ -3,14 +3,13 @@ package com.example.helpdeskchatapp.domain.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.example.helpdeskchatapp.domain.mapper.chatDetailsMapper
 import com.example.helpdeskchatapp.domain.model.consumer.Message
-import com.example.helpdeskchatapp.domain.model.consumer.UserName
+import com.example.helpdeskchatapp.domain.model.producer.UserNameViewEntity
 import com.example.helpdeskchatapp.domain.usecase.GetChatMessagesUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetCurrentUserUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetUserNameUseCase
 import com.example.helpdeskchatapp.domain.usecase.IsAnonymousUseCase
 import com.example.helpdeskchatapp.domain.usecase.SendMessageUseCase
 import com.example.helpdeskchatapp.ui.common.UiState
-import com.example.helpdeskchatapp.ui.model.ChatState
 import com.example.helpdeskchatapp.ui.model.ListRowEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +24,7 @@ class ChatViewModel @Inject constructor(
     private val isAnonymousUseCase: IsAnonymousUseCase,
     private val getUserNameUseCase: GetUserNameUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase
-) : BaseViewModel<ChatState>() {
+) : BaseViewModel() {
 
     private var currentConversationId: String = ""
     private var currentUserId: String = ""
@@ -34,7 +33,7 @@ class ChatViewModel @Inject constructor(
     val messages = _messages.asStateFlow()
 
     private val _chatTitle =
-        MutableStateFlow(UserName(name = "Admin Chat", company = "Company Name"))
+        MutableStateFlow(UserNameViewEntity(name = "Admin Chat", company = "Company Name"))
     val chatTitle = _chatTitle.asStateFlow()
 
     fun initConversation(id: String) {
@@ -67,7 +66,7 @@ class ChatViewModel @Inject constructor(
 
     private fun getUserNameSetTitle() {
         viewModelScope.launch {
-            getUserNameUseCase(currentConversationId)
+            getUserNameUseCase(currentUserId)
                 .onSuccess { userName ->
                     _chatTitle.value = userName
                 }

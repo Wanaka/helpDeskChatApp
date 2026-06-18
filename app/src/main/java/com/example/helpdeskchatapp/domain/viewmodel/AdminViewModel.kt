@@ -1,15 +1,15 @@
 package com.example.helpdeskchatapp.domain.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.example.helpdeskchatapp.domain.mapper.toListRowEntity
 import com.example.helpdeskchatapp.domain.model.consumer.UserName
-import com.example.helpdeskchatapp.domain.model.producer.ChatViewEntity
 import com.example.helpdeskchatapp.domain.usecase.GetCurrentUserUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetUserNameUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetChatsUseCase
 import com.example.helpdeskchatapp.domain.usecase.LogoutUseCase
 import com.example.helpdeskchatapp.domain.usecase.UpdateUserNameUseCase
 import com.example.helpdeskchatapp.ui.common.UiState
-import com.example.helpdeskchatapp.ui.model.AdminState
+import com.example.helpdeskchatapp.ui.model.ListRowEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,9 +23,9 @@ class AdminViewModel @Inject constructor(
     private val getUserNameUseCase: GetUserNameUseCase,
     private val updateUserNameUseCase: UpdateUserNameUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase
-) : BaseViewModel<AdminState>() {
+) : BaseViewModel() {
 
-    private val _chats = MutableStateFlow<List<ChatViewEntity>>(emptyList())
+    private val _chats = MutableStateFlow<List<ListRowEntity>>(emptyList())
     val chats = _chats.asStateFlow()
 
     private val _adminId = MutableStateFlow("")
@@ -68,6 +68,8 @@ class AdminViewModel @Inject constructor(
     fun logout(onSuccess: () -> Unit) {
         viewModelScope.launch {
             logoutUseCase()
+                .onFailure { _toastEvent.emit("Logout failed: ${it.message}") }
+            // Navigate regardless — even if token cleanup failed, the user is signed out
             onSuccess()
         }
     }
@@ -83,7 +85,7 @@ class AdminViewModel @Inject constructor(
             _adminId.value = resolvedAdminId
             try {
                 getChatsUseCase(resolvedAdminId).collect { chats ->
-                    _chats.value = chats
+                    _chats.value = chats.map { it.toListRowEntity() }
                     if (_uiState.value is UiState.Loading) {
                         _uiState.value = UiState.Success
                     }
