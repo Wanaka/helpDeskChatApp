@@ -12,13 +12,14 @@ fun CommonInputTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
-    isPasswordField: Boolean = false
+    isPasswordField: Boolean = false,
+    modifier: Modifier = Modifier.fillMaxWidth()
 ) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
         label = { CommonTextLabel(label) },
         visualTransformation = if (isPasswordField) PasswordVisualTransformation() else VisualTransformation.None,
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier
     )
 }

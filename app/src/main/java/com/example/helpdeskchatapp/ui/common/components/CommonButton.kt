@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 fun CommonButton(
     text: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier.fillMaxWidth()
+    modifier: Modifier = Modifier
 ) {
     Button(
         onClick = onClick,

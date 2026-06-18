@@ -3,6 +3,7 @@ package com.example.helpdeskchatapp.domain.viewmodel
 import app.cash.turbine.test
 import com.example.helpdeskchatapp.domain.model.consumer.Message
 import com.example.helpdeskchatapp.domain.model.producer.UserNameViewEntity
+import com.example.helpdeskchatapp.domain.usecase.GetAdminNameUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetChatMessagesUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetCurrentUserUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetUserNameUseCase
@@ -33,6 +34,7 @@ class ChatViewModelTest {
         SendMessageUseCase(chatRepository),
         IsAnonymousUseCase(userRepository),
         GetUserNameUseCase(adminRepository),
+        GetAdminNameUseCase(chatRepository),
         GetCurrentUserUseCase(userRepository)
     )
 

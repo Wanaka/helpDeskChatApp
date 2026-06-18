@@ -7,6 +7,7 @@ fun ChatResponse.toDomain(): ChatViewEntity {
     return ChatViewEntity(
         id = id,
         sender = sender,
+        company = company,
         message = message,
         adminName = adminName,
         userId = userId

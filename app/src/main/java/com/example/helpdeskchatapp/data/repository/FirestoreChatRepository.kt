@@ -47,22 +47,31 @@ class FirestoreChatRepository @Inject constructor(
         }
     }
 
+    override suspend fun getAdminName(conversationId: String): Result<String> {
+        return try {
+            val doc = firestore.collection("conversations").document(conversationId).get().await()
+            val adminName = doc.getString("adminName") ?: ""
+            Result.success(adminName)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     override suspend fun sendMessage(message: Message): Result<String> {
         return try {
-            firestore.collection("conversations")
-                .document(message.conversationId)
-                .collection("messages")
-                .add(
-                    mapOf(
-                        "messageText" to message.message,
-                        "senderId" to message.senderId,
-                        "timestamp" to Timestamp.now()
-                    )
+            val now = Timestamp.now()
+            val conversationRef = firestore.collection("conversations").document(message.conversationId)
+            conversationRef.collection("messages").add(
+                mapOf(
+                    "messageText" to message.message,
+                    "senderId" to message.senderId,
+                    "timestamp" to now
                 )
-                .await()
+            ).await()
+            conversationRef.update("lastMessage", message.message).await()
             Result.success("Message sent successfully")
         } catch (e: Exception) {
-            "Message not sent".let { Result.failure(Exception(it)) }
+            Result.failure(Exception("Message not sent"))
         }
     }
 }

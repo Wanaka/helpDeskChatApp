@@ -95,7 +95,7 @@ fun LoginScreen(
 
         CommonButton(
             text = "Login",
-            onClick = { onLogin(Login(email, password)) }
+            onClick = { onLogin(Login(email.trim(), password.trim())) }
         )
 
         Spacer(modifier = Modifier.height(16.dp))

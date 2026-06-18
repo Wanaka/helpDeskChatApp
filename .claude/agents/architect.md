@@ -48,6 +48,14 @@ Report violations as a numbered list: file path, line reference, rule broken (ci
 
 ---
 
+## Rules all agents must follow
+
+These apply to every agent in `.claude/agents/`, not just Architect reviews:
+
+- **Always reuse common components** — before building any UI element (button, text field, header, list, etc.), check `ui/common/components/` first. If a `Common*` component fits the purpose, use it. Only build a new component when nothing existing covers the need. If an existing component is missing a parameter (e.g. `modifier`), add the parameter with a sensible default rather than bypassing the component.
+
+---
+
 ## Enforcement checklist
 
 The full checklist lives in `docs/ai/architecture-principles.md`. Run it before marking any structural review complete.

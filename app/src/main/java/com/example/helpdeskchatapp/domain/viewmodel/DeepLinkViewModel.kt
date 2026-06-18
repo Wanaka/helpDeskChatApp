@@ -58,6 +58,11 @@ class DeepLinkViewModel @Inject constructor(
         viewModelScope.launch {
             if (getCurrentUserUseCase() == null) {
                 loginAnonymouslyUseCase()
+                    .onFailure {
+                        _toastEvent.emit("Failed to connect. Please check your connection and try again.")
+                        _logoutEvent.emit(Unit)
+                        return@launch
+                    }
             }
 
             val userId = getCurrentUserUseCase()
