@@ -5,8 +5,8 @@ import javax.inject.Inject
 
 class IsAnonymousUseCase @Inject constructor(
     private val repository: UserRepository
-) {
-    operator fun invoke(): Boolean {
+) : ProducerUseCase<Boolean>() {
+    override suspend operator fun invoke(): Boolean {
         return repository.isAnonymous()
     }
 }

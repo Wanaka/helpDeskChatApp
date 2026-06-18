@@ -27,7 +27,6 @@ import com.example.helpdeskchatapp.ui.common.components.CommonLazyColumn
 import com.example.helpdeskchatapp.ui.common.components.NameEntryDialog
 import com.example.helpdeskchatapp.ui.common.components.QrCodeDialog
 import com.example.helpdeskchatapp.ui.model.ListRowEntity
-import com.example.helpdeskchatapp.util.CurrentUserId
 
 @Composable
 fun AdminRoute(
@@ -36,8 +35,10 @@ fun AdminRoute(
     viewModel: AdminViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val chats by viewModel.chats.collectAsStateWithLifecycle()
+    val chatEntities by viewModel.chats.collectAsStateWithLifecycle()
+    val chats = chatEntities.map { it.toListRowEntity() }
     val showNameOverlay by viewModel.showNameOverlay.collectAsStateWithLifecycle()
+    val adminId by viewModel.adminId.collectAsStateWithLifecycle()
     var showQrCode by remember { mutableStateOf(false) }
 
     if (showNameOverlay) {
@@ -70,7 +71,7 @@ fun AdminRoute(
 
     if (showQrCode) {
         QrCodeDialog(
-            adminId = CurrentUserId.CURRENT_USER_ID,
+            adminId = adminId,
             onDismiss = { showQrCode = false }
         )
     }

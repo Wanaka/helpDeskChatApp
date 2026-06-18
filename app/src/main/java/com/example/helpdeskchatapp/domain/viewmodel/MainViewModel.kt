@@ -1,6 +1,5 @@
 package com.example.helpdeskchatapp.domain.viewmodel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation3.runtime.NavKey
 import com.example.helpdeskchatapp.domain.model.consumer.CreateChat
@@ -12,21 +11,19 @@ import com.example.helpdeskchatapp.domain.usecase.GetUserNameUseCase
 import com.example.helpdeskchatapp.domain.usecase.IsAnonymousUseCase
 import com.example.helpdeskchatapp.domain.usecase.LoginAnonymouslyUseCase
 import com.example.helpdeskchatapp.domain.usecase.LogoutUseCase
+import com.example.helpdeskchatapp.domain.usecase.GetFcmTokenUseCase
 import com.example.helpdeskchatapp.domain.usecase.UpdateFcmTokenUseCase
 import com.example.helpdeskchatapp.domain.usecase.UpdateUserNameUseCase
+import com.example.helpdeskchatapp.ui.common.UiState
 import com.example.helpdeskchatapp.navigation.AdminRouteKey
 import com.example.helpdeskchatapp.navigation.DeepLinkLoadingKey
 import com.example.helpdeskchatapp.navigation.LoginRouteKey
-import com.example.helpdeskchatapp.util.CurrentUserId
-import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,13 +36,43 @@ class MainViewModel @Inject constructor(
     private val getChatForUserUseCase: GetChatForUserUseCase,
     private val getUserNameUseCase: GetUserNameUseCase,
     private val updateUserNameUseCase: UpdateUserNameUseCase,
+    private val getFcmTokenUseCase: GetFcmTokenUseCase,
     private val updateFcmTokenUseCase: UpdateFcmTokenUseCase
-) : ViewModel() {
+) : BaseViewModel<Unit>() {
 
-    private val _navigateToChat = MutableSharedFlow<String>(
-        replay = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
+    private val _initialRoute = MutableStateFlow<NavKey?>(null)
+    val initialRoute = _initialRoute.asStateFlow()
+
+    init {
+        loadData()
+    }
+
+    override fun loadData() {
+        _uiState.value = UiState.Success
+    }
+
+    fun resolveInitialRoute(conversationId: String?) {
+        viewModelScope.launch {
+            _initialRoute.value = computeInitialRoute(conversationId)
+        }
+    }
+
+    private suspend fun computeInitialRoute(conversationId: String?): NavKey {
+        if (conversationId != null) return DeepLinkLoadingKey
+
+        val userId = getCurrentUserUseCase()
+        return if (userId != null) {
+            if (isAnonymousUseCase()) {
+                DeepLinkLoadingKey
+            } else {
+                AdminRouteKey
+            }
+        } else {
+            LoginRouteKey
+        }
+    }
+
+    private val _navigateToChat = MutableSharedFlow<String>(extraBufferCapacity = 1)
     val navigateToChat = _navigateToChat.asSharedFlow()
 
     private val _logoutEvent = MutableSharedFlow<Unit>()
@@ -67,22 +94,24 @@ class MainViewModel @Inject constructor(
 
             val userId = getCurrentUserUseCase()
             if (userId != null) {
-                try {
-                    val token = FirebaseMessaging.getInstance().token.await()
+                getFcmTokenUseCase().onSuccess { token ->
                     updateFcmTokenUseCase(token)
-                } catch (e: Exception) {
                 }
 
-                CurrentUserId.CURRENT_USER_ID = userId
-                
-                val name = getUserNameUseCase(userId)
-                if (name.name.isEmpty()) {
-                    pendingAdminId = adminId
-                    _showNameOverlay.value = true
-                    _isAnonymous.value = true
-                } else {
-                    startChat(adminId, userId, name.name)
-                }
+                getUserNameUseCase(userId)
+                    .onSuccess { name ->
+                        if (name.name.isEmpty()) {
+                            pendingAdminId = adminId
+                            _showNameOverlay.value = true
+                            _isAnonymous.value = true
+                        } else {
+                            startChat(adminId, userId, name.name)
+                        }
+                    }
+                    .onFailure {
+                        logoutUseCase()
+                        _logoutEvent.emit(Unit)
+                    }
             } else {
                 logoutUseCase()
                 _logoutEvent.emit(Unit)
@@ -127,9 +156,11 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             val userId = getCurrentUserUseCase()
             if (userId != null && isAnonymousUseCase()) {
-                CurrentUserId.CURRENT_USER_ID = userId
-
-                val name = getUserNameUseCase(userId)
+                val nameResult = getUserNameUseCase(userId)
+                val name = nameResult.getOrElse {
+                    _toastEvent.emit(it.message ?: "Failed to load user name")
+                    return@launch
+                }
                 if (name.name.isEmpty()) {
                     _showNameOverlay.value = true
                     return@launch
@@ -151,19 +182,4 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getInitialRoute(conversationId: String? = null): NavKey {
-        if (conversationId != null) return DeepLinkLoadingKey
-
-        val userId = getCurrentUserUseCase()
-        return if (userId != null) {
-            CurrentUserId.CURRENT_USER_ID = userId
-            if (isAnonymousUseCase()) {
-                DeepLinkLoadingKey
-            } else {
-                AdminRouteKey
-            }
-        } else {
-            LoginRouteKey
-        }
-    }
 }

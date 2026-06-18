@@ -3,10 +3,8 @@ package com.example.helpdeskchatapp.domain.usecase
 import com.example.helpdeskchatapp.data.interfaces.UserRepository
 import javax.inject.Inject
 
-class LogoutUseCase @Inject constructor(
+class GetFcmTokenUseCase @Inject constructor(
     private val repository: UserRepository
-) : ProducerUseCase<Unit>() {
-    override suspend operator fun invoke() {
-        repository.logout()
-    }
+) : ProducerUseCase<Result<String>>() {
+    override suspend fun invoke(): Result<String> = repository.getFcmToken()
 }

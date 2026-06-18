@@ -6,8 +6,8 @@ import javax.inject.Inject
 
 class GetUserNameUseCase @Inject constructor(
     private val repository: AdminRepository
-) : UseCase<String, UserName>() {
-    override suspend fun invoke(params: String): UserName {
+) : UseCase<String, Result<UserName>>() {
+    override suspend fun invoke(params: String): Result<UserName> {
         return repository.getUserName(params)
     }
 }

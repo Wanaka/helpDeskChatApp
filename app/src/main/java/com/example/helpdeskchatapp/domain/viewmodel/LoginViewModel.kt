@@ -2,23 +2,20 @@ package com.example.helpdeskchatapp.domain.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.example.helpdeskchatapp.domain.model.consumer.Login
-import com.example.helpdeskchatapp.domain.usecase.GetCurrentUserUseCase
+import com.example.helpdeskchatapp.domain.usecase.GetFcmTokenUseCase
 import com.example.helpdeskchatapp.domain.usecase.LoginUseCase
 import com.example.helpdeskchatapp.domain.usecase.UpdateFcmTokenUseCase
-import com.example.helpdeskchatapp.util.CurrentUserId
 import com.example.helpdeskchatapp.ui.common.UiState
-import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
-    private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val getFcmTokenUseCase: GetFcmTokenUseCase,
     private val updateFcmTokenUseCase: UpdateFcmTokenUseCase
 ) : BaseViewModel<Unit>() {
 
@@ -43,16 +40,9 @@ class LoginViewModel @Inject constructor(
 
             result.fold(
                 onSuccess = {
-                    getCurrentUserUseCase()?.let { uid ->
-                        CurrentUserId.CURRENT_USER_ID = uid
-
-                        viewModelScope.launch {
-                            try {
-                                val token = FirebaseMessaging.getInstance().token.await()
-                                updateFcmTokenUseCase(token)
-                            } catch (e: Exception) {
-                                // Log or ignore error
-                            }
+                    viewModelScope.launch {
+                        getFcmTokenUseCase().onSuccess { token ->
+                            updateFcmTokenUseCase(token)
                         }
                     }
                     _uiState.value = UiState.Success

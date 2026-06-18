@@ -1,6 +1,8 @@
 package com.example.helpdeskchatapp.data.repository
 
 import com.example.helpdeskchatapp.data.interfaces.ChatRepository
+import com.example.helpdeskchatapp.data.mapper.toDomain
+import com.example.helpdeskchatapp.data.model.ChatMessageResponse
 import com.example.helpdeskchatapp.domain.model.producer.ChatMessageViewEntity
 import com.example.helpdeskchatapp.domain.model.consumer.Message
 import com.google.firebase.Timestamp
@@ -29,12 +31,12 @@ class FirestoreChatRepository @Inject constructor(
                 }
 
                 val messages = snapshot?.documents?.mapNotNull { doc ->
-                    ChatMessageViewEntity(
+                    ChatMessageResponse(
                         id = doc.id,
                         text = doc.getString("messageText") ?: "",
                         senderId = doc.getString("senderId") ?: "",
                         timestamp = doc.getTimestamp("timestamp") ?: Timestamp.now()
-                    )
+                    ).toDomain()
                 } ?: emptyList()
 
                 trySend(messages)

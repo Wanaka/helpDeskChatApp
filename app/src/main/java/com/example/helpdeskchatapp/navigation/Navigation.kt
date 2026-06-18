@@ -32,9 +32,17 @@ fun AppNavigation(
     conversationId: String? = null,
     viewModel: MainViewModel = hiltViewModel()
 ) {
-    val backStack = rememberNavBackStack(viewModel.getInitialRoute(conversationId))
+    val initialRoute by viewModel.initialRoute.collectAsStateWithLifecycle()
     val showNameOverlay by viewModel.showNameOverlay.collectAsStateWithLifecycle()
     val isAnonymous by viewModel.isAnonymous.collectAsStateWithLifecycle()
+
+    LaunchedEffect(conversationId) {
+        viewModel.resolveInitialRoute(conversationId)
+    }
+
+    val resolvedRoute = initialRoute ?: return
+
+    val backStack = rememberNavBackStack(resolvedRoute)
 
     if (showNameOverlay) {
         NameEntryDialog(onConfirm = viewModel::updateName, isAnonymous = isAnonymous)

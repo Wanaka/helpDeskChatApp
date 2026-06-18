@@ -1,9 +1,10 @@
 package com.example.helpdeskchatapp.data.repository
 
 import com.example.helpdeskchatapp.data.interfaces.AdminRepository
+import com.example.helpdeskchatapp.data.mapper.toDomain
+import com.example.helpdeskchatapp.data.model.ChatResponse
 import com.example.helpdeskchatapp.domain.model.consumer.UserName
 import com.example.helpdeskchatapp.domain.model.producer.ChatViewEntity
-import com.example.helpdeskchatapp.util.CurrentUserId
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -17,8 +18,7 @@ class FirestoreAdminRepository @Inject constructor(
     private val firestore: FirebaseFirestore
 ) : AdminRepository {
 
-    override fun getChats(): Flow<List<ChatViewEntity>> = callbackFlow {
-        val adminId = CurrentUserId.CURRENT_USER_ID
+    override fun getChats(adminId: String): Flow<List<ChatViewEntity>> = callbackFlow {
         val listener = firestore.collection("conversations")
             .whereEqualTo("adminId", adminId)
             .orderBy("timestamp", Query.Direction.DESCENDING)
@@ -29,13 +29,13 @@ class FirestoreAdminRepository @Inject constructor(
                 }
 
                 val chats = snapshot?.documents?.mapNotNull { doc ->
-                    ChatViewEntity(
+                    ChatResponse(
                         id = doc.id,
                         sender = doc.getString("senderName") ?: "Unknown",
                         message = doc.getString("lastMessage") ?: "",
                         adminName = doc.getString("adminName") ?: "",
                         userId = doc.getString("userId") ?: ""
-                    )
+                    ).toDomain()
                 } ?: emptyList()
 
                 trySend(chats)
@@ -48,8 +48,9 @@ class FirestoreAdminRepository @Inject constructor(
 
     override suspend fun createChat(adminId: String, userId: String, senderName: String): Result<String> {
         return try {
-            val adminName = getUserName(adminId)
-            
+            val adminNameResult = getUserName(adminId)
+            val adminName = adminNameResult.getOrElse { return Result.failure(it) }
+
             val chatData = mapOf(
                 "adminId" to adminId,
                 "userId" to userId,
@@ -58,7 +59,7 @@ class FirestoreAdminRepository @Inject constructor(
                 "lastMessage" to "New chat started",
                 "timestamp" to Timestamp.now()
             )
-            
+
             firestore.collection("conversations").document(userId).set(chatData).await()
             Result.success(userId)
         } catch (e: Exception) {
@@ -66,14 +67,14 @@ class FirestoreAdminRepository @Inject constructor(
         }
     }
 
-    override suspend fun getUserName(userId: String): UserName {
+    override suspend fun getUserName(userId: String): Result<UserName> {
         return try {
             val doc = firestore.collection("users").document(userId).get().await()
             val name = doc.getString("name") ?: ""
             val company = doc.getString("company") ?: ""
-            UserName(name, company)
+            Result.success(UserName(name, company))
         } catch (e: Exception) {
-            UserName(e.message.toString(), "")
+            Result.failure(e)
         }
     }
 

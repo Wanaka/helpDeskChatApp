@@ -3,7 +3,6 @@ package com.example.helpdeskchatapp.data.repository
 import com.example.helpdeskchatapp.data.interfaces.UserRepository
 import com.example.helpdeskchatapp.domain.model.consumer.Login
 import com.example.helpdeskchatapp.domain.model.consumer.UserName
-import com.example.helpdeskchatapp.util.CurrentUserId
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -18,6 +17,7 @@ import javax.inject.Inject
 class FirebaseUserRepository @Inject constructor(
     private val auth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
+    private val messaging: FirebaseMessaging,
 ) : UserRepository {
     
     override suspend fun login(params: Login): Result<Unit> {
@@ -90,13 +90,11 @@ class FirebaseUserRepository @Inject constructor(
 
     override fun logout() {
         val uid = auth.currentUser?.uid
-        CurrentUserId.CURRENT_USER_ID = ""
-        
         if (uid != null) {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     // Delete token from device and clear from Firestore
-                    FirebaseMessaging.getInstance().deleteToken().await()
+                    messaging.deleteToken().await()
 
                     // Give it a timeout so it doesn't hang forever if offline
                     withTimeoutOrNull(2000) {
@@ -111,6 +109,15 @@ class FirebaseUserRepository @Inject constructor(
             }
         } else {
             auth.signOut()
+        }
+    }
+
+    override suspend fun getFcmToken(): Result<String> {
+        return try {
+            val token = messaging.token.await()
+            Result.success(token)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 
