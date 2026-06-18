@@ -11,6 +11,7 @@ import com.google.firebase.firestore.Query
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -28,17 +29,37 @@ class FirestoreAdminRepository @Inject constructor(
                     return@addSnapshotListener
                 }
 
-                val chats = snapshot?.documents?.mapNotNull { doc ->
-                    ChatResponse(
-                        id = doc.id,
-                        sender = doc.getString("senderName") ?: "Unknown",
-                        message = doc.getString("lastMessage") ?: "",
-                        adminName = doc.getString("adminName") ?: "",
-                        userId = doc.getString("userId") ?: ""
-                    ).toDomain()
-                } ?: emptyList()
-
-                trySend(chats)
+                launch {
+                    try {
+                        val chats = snapshot?.documents?.map { doc ->
+                            val userId = doc.getString("userId") ?: ""
+                            val company = doc.getString("senderCompany")?.takeIf { it.isNotEmpty() }
+                                ?: firestore.collection("users").document(userId).get().await()
+                                    .getString("company") ?: ""
+                            val lastMessageDoc = firestore.collection("conversations")
+                                .document(doc.id)
+                                .collection("messages")
+                                .orderBy("timestamp", Query.Direction.DESCENDING)
+                                .limit(1)
+                                .get().await()
+                                .documents.firstOrNull()
+                            val lastMessage = lastMessageDoc?.getString("messageText")
+                                ?: doc.getString("lastMessage")
+                                ?: "New chat started"
+                            ChatResponse(
+                                id = doc.id,
+                                sender = doc.getString("senderName") ?: "Unknown",
+                                company = company,
+                                message = lastMessage,
+                                adminName = doc.getString("adminName") ?: "",
+                                userId = userId
+                            ).toDomain()
+                        } ?: emptyList()
+                        trySend(chats)
+                    } catch (e: Exception) {
+                        close(e)
+                    }
+                }
             }
 
         awaitClose {
@@ -50,11 +71,14 @@ class FirestoreAdminRepository @Inject constructor(
         return try {
             val adminNameResult = getUserName(adminId)
             val adminName = adminNameResult.getOrElse { return Result.failure(it) }
+            val senderUserResult = getUserName(userId)
+            val senderCompany = senderUserResult.getOrElse { UserNameViewEntity("", "") }.company
 
             val chatData = mapOf(
                 "adminId" to adminId,
                 "userId" to userId,
                 "senderName" to senderName,
+                "senderCompany" to senderCompany,
                 "adminName" to adminName.name,
                 "lastMessage" to "New chat started",
                 "timestamp" to Timestamp.now()

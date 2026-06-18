@@ -5,5 +5,6 @@ data class ChatResponse(
     val sender: String,
     val message: String,
     val adminName: String,
+    val company: String,
     val userId: String
 )

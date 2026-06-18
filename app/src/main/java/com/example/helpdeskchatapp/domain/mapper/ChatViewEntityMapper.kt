@@ -7,9 +7,10 @@ import com.example.helpdeskchatapp.domain.model.producer.ChatViewEntity
 import com.example.helpdeskchatapp.ui.model.ListRowEntity
 
 fun ChatViewEntity.toListRowEntity(): ListRowEntity {
+    val title = if (company.isNotBlank()) "$sender | $company" else sender
     return ListRowEntity(
         id = id,
-        title = sender,
+        title = title,
         subtitle = message,
         leftIcon = Icons.Default.AccountCircle,
         showLeftIcon = true,
