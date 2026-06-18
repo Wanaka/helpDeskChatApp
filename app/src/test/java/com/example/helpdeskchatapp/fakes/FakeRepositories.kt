@@ -67,6 +67,7 @@ class FakeAdminRepository : AdminRepository {
 class FakeChatRepository : ChatRepository {
     var messages: List<ChatMessageViewEntity> = emptyList()
     var sendMessageResult: Result<String> = Result.success("message-id")
+    var getAdminNameResult: Result<String> = Result.success("Admin")
     val sentMessages = mutableListOf<Message>()
 
     override fun getMessages(conversationId: String): Flow<List<ChatMessageViewEntity>> =
@@ -76,4 +77,6 @@ class FakeChatRepository : ChatRepository {
         sentMessages.add(message)
         return sendMessageResult
     }
+
+    override suspend fun getAdminName(conversationId: String): Result<String> = getAdminNameResult
 }
