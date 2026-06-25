@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -26,6 +28,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.helpdeskchatapp.domain.model.consumer.Message
 import com.example.helpdeskchatapp.domain.viewmodel.ChatViewModel
 import com.example.helpdeskchatapp.theme.MyApplicationTheme
+import com.example.helpdeskchatapp.ui.common.ScrollToBottomOnChange
 import com.example.helpdeskchatapp.ui.common.StateHandler
 import com.example.helpdeskchatapp.ui.common.components.CommonButton
 import com.example.helpdeskchatapp.ui.common.components.CommonInputTextField
@@ -80,17 +83,14 @@ fun ChatScreen(
 ) {
     var message by remember { mutableStateOf("") }
     val listState = rememberLazyListState()
-
-    LaunchedEffect(messages.size) {
-        if (messages.isNotEmpty()) {
-            listState.animateScrollToItem(messages.size - 1)
-        }
-    }
+    listState.ScrollToBottomOnChange(messages.size)
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues)
+            .consumeWindowInsets(paddingValues)
+            .imePadding()
     ) {
         CommonLazyColumn(
             items = messages,
