@@ -73,7 +73,10 @@ fun AdminRoute(
             AdminScreen(
                 chats = chats,
                 paddingValues = paddingValues,
-                onNavigateToChat = onNavigateToChat,
+                onNavigateToChat = { conversationId ->
+                    viewModel.markChatOpened(conversationId)
+                    onNavigateToChat(conversationId)
+                },
                 onLogout = viewModel::logout
             )
 

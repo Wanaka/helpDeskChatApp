@@ -68,7 +68,10 @@ class FirestoreChatRepository @Inject constructor(
                     "timestamp" to now
                 )
             ).await()
-            conversationRef.update("lastMessage", message.message).await()
+            conversationRef.update(mapOf(
+                "lastMessage" to message.message,
+                "lastMessageTimestamp" to now
+            )).await()
             Result.success("Message sent successfully")
         } catch (e: Exception) {
             Result.failure(Exception("Message not sent"))

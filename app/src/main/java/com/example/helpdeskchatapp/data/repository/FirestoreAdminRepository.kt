@@ -35,7 +35,8 @@ class FirestoreAdminRepository @Inject constructor(
                         company = doc.getString("senderCompany") ?: "",
                         message = doc.getString("lastMessage") ?: "New chat started",
                         adminName = doc.getString("adminName") ?: "",
-                        userId = doc.getString("userId") ?: ""
+                        userId = doc.getString("userId") ?: "",
+                        lastMessageTimestamp = doc.getTimestamp("lastMessageTimestamp")?.toDate()?.time
                     ).toDomain()
                 } ?: emptyList()
                 trySend(chats)

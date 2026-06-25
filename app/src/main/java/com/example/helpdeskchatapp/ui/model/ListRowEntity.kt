@@ -11,4 +11,5 @@ data class ListRowEntity(
     val rightIcon: ImageVector? = null,
     val showRightIcon: Boolean = false,
     val isChatLayout: Boolean = false,
+    val showBadge: Boolean = false
 )

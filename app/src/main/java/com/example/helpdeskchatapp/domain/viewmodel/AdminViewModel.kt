@@ -1,12 +1,15 @@
 package com.example.helpdeskchatapp.domain.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.example.helpdeskchatapp.domain.mapper.toListRowEntity
+import com.example.helpdeskchatapp.domain.mapper.withBadges
 import com.example.helpdeskchatapp.domain.model.consumer.UserName
+import com.example.helpdeskchatapp.domain.model.producer.ChatViewEntity
 import com.example.helpdeskchatapp.domain.usecase.GetCurrentUserUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetUserNameUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetChatsUseCase
 import com.example.helpdeskchatapp.domain.usecase.LogoutUseCase
+import com.example.helpdeskchatapp.domain.usecase.GetLocalReadTimestampUseCase
+import com.example.helpdeskchatapp.ui.common.ActiveChatTracker
 import com.example.helpdeskchatapp.domain.usecase.UpdateUserNameUseCase
 import com.example.helpdeskchatapp.ui.common.UiState
 import com.example.helpdeskchatapp.ui.model.ListRowEntity
@@ -24,7 +27,8 @@ class AdminViewModel @Inject constructor(
     private val logoutUseCase: LogoutUseCase,
     private val getUserNameUseCase: GetUserNameUseCase,
     private val updateUserNameUseCase: UpdateUserNameUseCase,
-    private val getCurrentUserUseCase: GetCurrentUserUseCase
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val getLocalReadTimestampUseCase: GetLocalReadTimestampUseCase
 ) : BaseViewModel() {
 
     private val _chats = MutableStateFlow<List<ListRowEntity>>(emptyList())
@@ -70,7 +74,13 @@ class AdminViewModel @Inject constructor(
         }
     }
 
-    fun logout() {
+    fun markChatOpened(conversationId: String) {
+        _chats.value = _chats.value.map { entity ->
+            if (entity.id == conversationId) entity.copy(showBadge = false) else entity
+        }
+    }
+
+fun logout() {
         viewModelScope.launch {
             logoutUseCase()
                 .onFailure { _toastEvent.emit("Logout failed: ${it.message}") }
@@ -89,7 +99,10 @@ class AdminViewModel @Inject constructor(
             _adminId.value = resolvedAdminId
             try {
                 getChatsUseCase(resolvedAdminId).collect { chats ->
-                    _chats.value = chats.map { it.toListRowEntity() }
+                    _chats.value = chats.withBadges(
+                        activeConversationId = ActiveChatTracker.currentConversationId,
+                        getLastRead = getLocalReadTimestampUseCase::invoke
+                    )
                     if (_uiState.value is UiState.Loading) {
                         _uiState.value = UiState.Success
                     }
