@@ -62,6 +62,10 @@ Pick the base class by data direction:
 | `UseCase<P, R>` | yes | yes | `suspend operator fun invoke(params: P): R` |
 | `ProducerUseCase<R>` | no | yes | `suspend operator fun invoke(): R` |
 | `ConsumerUseCase<P>` | yes | Unit | `suspend operator fun invoke(params: P)` |
+| `ActionUseCase` | no | Unit | `suspend operator fun invoke()` |
+| `FlowUseCase<P, R>` | yes | `Flow<R>` | `operator fun invoke(params: P): Flow<R>` |
+
+**`ActionUseCase` vs `ProducerUseCase<Result<Unit>>`**: use `ActionUseCase` only for true fire-and-forget operations that genuinely cannot fail (e.g. clearing an in-memory cache). If the operation wraps a Firebase/network call that can fail and the caller needs to react (show a toast, redirect), use `ProducerUseCase<Result<Unit>>` so the failure can propagate. `LogoutUseCase` and `PostAuthSetupUseCase` are correct examples of this.
 
 Use cases are thin — validate input and delegate to a repository interface. No Firebase SDK imports inside use cases.
 

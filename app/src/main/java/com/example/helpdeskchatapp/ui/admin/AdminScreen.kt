@@ -50,6 +50,10 @@ fun AdminRoute(
         }
     }
 
+    LaunchedEffect(viewModel) {
+        viewModel.logoutEvent.collect { onLogout() }
+    }
+
     if (showNameOverlay) {
         NameEntryDialog(
             onConfirm = viewModel::updateName
@@ -70,9 +74,7 @@ fun AdminRoute(
                 chats = chats,
                 paddingValues = paddingValues,
                 onNavigateToChat = onNavigateToChat,
-                onLogout = {
-                    viewModel.logout(onLogout)
-                }
+                onLogout = viewModel::logout
             )
 
         },
