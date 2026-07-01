@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 val AndroidGreen = Color(0xFF2AA065)
 val AndroidGreenDark = Color(0xFF1F7A4D)
 val AndroidGreenContainer = Color(0xFFD5EDE3)
+val AndroidGreenMascot = Color(0xFF3DDC84)
 
 val OnGreen = Color(0xFFFFFFFF)
 
