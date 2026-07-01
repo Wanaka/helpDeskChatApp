@@ -8,9 +8,11 @@ import com.example.helpdeskchatapp.domain.usecase.GetChatMessagesUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetCurrentUserUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetUserNameUseCase
 import com.example.helpdeskchatapp.domain.usecase.IsAnonymousUseCase
+import com.example.helpdeskchatapp.domain.usecase.SaveLocalReadTimestampUseCase
 import com.example.helpdeskchatapp.domain.usecase.SendMessageUseCase
 import com.example.helpdeskchatapp.fakes.FakeAdminRepository
 import com.example.helpdeskchatapp.fakes.FakeChatRepository
+import com.example.helpdeskchatapp.fakes.FakeReadTimestampRepository
 import com.example.helpdeskchatapp.fakes.FakeUserRepository
 import com.example.helpdeskchatapp.util.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,6 +30,7 @@ class ChatViewModelTest {
     private val chatRepository = FakeChatRepository()
     private val userRepository = FakeUserRepository()
     private val adminRepository = FakeAdminRepository()
+    private val timestampRepository = FakeReadTimestampRepository()
 
     private fun viewModel() = ChatViewModel(
         GetChatMessagesUseCase(chatRepository),
@@ -35,7 +38,8 @@ class ChatViewModelTest {
         IsAnonymousUseCase(userRepository),
         GetUserNameUseCase(adminRepository),
         GetAdminNameUseCase(chatRepository),
-        GetCurrentUserUseCase(userRepository)
+        GetCurrentUserUseCase(userRepository),
+        SaveLocalReadTimestampUseCase(timestampRepository)
     )
 
     @Test

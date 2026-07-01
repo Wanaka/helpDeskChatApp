@@ -5,10 +5,12 @@ import com.example.helpdeskchatapp.domain.model.consumer.UserName
 import com.example.helpdeskchatapp.domain.model.producer.UserNameViewEntity
 import com.example.helpdeskchatapp.domain.usecase.GetChatsUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetCurrentUserUseCase
+import com.example.helpdeskchatapp.domain.usecase.GetLocalReadTimestampUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetUserNameUseCase
 import com.example.helpdeskchatapp.domain.usecase.LogoutUseCase
 import com.example.helpdeskchatapp.domain.usecase.UpdateUserNameUseCase
 import com.example.helpdeskchatapp.fakes.FakeAdminRepository
+import com.example.helpdeskchatapp.fakes.FakeReadTimestampRepository
 import com.example.helpdeskchatapp.fakes.FakeUserRepository
 import com.example.helpdeskchatapp.util.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,6 +29,7 @@ class AdminViewModelTest {
 
     private val adminRepository = FakeAdminRepository()
     private val userRepository = FakeUserRepository()
+    private val timestampRepository = FakeReadTimestampRepository()
 
     // init {} runs checkAdminName() + loadData(); configure fakes before constructing.
     private fun viewModel(): AdminViewModel {
@@ -37,7 +40,8 @@ class AdminViewModelTest {
             LogoutUseCase(userRepository),
             GetUserNameUseCase(adminRepository),
             UpdateUserNameUseCase(userRepository),
-            GetCurrentUserUseCase(userRepository)
+            GetCurrentUserUseCase(userRepository),
+            GetLocalReadTimestampUseCase(timestampRepository)
         )
     }
 
@@ -103,16 +107,17 @@ class AdminViewModelTest {
         }
 
     @Test
-    fun `logout_invokesUseCaseAndCallback`() =
+    fun `logout_invokesUseCaseAndEmitsLogoutEvent`() =
         runTest(mainDispatcherRule.testDispatcher) {
             adminRepository.getUserNameResult =
                 Result.success(UserNameViewEntity(name = "Bob", company = "Acme"))
             val vm = viewModel()
-            var calledBack = false
 
-            vm.logout { calledBack = true }
-
+            vm.logoutEvent.test {
+                vm.logout()
+                assertEquals(Unit, awaitItem())
+                cancelAndConsumeRemainingEvents()
+            }
             assertTrue(userRepository.logoutCalled)
-            assertTrue(calledBack)
         }
 }

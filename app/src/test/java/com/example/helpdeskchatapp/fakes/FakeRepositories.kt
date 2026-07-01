@@ -2,6 +2,7 @@ package com.example.helpdeskchatapp.fakes
 
 import com.example.helpdeskchatapp.data.interfaces.AdminRepository
 import com.example.helpdeskchatapp.data.interfaces.ChatRepository
+import com.example.helpdeskchatapp.data.interfaces.ReadTimestampRepository
 import com.example.helpdeskchatapp.data.interfaces.UserRepository
 import com.example.helpdeskchatapp.domain.model.consumer.Login
 import com.example.helpdeskchatapp.domain.model.consumer.Message
@@ -79,4 +80,16 @@ class FakeChatRepository : ChatRepository {
     }
 
     override suspend fun getAdminName(conversationId: String): Result<String> = getAdminNameResult
+}
+
+class FakeReadTimestampRepository : ReadTimestampRepository {
+    private val timestamps = mutableMapOf<String, Long>()
+    var fixedTimestamp: Long? = null  // override what getLastRead returns when set
+
+    override fun getLastRead(conversationId: String): Long? =
+        fixedTimestamp ?: timestamps[conversationId]
+
+    override fun saveLastRead(conversationId: String) {
+        timestamps[conversationId] = System.currentTimeMillis()
+    }
 }
