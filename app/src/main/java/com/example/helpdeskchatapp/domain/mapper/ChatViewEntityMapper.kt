@@ -2,7 +2,6 @@ package com.example.helpdeskchatapp.domain.mapper
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.AccountCircle
 import com.example.helpdeskchatapp.domain.model.producer.ChatViewEntity
 import com.example.helpdeskchatapp.ui.model.ListRowEntity
 
@@ -20,13 +19,12 @@ fun ChatViewEntity.hasUnreadBadge(activeConversationId: String?, lastRead: Long?
             (lastRead == null || lastMessageTimestamp > lastRead)
 
 private fun ChatViewEntity.toListRowEntity(hasUnreadMessage: Boolean = false): ListRowEntity {
-    val title = if (company.isNotBlank()) "$sender | $company" else sender
-    val preview = message.take(40).let { if (message.length > 40) "$it…" else it }
+    val lastMessage = message.take(40).let { if (message.length > 40) "$it…" else it }
     return ListRowEntity(
         id = id,
-        title = title,
-        subtitle = preview,
-        leftIcon = Icons.Default.AccountCircle,
+        title = sender,
+        secondSubtitle = company.takeIf { it.isNotBlank() },
+        thirdSubtitle = lastMessage,
         rightIcon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
         showBadge = hasUnreadMessage
     )

@@ -14,8 +14,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Color
+import com.example.helpdeskchatapp.theme.Dimens
 import com.example.helpdeskchatapp.ui.model.ListRowEntity
+import com.example.helpdeskchatapp.util.toInitials
 
 @Composable
 fun StandardListRow(
@@ -26,17 +28,12 @@ fun StandardListRow(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(16.dp),
+            .padding(Dimens.dp16),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        leftIcon?.let {
-            Icon(
-                imageVector = it,
-                contentDescription = null,
-                modifier = Modifier.size(40.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
-            Spacer(modifier = Modifier.width(16.dp))
+        title.toInitials()?.let {
+            InitialsAvatar(initials = it)
+            Spacer(modifier = Modifier.width(Dimens.dp16))
         }
 
         Column(modifier = Modifier.weight(1f)) {
@@ -44,10 +41,19 @@ fun StandardListRow(
                 text = title,
                 style = MaterialTheme.typography.titleMedium
             )
-            subtitle?.let {
+            secondSubtitle?.let {
                 Text(
                     text = it,
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.outline,
+                    maxLines = 1
+                )
+            }
+            thirdSubtitle?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.Black,
                     maxLines = 1
                 )
             }
