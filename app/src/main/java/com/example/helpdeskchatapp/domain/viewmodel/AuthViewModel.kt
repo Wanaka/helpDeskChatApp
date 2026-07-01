@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.helpdeskchatapp.domain.model.consumer.Login
 import com.example.helpdeskchatapp.domain.usecase.LoginUseCase
 import com.example.helpdeskchatapp.domain.usecase.PostAuthSetupUseCase
+import com.example.helpdeskchatapp.domain.usecase.RegisterUseCase
 import com.example.helpdeskchatapp.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -12,8 +13,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
+class AuthViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
+    private val registerUseCase: RegisterUseCase,
     private val postAuthSetupUseCase: PostAuthSetupUseCase
 ) : BaseViewModel() {
 
@@ -21,17 +23,18 @@ class LoginViewModel @Inject constructor(
     val navigateToAdmin = _navigateToAdmin.asSharedFlow()
 
     init {
-        loadData()
-    }
-
-    override fun loadData() {
         _uiState.value = UiState.Success
     }
 
-    fun login(params: Login) {
+    fun login(params: Login) = authenticate(params, isRegister = false)
+
+    fun register(params: Login) = authenticate(params, isRegister = true)
+
+    private fun authenticate(params: Login, isRegister: Boolean) {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
-            loginUseCase(params).fold(
+            val result = if (isRegister) registerUseCase(params) else loginUseCase(params)
+            result.fold(
                 onSuccess = {
                     postAuthSetupUseCase()
                         .onFailure { _toastEvent.emit("Failed to update notification token") }
@@ -39,7 +42,7 @@ class LoginViewModel @Inject constructor(
                     _navigateToAdmin.emit(Unit)
                 },
                 onFailure = { error ->
-                    _uiState.value = UiState.Error(error.message ?: "Login failed")
+                    _uiState.value = UiState.Error(error.message ?: if (isRegister) "Registration failed" else "Login failed")
                 }
             )
         }

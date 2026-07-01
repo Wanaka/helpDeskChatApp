@@ -22,7 +22,7 @@ com.example.helpdeskchatapp
 │   └── viewmodel/         # @HiltViewModel; extend BaseViewModel
 ├── ui/
 │   ├── <feature>/         # One folder per screen: <Feature>Screen.kt
-│   ├── common/            # Shared composables, UiState, StateHandler, ToastState
+│   ├── common/            # Shared composables, UiState, StateHandler
 │   │   └── components/    # Reusable Compose components (used by 2+ screens)
 │   └── model/             # UI-layer state models (AdminState, ChatState, ListRowEntity)
 ├── di/

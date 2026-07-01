@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.helpdeskchatapp.domain.model.consumer.Login
-import com.example.helpdeskchatapp.domain.viewmodel.LoginViewModel
+import com.example.helpdeskchatapp.domain.viewmodel.AuthViewModel
 import com.example.helpdeskchatapp.theme.MyApplicationTheme
 import com.example.helpdeskchatapp.ui.common.StateHandler
 import com.example.helpdeskchatapp.ui.common.components.CommonButton
@@ -32,7 +32,7 @@ import com.example.helpdeskchatapp.ui.common.components.CommonInputTextField
 fun LoginRoute(
     onNavigateToAdmin: () -> Unit,
     onNavigateToRegister: () -> Unit,
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: AuthViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
