@@ -27,9 +27,7 @@ private fun ChatViewEntity.toListRowEntity(hasUnreadMessage: Boolean = false): L
         title = title,
         subtitle = preview,
         leftIcon = Icons.Default.AccountCircle,
-        showLeftIcon = true,
         rightIcon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-        showRightIcon = true,
         showBadge = hasUnreadMessage
     )
 }

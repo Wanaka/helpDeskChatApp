@@ -7,9 +7,8 @@ data class ListRowEntity(
     val title: String,
     val subtitle: String? = null,
     val leftIcon: ImageVector? = null,
-    val showLeftIcon: Boolean = false,
     val rightIcon: ImageVector? = null,
-    val showRightIcon: Boolean = false,
     val isChatLayout: Boolean = false,
+    val isFromMe: Boolean = false,
     val showBadge: Boolean = false
 )

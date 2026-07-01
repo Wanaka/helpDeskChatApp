@@ -29,9 +29,9 @@ fun StandardListRow(
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (showLeftIcon && leftIcon != null) {
+        leftIcon?.let {
             Icon(
-                imageVector = leftIcon,
+                imageVector = it,
                 contentDescription = null,
                 modifier = Modifier.size(40.dp),
                 tint = MaterialTheme.colorScheme.primary
@@ -55,9 +55,9 @@ fun StandardListRow(
 
         if (showBadge) UnreadBadge()
 
-        if (showRightIcon && rightIcon != null) {
+        rightIcon?.let {
             Icon(
-                imageVector = rightIcon,
+                imageVector = it,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.outline
             )

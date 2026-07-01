@@ -9,8 +9,7 @@ fun ChatMessageViewEntity.toListRowEntity(currentUserId: String): ListRowEntity 
     return ListRowEntity(
         id = id,
         title = text,
-        showLeftIcon = !isFromMe,
-        showRightIcon = isFromMe,
         isChatLayout = true,
+        isFromMe = isFromMe,
     )
 }
