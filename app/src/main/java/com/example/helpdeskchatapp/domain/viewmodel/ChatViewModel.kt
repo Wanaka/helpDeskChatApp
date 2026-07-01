@@ -1,7 +1,7 @@
 package com.example.helpdeskchatapp.domain.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.example.helpdeskchatapp.domain.mapper.chatDetailsMapper
+import com.example.helpdeskchatapp.domain.mapper.toListRowEntity
 import com.example.helpdeskchatapp.domain.model.consumer.Message
 import com.example.helpdeskchatapp.domain.model.producer.UserNameViewEntity
 import com.example.helpdeskchatapp.domain.usecase.GetAdminNameUseCase
@@ -69,7 +69,7 @@ class ChatViewModel @Inject constructor(
             getChatMessagesUseCase(currentConversationId)
                 .collect { messages ->
                     _messages.value = messages.map {
-                        it.chatDetailsMapper(currentUserId = currentUserId)
+                        it.toListRowEntity(currentUserId = currentUserId)
                     }
                     if (_uiState.value is UiState.Loading) {
                         _uiState.value = UiState.Success
