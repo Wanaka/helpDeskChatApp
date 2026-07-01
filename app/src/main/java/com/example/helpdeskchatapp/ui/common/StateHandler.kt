@@ -1,7 +1,9 @@
 package com.example.helpdeskchatapp.ui.common
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -13,6 +15,7 @@ fun StateHandler(
     uiState: UiState,
     title: String,
     subtitle: String? = null,
+    avatarInitials: String? = null,
     canNavigateBack: Boolean = false,
     onBackClick: () -> Unit = {},
     onRetry: (() -> Unit)? = null,
@@ -20,55 +23,68 @@ fun StateHandler(
     content: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.primary,
         topBar = {
             NavToolbar(
                 title = title,
                 subtitle = subtitle,
+                avatarInitials = avatarInitials,
                 canNavigateBack = canNavigateBack,
                 onBackClick = onBackClick,
                 actions = actions
             )
         }
     ) { paddingValues ->
-        AnimatedContent(
-            targetState = uiState,
-            label = "state_transition",
-            modifier = Modifier.fillMaxSize()
-        ) { state ->
-            when (state) {
-                is UiState.Loading -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                }
-
-                is UiState.Error -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = paddingValues.calculateTopPadding()),
+            shape = RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp),
+            color = MaterialTheme.colorScheme.background,
+            border = BorderStroke(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+        ) {
+            AnimatedContent(
+                targetState = uiState,
+                modifier = Modifier.fillMaxSize()
+            ) { state ->
+                when (state) {
+                    is UiState.Loading -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
                         ) {
-                            Text(
-                                text = state.message,
-                                color = MaterialTheme.colorScheme.error
-                            )
-                            onRetry?.let {
-                                Button(onClick = it) {
-                                    Text("Retry")
+                            CircularProgressIndicator()
+                        }
+                    }
+
+                    is UiState.Error -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                Text(
+                                    text = state.message,
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                                onRetry?.let {
+                                    Button(onClick = it) {
+                                        Text("Retry")
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
-                UiState.Success -> {
-                    content(paddingValues)
+                    UiState.Success -> {
+                        content(PaddingValues(bottom =  paddingValues.calculateBottomPadding()))
+                    }
                 }
             }
         }

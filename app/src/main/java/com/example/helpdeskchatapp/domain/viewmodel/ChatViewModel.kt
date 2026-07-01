@@ -1,7 +1,7 @@
 package com.example.helpdeskchatapp.domain.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.example.helpdeskchatapp.domain.mapper.chatDetailsMapper
+import com.example.helpdeskchatapp.domain.mapper.toListRowEntity
 import com.example.helpdeskchatapp.domain.model.consumer.Message
 import com.example.helpdeskchatapp.domain.model.producer.UserNameViewEntity
 import com.example.helpdeskchatapp.domain.usecase.GetAdminNameUseCase
@@ -9,10 +9,14 @@ import com.example.helpdeskchatapp.domain.usecase.GetChatMessagesUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetCurrentUserUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetUserNameUseCase
 import com.example.helpdeskchatapp.domain.usecase.IsAnonymousUseCase
+import com.example.helpdeskchatapp.domain.usecase.SaveLocalReadTimestampUseCase
 import com.example.helpdeskchatapp.domain.usecase.SendMessageUseCase
+import com.example.helpdeskchatapp.ui.common.ActiveChatTracker
 import com.example.helpdeskchatapp.ui.common.UiState
 import com.example.helpdeskchatapp.ui.model.ListRowEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -25,7 +29,8 @@ class ChatViewModel @Inject constructor(
     private val isAnonymousUseCase: IsAnonymousUseCase,
     private val getUserNameUseCase: GetUserNameUseCase,
     private val getAdminNameUseCase: GetAdminNameUseCase,
-    private val getCurrentUserUseCase: GetCurrentUserUseCase
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val saveLocalReadTimestampUseCase: SaveLocalReadTimestampUseCase
 ) : BaseViewModel() {
 
     private var currentConversationId: String = ""
@@ -38,8 +43,17 @@ class ChatViewModel @Inject constructor(
         MutableStateFlow(UserNameViewEntity(name = "", company = ""))
     val chatTitle = _chatTitle.asStateFlow()
 
+    override fun onCleared() {
+        super.onCleared()
+        ActiveChatTracker.currentConversationId = null
+        CoroutineScope(Dispatchers.IO).launch {
+            saveLocalReadTimestampUseCase(currentConversationId)
+        }
+    }
+
     fun initConversation(id: String) {
         currentConversationId = id
+        ActiveChatTracker.currentConversationId = id
         viewModelScope.launch {
             currentUserId = getCurrentUserUseCase() ?: ""
             loadData()
@@ -55,9 +69,7 @@ class ChatViewModel @Inject constructor(
             getChatMessagesUseCase(currentConversationId)
                 .collect { messages ->
                     _messages.value = messages.map {
-                        it.chatDetailsMapper(
-                            currentUserId = currentUserId
-                        )
+                        it.toListRowEntity(currentUserId = currentUserId)
                     }
                     if (_uiState.value is UiState.Loading) {
                         _uiState.value = UiState.Success

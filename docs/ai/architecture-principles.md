@@ -19,10 +19,10 @@ com.example.helpdeskchatapp
 │   │   └── producer/      # Use-case OUTPUT models (view entities) — e.g. ChatViewEntity
 │   ├── mapper/            # Producer entity → UI ListRowEntity mappers
 │   ├── usecase/           # One responsibility each; delegate to repository interfaces
-│   └── viewmodel/         # @HiltViewModel; extend BaseViewModel<T>
+│   └── viewmodel/         # @HiltViewModel; extend BaseViewModel
 ├── ui/
 │   ├── <feature>/         # One folder per screen: <Feature>Screen.kt
-│   ├── common/            # Shared composables, UiState, StateHandler, ToastState
+│   ├── common/            # Shared composables, UiState, StateHandler
 │   │   └── components/    # Reusable Compose components (used by 2+ screens)
 │   └── model/             # UI-layer state models (AdminState, ChatState, ListRowEntity)
 ├── di/
@@ -62,6 +62,10 @@ Pick the base class by data direction:
 | `UseCase<P, R>` | yes | yes | `suspend operator fun invoke(params: P): R` |
 | `ProducerUseCase<R>` | no | yes | `suspend operator fun invoke(): R` |
 | `ConsumerUseCase<P>` | yes | Unit | `suspend operator fun invoke(params: P)` |
+| `ActionUseCase` | no | Unit | `suspend operator fun invoke()` |
+| `FlowUseCase<P, R>` | yes | `Flow<R>` | `operator fun invoke(params: P): Flow<R>` |
+
+**`ActionUseCase` vs `ProducerUseCase<Result<Unit>>`**: use `ActionUseCase` only for true fire-and-forget operations that genuinely cannot fail (e.g. clearing an in-memory cache). If the operation wraps a Firebase/network call that can fail and the caller needs to react (show a toast, redirect), use `ProducerUseCase<Result<Unit>>` so the failure can propagate. `LogoutUseCase` and `PostAuthSetupUseCase` are correct examples of this.
 
 Use cases are thin — validate input and delegate to a repository interface. No Firebase SDK imports inside use cases.
 
@@ -70,7 +74,8 @@ Use cases are thin — validate input and delegate to a repository interface. No
 ## ViewModel conventions
 
 - `@HiltViewModel`, constructor-inject use cases only.
-- Extend `BaseViewModel<T>` — gives `_uiState: MutableStateFlow<UiState<T>>` and `_toastEvent`.
+- Extend `BaseViewModel` — gives `_uiState: MutableStateFlow<UiState>` and `_toastEvent: MutableSharedFlow<String>`.
+- `UiState` is a non-generic sealed class: `Loading`, `Success`, `Error(message: String)`. Screen-specific data is exposed as **separate `StateFlow` fields** on the ViewModel (e.g. `val messages`, `val chatTitle`), never carried inside `UiState`.
 - Expose state as immutable `StateFlow` (`.asStateFlow()`).
 - **Navigation is a one-shot event, never persistent state.** Use `MutableSharedFlow<Unit>(extraBufferCapacity = 1, replay = 0)`. Do not model navigation as a boolean in `UiState` — the ViewModel survives recomposition and will re-fire it.
 - Run all work in `viewModelScope.launch`.
@@ -138,7 +143,7 @@ Run through this before marking any task complete:
 - [ ] New file is in the correct layer package (`data` / `domain` / `ui` / `di`).
 - [ ] Dependency direction is inward — no layer imports from the layer above it.
 - [ ] UseCase extends the correct base class for its data direction.
-- [ ] ViewModel extends `BaseViewModel<T>`, uses `StateFlow` for state, `SharedFlow` for one-shot events.
+- [ ] ViewModel extends `BaseViewModel`, exposes `_uiState: MutableStateFlow<UiState>` for loading/error/success and separate `StateFlow` fields for screen data. Uses `SharedFlow` for one-shot navigation events.
 - [ ] Navigation is a `SharedFlow` event — not a boolean in `UiState`.
 - [ ] Screen is split into `<Feature>Route` (stateful) and `<Feature>Screen` (stateless + preview).
 - [ ] Repository returns `Result<T>` — no thrown exceptions crossing layer boundaries.

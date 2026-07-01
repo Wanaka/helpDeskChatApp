@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">helpDeskChatApp</string>
+
+    <!-- QR Code Dialog -->
+    <string name="qr_dialog_name">Jonas Haag</string>
+    <string name="qr_dialog_title">Meet your next Android Developer</string>
+    <string name="qr_dialog_subtitle">Scan, install &amp; start a chat with me instantly</string>
+    <string name="qr_dialog_content_description">QR Code</string>
 </resources>

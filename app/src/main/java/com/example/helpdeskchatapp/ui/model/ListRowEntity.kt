@@ -5,10 +5,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 data class ListRowEntity(
     val id: String,
     val title: String,
-    val subtitle: String? = null,
+    val secondSubtitle: String? = null,
+    val thirdSubtitle: String? = null,
     val leftIcon: ImageVector? = null,
-    val showLeftIcon: Boolean = false,
     val rightIcon: ImageVector? = null,
-    val showRightIcon: Boolean = false,
     val isChatLayout: Boolean = false,
+    val isFromMe: Boolean = false,
+    val showBadge: Boolean = false
 )

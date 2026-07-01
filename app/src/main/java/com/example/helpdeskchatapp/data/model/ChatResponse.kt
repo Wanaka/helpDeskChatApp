@@ -6,5 +6,6 @@ data class ChatResponse(
     val message: String,
     val adminName: String,
     val company: String,
-    val userId: String
+    val userId: String,
+    val lastMessageTimestamp: Long? = null
 )

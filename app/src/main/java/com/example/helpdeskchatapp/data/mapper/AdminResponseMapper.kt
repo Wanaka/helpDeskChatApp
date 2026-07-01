@@ -10,6 +10,7 @@ fun ChatResponse.toDomain(): ChatViewEntity {
         company = company,
         message = message,
         adminName = adminName,
-        userId = userId
+        userId = userId,
+        lastMessageTimestamp = lastMessageTimestamp
     )
 }

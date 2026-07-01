@@ -10,6 +10,7 @@ import androidx.core.app.NotificationCompat
 import com.example.helpdeskchatapp.MainActivity
 import com.example.helpdeskchatapp.R
 import com.example.helpdeskchatapp.domain.usecase.UpdateFcmTokenUseCase
+import com.example.helpdeskchatapp.ui.common.ActiveChatTracker
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,6 +30,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
+
+        val conversationId = remoteMessage.data["conversationId"]
+        if (conversationId != null && conversationId == ActiveChatTracker.currentConversationId) return
 
         remoteMessage.notification?.let {
             showNotification(it.title, it.body)

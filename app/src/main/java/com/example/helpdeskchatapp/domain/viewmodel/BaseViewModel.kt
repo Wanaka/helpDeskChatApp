@@ -1,7 +1,6 @@
 package com.example.helpdeskchatapp.domain.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.example.helpdeskchatapp.ui.common.ToastState
 import com.example.helpdeskchatapp.ui.common.UiState
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,5 +17,5 @@ abstract class BaseViewModel : ViewModel() {
 
 // Trigger it
 
-    abstract fun loadData()
+    open fun loadData() {}
 }

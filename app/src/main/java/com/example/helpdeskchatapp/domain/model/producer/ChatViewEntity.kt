@@ -6,5 +6,6 @@ data class ChatViewEntity(
     val company: String,
     val message: String,
     val adminName: String,
-    val userId: String
+    val userId: String,
+    val lastMessageTimestamp: Long? = null
 )
