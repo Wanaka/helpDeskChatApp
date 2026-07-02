@@ -1,7 +1,7 @@
-package com.example.helpdeskchatapp.data.repository
+package haag.your.next.developer.data.repository
 
 import android.content.Context
-import com.example.helpdeskchatapp.data.interfaces.ReadTimestampRepository
+import haag.your.next.developer.data.interfaces.ReadTimestampRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import androidx.core.content.edit

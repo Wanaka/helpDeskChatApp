@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.ui.common
+package haag.your.next.developer.ui.common
 
 // UiState is a pure loading/error/success signal — it carries no data payload.
 // Screen data flows through dedicated StateFlow fields on each ViewModel.

@@ -1,7 +1,7 @@
-package com.example.helpdeskchatapp.data.interfaces
+package haag.your.next.developer.data.interfaces
 
-import com.example.helpdeskchatapp.domain.model.producer.ChatMessageViewEntity
-import com.example.helpdeskchatapp.domain.model.consumer.Message
+import haag.your.next.developer.domain.model.producer.ChatMessageViewEntity
+import haag.your.next.developer.domain.model.consumer.Message
 import kotlinx.coroutines.flow.Flow
 
 interface ChatRepository {

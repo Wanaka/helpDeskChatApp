@@ -1,13 +1,13 @@
-package com.example.helpdeskchatapp.ui.login
+package haag.your.next.developer.ui.login
 
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -16,17 +16,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.helpdeskchatapp.domain.model.consumer.Login
-import com.example.helpdeskchatapp.domain.viewmodel.AuthViewModel
-import com.example.helpdeskchatapp.theme.MyApplicationTheme
-import com.example.helpdeskchatapp.ui.common.StateHandler
-import com.example.helpdeskchatapp.ui.common.components.CommonButton
-import com.example.helpdeskchatapp.ui.common.components.CommonHeader
-import com.example.helpdeskchatapp.ui.common.components.CommonInputTextField
+import haag.your.next.developer.R
+import haag.your.next.developer.domain.model.consumer.Login
+import haag.your.next.developer.domain.viewmodel.AuthViewModel
+import haag.your.next.developer.theme.Dimens
+import haag.your.next.developer.theme.MyApplicationTheme
+import haag.your.next.developer.ui.common.AuthScaffold
+import haag.your.next.developer.ui.common.components.AccountLinkRow
+import haag.your.next.developer.ui.common.components.CommonInputTextField
+import haag.your.next.developer.ui.common.components.CommonTextLabel
+import haag.your.next.developer.ui.common.components.PrimaryButton
+import haag.your.next.developer.ui.common.components.TextLabelStyle
 
 @Composable
 fun LoginRoute(
@@ -34,29 +37,21 @@ fun LoginRoute(
     onNavigateToRegister: () -> Unit,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(viewModel) {
         viewModel.navigateToAdmin.collect { onNavigateToAdmin() }
     }
 
-    StateHandler(
-        uiState = uiState,
-        title = "Helpdesk Chat App",
-        onRetry = { viewModel.loadData() },
-        content = { paddingValues ->
-            LoginScreen(
-                paddingValues = paddingValues,
-                onLogin = viewModel::login,
-                onNavigateToRegister = onNavigateToRegister
-            )
-        },
-    )
+    AuthScaffold(heroTitle = stringResource(R.string.login_hero_title)) {
+        LoginScreen(
+            onLogin = viewModel::login,
+            onNavigateToRegister = onNavigateToRegister
+        )
+    }
 }
 
 @Composable
 fun LoginScreen(
-    paddingValues: PaddingValues,
     onLogin: (Login) -> Unit,
     onNavigateToRegister: () -> Unit
 ) {
@@ -66,45 +61,48 @@ fun LoginScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(paddingValues)
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .verticalScroll(rememberScrollState())
+            .imePadding()
+            .padding(horizontal = Dimens.dp24, vertical = Dimens.dp32),
+        horizontalAlignment = Alignment.Start
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
+        CommonTextLabel(text = stringResource(R.string.login_title), style = TextLabelStyle.Title)
 
-        CommonHeader("Login as Admin")
+        Spacer(modifier = Modifier.height(Dimens.dp4))
 
-        Spacer(modifier = Modifier.height(20.dp))
+        CommonTextLabel(text = stringResource(R.string.login_subtitle), style = TextLabelStyle.Subtitle)
+
+        Spacer(modifier = Modifier.height(Dimens.dp32))
 
         CommonInputTextField(
             value = email,
             onValueChange = { email = it },
-            label = "Email",
+            label = stringResource(R.string.login_email_label),
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(Dimens.dp16))
 
         CommonInputTextField(
             value = password,
             onValueChange = { password = it },
-            label = "Password",
+            label = stringResource(R.string.login_password_label),
             isPasswordField = true
         )
 
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(Dimens.dp40))
 
-        CommonButton(
-            text = "Login",
+        PrimaryButton(
+            text = stringResource(R.string.login_button),
             onClick = { onLogin(Login(email.trim(), password.trim())) }
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(Dimens.dp16))
 
-        TextButton(
-            onClick = onNavigateToRegister
-        ) {
-            Text("Don't have an account? Register")
-        }
+        AccountLinkRow(
+            label = stringResource(R.string.login_no_account),
+            actionText = stringResource(R.string.login_register_action),
+            onAction = onNavigateToRegister
+        )
     }
 }
 
@@ -113,7 +111,6 @@ fun LoginScreen(
 fun LoginScreenPreview() {
     MyApplicationTheme {
         LoginScreen(
-            paddingValues = PaddingValues(0.dp),
             onLogin = {},
             onNavigateToRegister = {}
         )

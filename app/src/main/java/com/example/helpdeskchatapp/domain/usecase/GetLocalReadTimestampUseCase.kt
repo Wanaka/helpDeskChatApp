@@ -1,6 +1,6 @@
-package com.example.helpdeskchatapp.domain.usecase
+package haag.your.next.developer.domain.usecase
 
-import com.example.helpdeskchatapp.data.interfaces.ReadTimestampRepository
+import haag.your.next.developer.data.interfaces.ReadTimestampRepository
 import javax.inject.Inject
 
 class GetLocalReadTimestampUseCase @Inject constructor(

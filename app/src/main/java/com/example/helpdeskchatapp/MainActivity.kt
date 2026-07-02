@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp
+package haag.your.next.developer
 
 import android.Manifest
 import android.content.Intent
@@ -18,8 +18,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
-import com.example.helpdeskchatapp.navigation.AppNavigation
-import com.example.helpdeskchatapp.theme.MyApplicationTheme
+import haag.your.next.developer.navigation.AppNavigation
+import haag.your.next.developer.theme.MyApplicationTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

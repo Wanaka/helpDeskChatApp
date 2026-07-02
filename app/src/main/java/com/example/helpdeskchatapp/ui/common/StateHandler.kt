@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.ui.common
+package haag.your.next.developer.ui.common
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.BorderStroke
@@ -16,6 +16,7 @@ fun StateHandler(
     title: String,
     subtitle: String? = null,
     avatarInitials: String? = null,
+    showAvatar: Boolean = false,
     canNavigateBack: Boolean = false,
     onBackClick: () -> Unit = {},
     onRetry: (() -> Unit)? = null,
@@ -29,6 +30,7 @@ fun StateHandler(
                 title = title,
                 subtitle = subtitle,
                 avatarInitials = avatarInitials,
+                showAvatar = showAvatar,
                 canNavigateBack = canNavigateBack,
                 onBackClick = onBackClick,
                 actions = actions

@@ -1,9 +1,9 @@
-package com.example.helpdeskchatapp.domain.mapper
+package haag.your.next.developer.domain.mapper
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import com.example.helpdeskchatapp.domain.model.producer.ChatViewEntity
-import com.example.helpdeskchatapp.ui.model.ListRowEntity
+import haag.your.next.developer.domain.model.producer.ChatViewEntity
+import haag.your.next.developer.ui.model.ListRowEntity
 
 suspend fun List<ChatViewEntity>.withBadges(
     activeConversationId: String?,

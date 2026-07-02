@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.navigation
+package haag.your.next.developer.navigation
 
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable

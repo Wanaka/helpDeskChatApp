@@ -9,7 +9,7 @@ This document defines how Firebase is used in this project. All agents and devel
 | Property | Value |
 |---|---|
 | Project ID | `helpdeskchatapp` |
-| Package name | `com.example.helpdeskchatapp` |
+| Package name | `haag.your.next.developer` |
 | `google-services.json` location | `app/google-services.json` (committed intentionally) |
 
 This project connects to an **existing** Firebase project shared with an Android app. Do not modify collection names, document schemas, or security rules without coordinating with the Android app team.

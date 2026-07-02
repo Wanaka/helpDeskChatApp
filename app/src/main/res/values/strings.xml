@@ -1,9 +1,40 @@
 <resources>
-    <string name="app_name">helpDeskChatApp</string>
+    <string name="app_name">Jonas Haag - Dev</string>
+
+    <!-- Login Screen -->
+    <string name="login_hero_title">Your next Android Developer</string>
+    <string name="login_title">Welcome Back</string>
+    <string name="login_subtitle">Sign in to your admin account</string>
+    <string name="login_email_label">Email</string>
+    <string name="login_password_label">Password</string>
+    <string name="login_button">Login</string>
+    <string name="login_no_account">Don\'t have an account?</string>
+    <string name="login_register_action">Register</string>
+    <string name="login_app_icon_description">Helpdesk Chat App</string>
+
+    <!-- Register Screen -->
+    <string name="register_title">Create Account</string>
+    <string name="register_subtitle">Register your admin account</string>
+    <string name="register_email_label">Email</string>
+    <string name="register_password_label">Password</string>
+    <string name="register_button">Create Account</string>
+    <string name="register_has_account">Already have an account?</string>
+    <string name="register_login_action">Login</string>
+
+    <!-- Name Entry Dialog -->
+    <string name="name_dialog_anon_hero">Welcome!</string>
+    <string name="name_dialog_admin_hero">One more step</string>
+    <string name="name_dialog_anon_title">Tell us who you are</string>
+    <string name="name_dialog_admin_title">Add your details</string>
+    <string name="name_dialog_anon_subtitle">Enter your name and company to start chatting</string>
+    <string name="name_dialog_admin_subtitle">Enter your name to continue</string>
+    <string name="name_dialog_name_label">Your Name</string>
+    <string name="name_dialog_company_label">Company Name</string>
+    <string name="name_dialog_button">Continue</string>
 
     <!-- QR Code Dialog -->
     <string name="qr_dialog_name">Jonas Haag</string>
     <string name="qr_dialog_title">Meet your next Android Developer</string>
-    <string name="qr_dialog_subtitle">Scan, install &amp; start a chat with me instantly</string>
+    <string name="qr_dialog_subtitle">Scan, install &amp; start chatting with me instantly</string>
     <string name="qr_dialog_content_description">QR Code</string>
 </resources>

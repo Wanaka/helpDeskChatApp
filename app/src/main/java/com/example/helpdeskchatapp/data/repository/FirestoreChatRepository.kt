@@ -1,10 +1,10 @@
-package com.example.helpdeskchatapp.data.repository
+package haag.your.next.developer.data.repository
 
-import com.example.helpdeskchatapp.data.interfaces.ChatRepository
-import com.example.helpdeskchatapp.data.mapper.toDomain
-import com.example.helpdeskchatapp.data.model.ChatMessageResponse
-import com.example.helpdeskchatapp.domain.model.producer.ChatMessageViewEntity
-import com.example.helpdeskchatapp.domain.model.consumer.Message
+import haag.your.next.developer.data.interfaces.ChatRepository
+import haag.your.next.developer.data.mapper.toDomain
+import haag.your.next.developer.data.model.ChatMessageResponse
+import haag.your.next.developer.domain.model.producer.ChatMessageViewEntity
+import haag.your.next.developer.domain.model.consumer.Message
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query

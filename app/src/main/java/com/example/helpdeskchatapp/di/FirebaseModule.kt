@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.di
+package haag.your.next.developer.di
 
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth

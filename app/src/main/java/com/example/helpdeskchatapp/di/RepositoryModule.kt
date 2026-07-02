@@ -1,13 +1,13 @@
-package com.example.helpdeskchatapp.di
+package haag.your.next.developer.di
 
-import com.example.helpdeskchatapp.data.interfaces.AdminRepository
-import com.example.helpdeskchatapp.data.interfaces.ChatRepository
-import com.example.helpdeskchatapp.data.interfaces.ReadTimestampRepository
-import com.example.helpdeskchatapp.data.interfaces.UserRepository
-import com.example.helpdeskchatapp.data.repository.FirestoreAdminRepository
-import com.example.helpdeskchatapp.data.repository.FirestoreChatRepository
-import com.example.helpdeskchatapp.data.repository.FirebaseUserRepository
-import com.example.helpdeskchatapp.data.repository.LocalReadTimestampRepository
+import haag.your.next.developer.data.interfaces.AdminRepository
+import haag.your.next.developer.data.interfaces.ChatRepository
+import haag.your.next.developer.data.interfaces.ReadTimestampRepository
+import haag.your.next.developer.data.interfaces.UserRepository
+import haag.your.next.developer.data.repository.FirestoreAdminRepository
+import haag.your.next.developer.data.repository.FirestoreChatRepository
+import haag.your.next.developer.data.repository.FirebaseUserRepository
+import haag.your.next.developer.data.repository.LocalReadTimestampRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

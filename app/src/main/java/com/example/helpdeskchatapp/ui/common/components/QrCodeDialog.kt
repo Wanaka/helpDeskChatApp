@@ -1,6 +1,7 @@
-package com.example.helpdeskchatapp.ui.common.components
+package haag.your.next.developer.ui.common.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -17,15 +18,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import com.example.helpdeskchatapp.R
-import com.example.helpdeskchatapp.theme.AndroidGreenMascot
-import com.example.helpdeskchatapp.theme.Dimens
-import com.example.helpdeskchatapp.util.Deeplink
-import com.example.helpdeskchatapp.ui.common.QRCodeGenerator
+import haag.your.next.developer.R
+import haag.your.next.developer.theme.AndroidGreen
+import haag.your.next.developer.theme.Dimens
+import haag.your.next.developer.util.Deeplink
+import haag.your.next.developer.ui.common.QRCodeGenerator
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,11 +48,13 @@ fun QrCodeDialog(
     BasicAlertDialog(onDismissRequest = onDismiss) {
         Surface(
             shape = RoundedCornerShape(Dimens.dp16),
-            color = AndroidGreenMascot,
+            color = Color.White,
             tonalElevation = Dimens.dp8
         ) {
             Column(
-                modifier = Modifier.padding(Dimens.dp16),
+                modifier = Modifier
+                    .background(AndroidGreen.copy(alpha = 0.7f))
+                    .padding(Dimens.dp16),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(

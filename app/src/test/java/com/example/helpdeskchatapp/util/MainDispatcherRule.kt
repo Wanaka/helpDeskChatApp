@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.util
+package haag.your.next.developer.util
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

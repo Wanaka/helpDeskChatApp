@@ -7,7 +7,7 @@ These principles define the structural law of the codebase. Every agent and ever
 ## Package structure
 
 ```
-com.example.helpdeskchatapp
+haag.your.next.developer
 ├── data/
 │   ├── interfaces/        # Repository interfaces — domain depends on these, never on impls
 │   ├── model/             # Firestore response DTOs (data-layer only)

@@ -1,6 +1,6 @@
-package com.example.helpdeskchatapp.domain.usecase
+package haag.your.next.developer.domain.usecase
 
-import com.example.helpdeskchatapp.data.interfaces.ChatRepository
+import haag.your.next.developer.data.interfaces.ChatRepository
 import javax.inject.Inject
 
 class GetAdminNameUseCase @Inject constructor(

@@ -1,6 +1,6 @@
-package com.example.helpdeskchatapp.domain.usecase
+package haag.your.next.developer.domain.usecase
 
-import com.example.helpdeskchatapp.data.interfaces.UserRepository
+import haag.your.next.developer.data.interfaces.UserRepository
 import javax.inject.Inject
 
 class GetFcmTokenUseCase @Inject constructor(

@@ -1,7 +1,7 @@
-package com.example.helpdeskchatapp.data.interfaces
+package haag.your.next.developer.data.interfaces
 
-import com.example.helpdeskchatapp.domain.model.consumer.Login
-import com.example.helpdeskchatapp.domain.model.consumer.UserName
+import haag.your.next.developer.domain.model.consumer.Login
+import haag.your.next.developer.domain.model.consumer.UserName
 
 interface UserRepository {
     suspend fun login(params: Login): Result<Unit>

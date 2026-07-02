@@ -1,15 +1,15 @@
-package com.example.helpdeskchatapp.domain.viewmodel
+package haag.your.next.developer.domain.viewmodel
 
 import app.cash.turbine.test
-import com.example.helpdeskchatapp.domain.model.consumer.Login
-import com.example.helpdeskchatapp.domain.usecase.GetFcmTokenUseCase
-import com.example.helpdeskchatapp.domain.usecase.LoginUseCase
-import com.example.helpdeskchatapp.domain.usecase.PostAuthSetupUseCase
-import com.example.helpdeskchatapp.domain.usecase.RegisterUseCase
-import com.example.helpdeskchatapp.domain.usecase.UpdateFcmTokenUseCase
-import com.example.helpdeskchatapp.fakes.FakeUserRepository
-import com.example.helpdeskchatapp.ui.common.UiState
-import com.example.helpdeskchatapp.util.MainDispatcherRule
+import haag.your.next.developer.domain.model.consumer.Login
+import haag.your.next.developer.domain.usecase.GetFcmTokenUseCase
+import haag.your.next.developer.domain.usecase.LoginUseCase
+import haag.your.next.developer.domain.usecase.PostAuthSetupUseCase
+import haag.your.next.developer.domain.usecase.RegisterUseCase
+import haag.your.next.developer.domain.usecase.UpdateFcmTokenUseCase
+import haag.your.next.developer.fakes.FakeUserRepository
+import haag.your.next.developer.ui.common.UiState
+import haag.your.next.developer.util.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals

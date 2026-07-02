@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.util
+package haag.your.next.developer.util
 
 import com.google.android.gms.tasks.Task
 import io.mockk.every

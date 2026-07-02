@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.theme
+package haag.your.next.developer.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

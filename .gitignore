@@ -13,3 +13,6 @@
 .externalNativeBuild
 .cxx
 local.properties
+.claude/worktrees/
+.claude/settings.local.json
+.idea/deploymentTargetSelector.xml

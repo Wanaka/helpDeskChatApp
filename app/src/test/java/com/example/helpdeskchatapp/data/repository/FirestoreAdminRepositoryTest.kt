@@ -1,8 +1,8 @@
-package com.example.helpdeskchatapp.data.repository
+package haag.your.next.developer.data.repository
 
-import com.example.helpdeskchatapp.domain.model.producer.UserNameViewEntity
-import com.example.helpdeskchatapp.util.failedTask
-import com.example.helpdeskchatapp.util.succeededTask
+import haag.your.next.developer.domain.model.producer.UserNameViewEntity
+import haag.your.next.developer.util.failedTask
+import haag.your.next.developer.util.succeededTask
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot

@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.ui.common
+package haag.your.next.developer.ui.common
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -6,8 +6,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import com.example.helpdeskchatapp.ui.common.components.NavBackButton
-import com.example.helpdeskchatapp.ui.common.components.NavToolbarTitle
+import haag.your.next.developer.ui.common.components.NavBackButton
+import haag.your.next.developer.ui.common.components.NavToolbarTitle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -15,6 +15,7 @@ fun NavToolbar(
     title: String,
     subtitle: String? = null,
     avatarInitials: String? = null,
+    showAvatar: Boolean = false,
     canNavigateBack: Boolean = false,
     onBackClick: () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {}
@@ -24,7 +25,8 @@ fun NavToolbar(
             NavToolbarTitle(
                 title = title,
                 subtitle = subtitle,
-                avatarInitials = avatarInitials
+                avatarInitials = avatarInitials,
+                showAvatar = showAvatar
             )
         },
         navigationIcon = {

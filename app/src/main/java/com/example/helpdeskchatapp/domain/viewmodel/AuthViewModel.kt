@@ -1,11 +1,11 @@
-package com.example.helpdeskchatapp.domain.viewmodel
+package haag.your.next.developer.domain.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.example.helpdeskchatapp.domain.model.consumer.Login
-import com.example.helpdeskchatapp.domain.usecase.LoginUseCase
-import com.example.helpdeskchatapp.domain.usecase.PostAuthSetupUseCase
-import com.example.helpdeskchatapp.domain.usecase.RegisterUseCase
-import com.example.helpdeskchatapp.ui.common.UiState
+import haag.your.next.developer.domain.model.consumer.Login
+import haag.your.next.developer.domain.usecase.LoginUseCase
+import haag.your.next.developer.domain.usecase.PostAuthSetupUseCase
+import haag.your.next.developer.domain.usecase.RegisterUseCase
+import haag.your.next.developer.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
