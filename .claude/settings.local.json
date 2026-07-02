@@ -33,7 +33,15 @@
       "Bash(npm list *)",
       "Bash(firebase login *)",
       "Bash(firebase projects:list)",
-      "Bash(firebase deploy *)"
+      "Bash(firebase deploy *)",
+      "Bash(adb shell *)",
+      "Bash(find /Users/bengt.haag/Library/Android -name \"adb\" 2>/dev/null | head -3)",
+      "Bash(/Users/bengt.haag/Library/Android/sdk/platform-tools/adb shell *)",
+      "Bash(/Users/bengt.haag/Library/Android/sdk/platform-tools/adb devices *)",
+      "Bash(/Users/bengt.haag/Library/Android/sdk/platform-tools/adb -s e38e3c5b shell am start -a android.intent.action.VIEW -d https://helpdeskchatapp.web.app/?adminId=TEST123 haag.your.next.developer)",
+      "Bash(/Users/bengt.haag/Library/Android/sdk/platform-tools/adb -s e38e3c5b uninstall haag.your.next.developer)",
+      "Bash(./gradlew :app:installDebug)",
+      "Bash(./gradlew :app:installDebug -Pandroid.adbTarget=e38e3c5b)"
     ]
   }
 }

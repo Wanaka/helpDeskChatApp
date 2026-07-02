@@ -4,7 +4,8 @@
     "namespace": "android_app",
     "package_name": "haag.your.next.developer",
     "sha256_cert_fingerprints": [
-      "8C:F2:EE:B7:58:65:FE:C5:A7:50:7E:F6:B2:D2:A8:57:E1:05:AC:19:5E:C2:9F:EB:EA:7D:A6:4E:2A:D3:22:BA"
+      "8C:F2:EE:B7:58:65:FE:C5:A7:50:7E:F6:B2:D2:A8:57:E1:05:AC:19:5E:C2:9F:EB:EA:7D:A6:4E:2A:D3:22:BA",
+      "99:61:EE:3B:EE:98:57:8E:34:FC:3C:B1:56:95:DF:59:21:18:AF:90:42:70:2E:C3:17:2A:43:E1:33:EC:8E:03"
     ]
   }
 }]
