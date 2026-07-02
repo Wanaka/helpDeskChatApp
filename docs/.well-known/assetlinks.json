@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.example.helpdeskchatapp",
+    "sha256_cert_fingerprints": [
+      "8C:F2:EE:B7:58:65:FE:C5:A7:50:7E:F6:B2:D2:A8:57:E1:05:AC:19:5E:C2:9F:EB:EA:7D:A6:4E:2A:D3:22:BA"
+    ]
+  }
+}]
