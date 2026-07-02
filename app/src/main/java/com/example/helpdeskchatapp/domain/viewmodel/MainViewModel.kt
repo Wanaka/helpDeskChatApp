@@ -26,6 +26,7 @@ class MainViewModel @Inject constructor(
     private val _initialRoute = MutableStateFlow<NavKey?>(null)
     val initialRoute = _initialRoute.asStateFlow()
 
+
     init {
         loadData()
     }

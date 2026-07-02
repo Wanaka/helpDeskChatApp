@@ -34,7 +34,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.helpdeskchatapp.theme.Dimens
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.helpdeskchatapp.R
 import com.example.helpdeskchatapp.domain.model.consumer.Message
 import com.example.helpdeskchatapp.domain.viewmodel.ChatViewModel
 import com.example.helpdeskchatapp.theme.MyApplicationTheme
@@ -73,7 +72,7 @@ fun ChatRoute(
         uiState = uiState,
         title = chatTitleData.name,
         subtitle = chatTitleData.company.takeIf { it.isNotBlank() },
-        avatarRes = if (isAnonymous) R.drawable.avatar_qr else null,
+        showAvatar = isAnonymous,
         avatarInitials = if (!isAnonymous) chatTitleData.name.toInitials() else null,
         canNavigateBack = canNavigateBack,
         onBackClick = onBack,

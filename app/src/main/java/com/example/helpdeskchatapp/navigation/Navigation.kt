@@ -7,7 +7,6 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -22,8 +21,10 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.example.helpdeskchatapp.domain.viewmodel.DeepLinkViewModel
 import com.example.helpdeskchatapp.domain.viewmodel.MainViewModel
+import com.example.helpdeskchatapp.theme.Dimens
 import com.example.helpdeskchatapp.ui.admin.AdminRoute
 import com.example.helpdeskchatapp.ui.chat.ChatRoute
+import com.example.helpdeskchatapp.ui.common.components.AvatarImage
 import com.example.helpdeskchatapp.ui.common.components.NameEntryDialog
 import com.example.helpdeskchatapp.ui.login.LoginRoute
 import com.example.helpdeskchatapp.ui.register.RegisterRoute
@@ -134,8 +135,12 @@ fun AppNavigation(
             }
 
             entry<DeepLinkLoadingKey> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    AvatarImage(size = Dimens.dp100)
                 }
             }
         }

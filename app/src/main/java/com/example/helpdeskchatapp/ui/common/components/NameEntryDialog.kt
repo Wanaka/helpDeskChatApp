@@ -1,18 +1,13 @@
 package com.example.helpdeskchatapp.ui.common.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BasicAlertDialog
@@ -26,8 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.helpdeskchatapp.R
 import com.example.helpdeskchatapp.domain.model.consumer.UserName
@@ -53,15 +46,7 @@ fun NameEntryDialog(
             ) {
                 Spacer(modifier = Modifier.height(Dimens.dp24))
 
-                Image(
-                    painter = painterResource(R.drawable.avatar_qr),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(Dimens.dp64)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.onPrimary)
-                        .border(BorderStroke(Dimens.dp4, MaterialTheme.colorScheme.onPrimary), CircleShape)
-                )
+                AvatarImage(size = Dimens.dp64, showBorder = true)
 
                 Spacer(modifier = Modifier.height(Dimens.dp12))
 
