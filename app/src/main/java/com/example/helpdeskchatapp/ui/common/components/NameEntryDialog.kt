@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.ui.common.components
+package haag.your.next.developer.ui.common.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
@@ -22,9 +22,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.example.helpdeskchatapp.R
-import com.example.helpdeskchatapp.domain.model.consumer.UserName
-import com.example.helpdeskchatapp.theme.Dimens
+import haag.your.next.developer.R
+import haag.your.next.developer.domain.model.consumer.UserName
+import haag.your.next.developer.theme.Dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

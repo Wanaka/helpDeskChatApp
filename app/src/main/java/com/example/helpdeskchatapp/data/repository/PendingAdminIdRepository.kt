@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.data.repository
+package haag.your.next.developer.data.repository
 
 import android.content.Context
 import androidx.core.content.edit

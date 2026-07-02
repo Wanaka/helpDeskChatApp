@@ -8,10 +8,10 @@ plugins {
 }
 
 android {
-    namespace = "com.example.helpdeskchatapp"
+    namespace = "haag.your.next.developer"
     compileSdk = 36
     defaultConfig {
-        applicationId = "com.example.helpdeskchatapp"
+        applicationId = "haag.your.next.developer"
         minSdk = 24
         targetSdk = 36
         versionCode = 1

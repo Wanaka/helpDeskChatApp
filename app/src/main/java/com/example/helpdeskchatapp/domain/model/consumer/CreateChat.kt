@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.domain.model.consumer
+package haag.your.next.developer.domain.model.consumer
 
 data class CreateChat(
     val adminId: String,

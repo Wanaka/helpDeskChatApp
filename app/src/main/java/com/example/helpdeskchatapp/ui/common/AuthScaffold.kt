@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.ui.common
+package haag.your.next.developer.ui.common
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
@@ -14,10 +14,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.helpdeskchatapp.theme.Dimens
-import com.example.helpdeskchatapp.ui.common.components.AvatarImage
-import com.example.helpdeskchatapp.ui.common.components.CommonTextLabel
-import com.example.helpdeskchatapp.ui.common.components.TextLabelStyle
+import haag.your.next.developer.theme.Dimens
+import haag.your.next.developer.ui.common.components.AvatarImage
+import haag.your.next.developer.ui.common.components.CommonTextLabel
+import haag.your.next.developer.ui.common.components.TextLabelStyle
 
 @Composable
 fun AuthScaffold(

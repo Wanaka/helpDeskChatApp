@@ -1,6 +1,6 @@
-package com.example.helpdeskchatapp.domain.usecase
+package haag.your.next.developer.domain.usecase
 
-import com.example.helpdeskchatapp.data.repository.PendingAdminIdRepository
+import haag.your.next.developer.data.repository.PendingAdminIdRepository
 import javax.inject.Inject
 
 class ClearPendingAdminIdUseCase @Inject constructor(

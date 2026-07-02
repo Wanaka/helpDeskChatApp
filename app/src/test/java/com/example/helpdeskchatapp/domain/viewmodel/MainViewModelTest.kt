@@ -1,12 +1,12 @@
-package com.example.helpdeskchatapp.domain.viewmodel
+package haag.your.next.developer.domain.viewmodel
 
-import com.example.helpdeskchatapp.domain.usecase.GetCurrentUserUseCase
-import com.example.helpdeskchatapp.domain.usecase.IsAnonymousUseCase
-import com.example.helpdeskchatapp.fakes.FakeUserRepository
-import com.example.helpdeskchatapp.navigation.AdminRouteKey
-import com.example.helpdeskchatapp.navigation.DeepLinkLoadingKey
-import com.example.helpdeskchatapp.navigation.LoginRouteKey
-import com.example.helpdeskchatapp.util.MainDispatcherRule
+import haag.your.next.developer.domain.usecase.GetCurrentUserUseCase
+import haag.your.next.developer.domain.usecase.IsAnonymousUseCase
+import haag.your.next.developer.fakes.FakeUserRepository
+import haag.your.next.developer.navigation.AdminRouteKey
+import haag.your.next.developer.navigation.DeepLinkLoadingKey
+import haag.your.next.developer.navigation.LoginRouteKey
+import haag.your.next.developer.util.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals

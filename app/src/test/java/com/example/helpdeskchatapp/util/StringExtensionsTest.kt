@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.util
+package haag.your.next.developer.util
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull

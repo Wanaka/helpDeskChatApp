@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.data.model
+package haag.your.next.developer.data.model
 
 data class ChatResponse(
     val id: String,

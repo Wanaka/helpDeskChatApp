@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.ui.register
+package haag.your.next.developer.ui.register
 
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.Column
@@ -21,17 +21,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.helpdeskchatapp.R
-import com.example.helpdeskchatapp.domain.model.consumer.Login
-import com.example.helpdeskchatapp.domain.viewmodel.AuthViewModel
-import com.example.helpdeskchatapp.theme.Dimens
-import com.example.helpdeskchatapp.theme.MyApplicationTheme
-import com.example.helpdeskchatapp.ui.common.AuthScaffold
-import com.example.helpdeskchatapp.ui.common.components.AccountLinkRow
-import com.example.helpdeskchatapp.ui.common.components.CommonInputTextField
-import com.example.helpdeskchatapp.ui.common.components.CommonTextLabel
-import com.example.helpdeskchatapp.ui.common.components.PrimaryButton
-import com.example.helpdeskchatapp.ui.common.components.TextLabelStyle
+import haag.your.next.developer.R
+import haag.your.next.developer.domain.model.consumer.Login
+import haag.your.next.developer.domain.viewmodel.AuthViewModel
+import haag.your.next.developer.theme.Dimens
+import haag.your.next.developer.theme.MyApplicationTheme
+import haag.your.next.developer.ui.common.AuthScaffold
+import haag.your.next.developer.ui.common.components.AccountLinkRow
+import haag.your.next.developer.ui.common.components.CommonInputTextField
+import haag.your.next.developer.ui.common.components.CommonTextLabel
+import haag.your.next.developer.ui.common.components.PrimaryButton
+import haag.your.next.developer.ui.common.components.TextLabelStyle
 
 @Composable
 fun RegisterRoute(

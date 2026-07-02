@@ -1,7 +1,7 @@
-package com.example.helpdeskchatapp.domain.usecase
+package haag.your.next.developer.domain.usecase
 
-import com.example.helpdeskchatapp.data.interfaces.AdminRepository
-import com.example.helpdeskchatapp.domain.model.consumer.CreateChat
+import haag.your.next.developer.data.interfaces.AdminRepository
+import haag.your.next.developer.domain.model.consumer.CreateChat
 import javax.inject.Inject
 
 class CreateChatUseCase @Inject constructor(

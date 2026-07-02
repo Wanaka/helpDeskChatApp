@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.ui.common.components
+package haag.your.next.developer.ui.common.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
-import com.example.helpdeskchatapp.R
-import com.example.helpdeskchatapp.theme.Dimens
+import haag.your.next.developer.R
+import haag.your.next.developer.theme.Dimens
 
 @Composable
 fun AvatarImage(

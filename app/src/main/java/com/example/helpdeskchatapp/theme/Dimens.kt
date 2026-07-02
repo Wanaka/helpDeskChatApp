@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.theme
+package haag.your.next.developer.theme
 
 import androidx.compose.ui.unit.dp
 

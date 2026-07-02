@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.domain.model.producer
+package haag.your.next.developer.domain.model.producer
 
 data class ChatMessageViewEntity(
     val id: String,

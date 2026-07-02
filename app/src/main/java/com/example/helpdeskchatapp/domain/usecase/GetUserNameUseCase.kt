@@ -1,7 +1,7 @@
-package com.example.helpdeskchatapp.domain.usecase
+package haag.your.next.developer.domain.usecase
 
-import com.example.helpdeskchatapp.data.interfaces.AdminRepository
-import com.example.helpdeskchatapp.domain.model.producer.UserNameViewEntity
+import haag.your.next.developer.data.interfaces.AdminRepository
+import haag.your.next.developer.domain.model.producer.UserNameViewEntity
 import javax.inject.Inject
 
 class GetUserNameUseCase @Inject constructor(

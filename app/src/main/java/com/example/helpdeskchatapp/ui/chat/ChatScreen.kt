@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.ui.chat
+package haag.your.next.developer.ui.chat
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -31,19 +31,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.helpdeskchatapp.theme.Dimens
+import haag.your.next.developer.theme.Dimens
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.helpdeskchatapp.domain.model.consumer.Message
-import com.example.helpdeskchatapp.domain.viewmodel.ChatViewModel
-import com.example.helpdeskchatapp.theme.MyApplicationTheme
-import com.example.helpdeskchatapp.ui.common.ScrollToBottomOnChange
-import com.example.helpdeskchatapp.ui.common.StateHandler
-import com.example.helpdeskchatapp.ui.common.components.ChatInputField
-import com.example.helpdeskchatapp.ui.common.components.CommonLazyColumn
-import com.example.helpdeskchatapp.ui.common.composeContext
-import com.example.helpdeskchatapp.ui.model.ListRowEntity
-import com.example.helpdeskchatapp.util.toInitials
+import haag.your.next.developer.domain.model.consumer.Message
+import haag.your.next.developer.domain.viewmodel.ChatViewModel
+import haag.your.next.developer.theme.MyApplicationTheme
+import haag.your.next.developer.ui.common.ScrollToBottomOnChange
+import haag.your.next.developer.ui.common.StateHandler
+import haag.your.next.developer.ui.common.components.ChatInputField
+import haag.your.next.developer.ui.common.components.CommonLazyColumn
+import haag.your.next.developer.ui.common.composeContext
+import haag.your.next.developer.ui.model.ListRowEntity
+import haag.your.next.developer.util.toInitials
 
 @Composable
 fun ChatRoute(

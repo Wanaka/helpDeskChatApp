@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.ui.common.components
+package haag.your.next.developer.ui.common.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,7 +9,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.helpdeskchatapp.ui.model.ListRowEntity
+import haag.your.next.developer.ui.model.ListRowEntity
 
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState

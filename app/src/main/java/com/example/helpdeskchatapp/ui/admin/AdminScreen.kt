@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.ui.admin
+package haag.your.next.developer.ui.admin
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,15 +21,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.helpdeskchatapp.ui.common.composeContext
-import com.example.helpdeskchatapp.domain.viewmodel.AdminViewModel
-import com.example.helpdeskchatapp.theme.MyApplicationTheme
-import com.example.helpdeskchatapp.ui.common.StateHandler
-import com.example.helpdeskchatapp.ui.common.components.CommonButton
-import com.example.helpdeskchatapp.ui.common.components.CommonLazyColumn
-import com.example.helpdeskchatapp.ui.common.components.NameEntryDialog
-import com.example.helpdeskchatapp.ui.common.components.QrCodeDialog
-import com.example.helpdeskchatapp.ui.model.ListRowEntity
+import haag.your.next.developer.ui.common.composeContext
+import haag.your.next.developer.domain.viewmodel.AdminViewModel
+import haag.your.next.developer.theme.MyApplicationTheme
+import haag.your.next.developer.ui.common.StateHandler
+import haag.your.next.developer.ui.common.components.CommonButton
+import haag.your.next.developer.ui.common.components.CommonLazyColumn
+import haag.your.next.developer.ui.common.components.NameEntryDialog
+import haag.your.next.developer.ui.common.components.QrCodeDialog
+import haag.your.next.developer.ui.model.ListRowEntity
 
 @Composable
 fun AdminRoute(

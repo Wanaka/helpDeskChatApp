@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.domain.usecase
+package haag.your.next.developer.domain.usecase
 
 import kotlinx.coroutines.flow.Flow
 

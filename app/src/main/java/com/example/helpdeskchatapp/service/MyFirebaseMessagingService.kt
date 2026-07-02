@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.service
+package haag.your.next.developer.service
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -7,10 +7,10 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import com.example.helpdeskchatapp.MainActivity
-import com.example.helpdeskchatapp.R
-import com.example.helpdeskchatapp.domain.usecase.UpdateFcmTokenUseCase
-import com.example.helpdeskchatapp.ui.common.ActiveChatTracker
+import haag.your.next.developer.MainActivity
+import haag.your.next.developer.R
+import haag.your.next.developer.domain.usecase.UpdateFcmTokenUseCase
+import haag.your.next.developer.ui.common.ActiveChatTracker
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint

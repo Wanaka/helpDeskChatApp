@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.ui.common.components
+package haag.your.next.developer.ui.common.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

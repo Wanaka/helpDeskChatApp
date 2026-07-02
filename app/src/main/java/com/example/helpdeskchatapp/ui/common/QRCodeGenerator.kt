@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.ui.common
+package haag.your.next.developer.ui.common
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -10,7 +10,7 @@ import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.qrcode.QRCodeWriter
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
-import com.example.helpdeskchatapp.R
+import haag.your.next.developer.R
 import androidx.core.graphics.scale
 import androidx.core.graphics.createBitmap
 

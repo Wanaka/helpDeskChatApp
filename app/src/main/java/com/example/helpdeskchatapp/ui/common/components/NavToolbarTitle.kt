@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.ui.common.components
+package haag.your.next.developer.ui.common.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,7 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.helpdeskchatapp.theme.Dimens
+import haag.your.next.developer.theme.Dimens
 
 @Composable
 fun NavToolbarTitle(

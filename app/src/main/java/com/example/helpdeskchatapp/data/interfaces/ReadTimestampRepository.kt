@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.data.interfaces
+package haag.your.next.developer.data.interfaces
 
 interface ReadTimestampRepository {
     fun getLastRead(conversationId: String): Long?

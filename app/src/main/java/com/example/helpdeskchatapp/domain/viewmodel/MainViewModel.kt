@@ -1,14 +1,14 @@
-package com.example.helpdeskchatapp.domain.viewmodel
+package haag.your.next.developer.domain.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import androidx.navigation3.runtime.NavKey
-import com.example.helpdeskchatapp.domain.usecase.GetCurrentUserUseCase
-import com.example.helpdeskchatapp.domain.usecase.IsAnonymousUseCase
-import com.example.helpdeskchatapp.domain.usecase.LogoutUseCase
-import com.example.helpdeskchatapp.ui.common.UiState
-import com.example.helpdeskchatapp.navigation.AdminRouteKey
-import com.example.helpdeskchatapp.navigation.DeepLinkLoadingKey
-import com.example.helpdeskchatapp.navigation.LoginRouteKey
+import haag.your.next.developer.domain.usecase.GetCurrentUserUseCase
+import haag.your.next.developer.domain.usecase.IsAnonymousUseCase
+import haag.your.next.developer.domain.usecase.LogoutUseCase
+import haag.your.next.developer.ui.common.UiState
+import haag.your.next.developer.navigation.AdminRouteKey
+import haag.your.next.developer.navigation.DeepLinkLoadingKey
+import haag.your.next.developer.navigation.LoginRouteKey
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

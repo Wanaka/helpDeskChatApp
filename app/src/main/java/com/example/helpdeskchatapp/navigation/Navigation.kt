@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.navigation
+package haag.your.next.developer.navigation
 
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -19,15 +19,15 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import com.example.helpdeskchatapp.domain.viewmodel.DeepLinkViewModel
-import com.example.helpdeskchatapp.domain.viewmodel.MainViewModel
-import com.example.helpdeskchatapp.theme.Dimens
-import com.example.helpdeskchatapp.ui.admin.AdminRoute
-import com.example.helpdeskchatapp.ui.chat.ChatRoute
-import com.example.helpdeskchatapp.ui.common.components.AvatarImage
-import com.example.helpdeskchatapp.ui.common.components.NameEntryDialog
-import com.example.helpdeskchatapp.ui.login.LoginRoute
-import com.example.helpdeskchatapp.ui.register.RegisterRoute
+import haag.your.next.developer.domain.viewmodel.DeepLinkViewModel
+import haag.your.next.developer.domain.viewmodel.MainViewModel
+import haag.your.next.developer.theme.Dimens
+import haag.your.next.developer.ui.admin.AdminRoute
+import haag.your.next.developer.ui.chat.ChatRoute
+import haag.your.next.developer.ui.common.components.AvatarImage
+import haag.your.next.developer.ui.common.components.NameEntryDialog
+import haag.your.next.developer.ui.login.LoginRoute
+import haag.your.next.developer.ui.register.RegisterRoute
 
 @Composable
 fun AppNavigation(

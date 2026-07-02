@@ -1,6 +1,6 @@
-package com.example.helpdeskchatapp.domain.mapper
+package haag.your.next.developer.domain.mapper
 
-import com.example.helpdeskchatapp.domain.model.producer.ChatViewEntity
+import haag.your.next.developer.domain.model.producer.ChatViewEntity
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse

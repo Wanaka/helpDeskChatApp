@@ -1,15 +1,15 @@
-package com.example.helpdeskchatapp.fakes
+package haag.your.next.developer.fakes
 
-import com.example.helpdeskchatapp.data.interfaces.AdminRepository
-import com.example.helpdeskchatapp.data.interfaces.ChatRepository
-import com.example.helpdeskchatapp.data.interfaces.ReadTimestampRepository
-import com.example.helpdeskchatapp.data.interfaces.UserRepository
-import com.example.helpdeskchatapp.domain.model.consumer.Login
-import com.example.helpdeskchatapp.domain.model.consumer.Message
-import com.example.helpdeskchatapp.domain.model.consumer.UserName
-import com.example.helpdeskchatapp.domain.model.producer.ChatMessageViewEntity
-import com.example.helpdeskchatapp.domain.model.producer.ChatViewEntity
-import com.example.helpdeskchatapp.domain.model.producer.UserNameViewEntity
+import haag.your.next.developer.data.interfaces.AdminRepository
+import haag.your.next.developer.data.interfaces.ChatRepository
+import haag.your.next.developer.data.interfaces.ReadTimestampRepository
+import haag.your.next.developer.data.interfaces.UserRepository
+import haag.your.next.developer.domain.model.consumer.Login
+import haag.your.next.developer.domain.model.consumer.Message
+import haag.your.next.developer.domain.model.consumer.UserName
+import haag.your.next.developer.domain.model.producer.ChatMessageViewEntity
+import haag.your.next.developer.domain.model.producer.ChatViewEntity
+import haag.your.next.developer.domain.model.producer.UserNameViewEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 

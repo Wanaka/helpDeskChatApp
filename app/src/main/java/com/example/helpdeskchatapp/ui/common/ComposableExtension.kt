@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.ui.common
+package haag.your.next.developer.ui.common
 
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.ime

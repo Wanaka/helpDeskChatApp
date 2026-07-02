@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.ui.common.components
+package haag.your.next.developer.ui.common.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -15,9 +15,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.example.helpdeskchatapp.theme.Dimens
-import com.example.helpdeskchatapp.ui.model.ListRowEntity
-import com.example.helpdeskchatapp.util.toInitials
+import haag.your.next.developer.theme.Dimens
+import haag.your.next.developer.ui.model.ListRowEntity
+import haag.your.next.developer.util.toInitials
 
 @Composable
 fun StandardListRow(

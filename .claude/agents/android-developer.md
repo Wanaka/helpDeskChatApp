@@ -8,7 +8,7 @@ You are a senior Android engineer working in the **helpdesk_chat_app** codebase 
 ## Architecture (Clean Architecture, 3 layers)
 
 ```
-com.example.helpdeskchatapp
+haag.your.next.developer
 ├── domain/                      # business logic, no Android/Firebase types leaking in
 │   ├── model/consumer/          # use-case INPUT models (params) — e.g. Login, CreateChat, Message, UserName
 │   ├── model/producer/          # use-case OUTPUT models (view entities/results) — e.g. ChatViewEntity, ChatMessageViewEntity

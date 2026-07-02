@@ -1,7 +1,7 @@
-package com.example.helpdeskchatapp.domain.mapper
+package haag.your.next.developer.domain.mapper
 
-import com.example.helpdeskchatapp.domain.model.producer.ChatMessageViewEntity
-import com.example.helpdeskchatapp.ui.model.ListRowEntity
+import haag.your.next.developer.domain.model.producer.ChatMessageViewEntity
+import haag.your.next.developer.ui.model.ListRowEntity
 
 fun ChatMessageViewEntity.toListRowEntity(currentUserId: String): ListRowEntity {
     val isFromMe = senderId == currentUserId

@@ -1,8 +1,8 @@
-package com.example.helpdeskchatapp.data.repository
+package haag.your.next.developer.data.repository
 
-import com.example.helpdeskchatapp.data.interfaces.UserRepository
-import com.example.helpdeskchatapp.domain.model.consumer.Login
-import com.example.helpdeskchatapp.domain.model.consumer.UserName
+import haag.your.next.developer.data.interfaces.UserRepository
+import haag.your.next.developer.domain.model.consumer.Login
+import haag.your.next.developer.domain.model.consumer.UserName
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions

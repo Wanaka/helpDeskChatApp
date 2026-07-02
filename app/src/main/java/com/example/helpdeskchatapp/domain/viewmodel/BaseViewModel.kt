@@ -1,7 +1,7 @@
-package com.example.helpdeskchatapp.domain.viewmodel
+package haag.your.next.developer.domain.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.example.helpdeskchatapp.ui.common.UiState
+import haag.your.next.developer.ui.common.UiState
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -35,7 +35,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:host="chat"
-                    android:scheme="com.example.helpdeskchatapp" />
+                    android:scheme="haag.your.next.developer" />
             </intent-filter>
         </activity>
     </application>

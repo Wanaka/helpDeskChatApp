@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.ui.common.components
+package haag.your.next.developer.ui.common.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,11 +23,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import com.example.helpdeskchatapp.R
-import com.example.helpdeskchatapp.theme.AndroidGreen
-import com.example.helpdeskchatapp.theme.Dimens
-import com.example.helpdeskchatapp.util.Deeplink
-import com.example.helpdeskchatapp.ui.common.QRCodeGenerator
+import haag.your.next.developer.R
+import haag.your.next.developer.theme.AndroidGreen
+import haag.your.next.developer.theme.Dimens
+import haag.your.next.developer.util.Deeplink
+import haag.your.next.developer.ui.common.QRCodeGenerator
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

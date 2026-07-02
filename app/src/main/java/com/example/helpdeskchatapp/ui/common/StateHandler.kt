@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.ui.common
+package haag.your.next.developer.ui.common
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.BorderStroke

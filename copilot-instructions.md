@@ -10,7 +10,7 @@ Project structure
 Build & run (common commands)
 - ./gradlew :app:installDebug --no-daemon  # build & install to connected device/emulator
 - adb devices -l                             # list devices
-- adb -s <serial> shell am start -n com.example.helpdeskchatapp/.MainActivity  # launch
+- adb -s <serial> shell am start -n haag.your.next.developer/.MainActivity  # launch
 - ./gradlew assembleRelease                  # build release
 
 Environment
@@ -38,7 +38,7 @@ CI/Automation
 
 Copilot preferences / guidance
 - Project root is the primary context
-- Prioritize tasks: build/run, fix failing tests, follow package name com.example.helpdeskchatapp
+- Prioritize tasks: build/run, fix failing tests, follow package name haag.your.next.developer
 - When making changes, update this file with important workflow edits
 - Each time a function has been created and updated you need to update the unit tests for it, all edge cases
 

@@ -1,4 +1,4 @@
-package com.example.helpdeskchatapp.ui.model
+package haag.your.next.developer.ui.model
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

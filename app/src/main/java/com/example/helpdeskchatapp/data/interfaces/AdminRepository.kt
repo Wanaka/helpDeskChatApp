@@ -1,7 +1,7 @@
-package com.example.helpdeskchatapp.data.interfaces
+package haag.your.next.developer.data.interfaces
 
-import com.example.helpdeskchatapp.domain.model.producer.ChatViewEntity
-import com.example.helpdeskchatapp.domain.model.producer.UserNameViewEntity
+import haag.your.next.developer.domain.model.producer.ChatViewEntity
+import haag.your.next.developer.domain.model.producer.UserNameViewEntity
 import kotlinx.coroutines.flow.Flow
 
 interface AdminRepository {
