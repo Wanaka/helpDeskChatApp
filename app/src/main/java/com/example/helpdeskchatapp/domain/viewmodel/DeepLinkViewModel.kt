@@ -3,7 +3,10 @@ package com.example.helpdeskchatapp.domain.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.example.helpdeskchatapp.domain.model.consumer.CreateChat
 import com.example.helpdeskchatapp.domain.model.consumer.UserName
+import com.example.helpdeskchatapp.domain.usecase.ClearPendingAdminIdUseCase
 import com.example.helpdeskchatapp.domain.usecase.CreateChatUseCase
+import com.example.helpdeskchatapp.domain.usecase.GetPendingAdminIdUseCase
+import com.example.helpdeskchatapp.domain.usecase.SavePendingAdminIdUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetChatForUserUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetCurrentUserUseCase
 import com.example.helpdeskchatapp.domain.usecase.GetFcmTokenUseCase
@@ -33,7 +36,10 @@ class DeepLinkViewModel @Inject constructor(
     private val getUserNameUseCase: GetUserNameUseCase,
     private val updateUserNameUseCase: UpdateUserNameUseCase,
     private val getFcmTokenUseCase: GetFcmTokenUseCase,
-    private val updateFcmTokenUseCase: UpdateFcmTokenUseCase
+    private val updateFcmTokenUseCase: UpdateFcmTokenUseCase,
+    private val savePendingAdminIdUseCase: SavePendingAdminIdUseCase,
+    private val getPendingAdminIdUseCase: GetPendingAdminIdUseCase,
+    private val clearPendingAdminIdUseCase: ClearPendingAdminIdUseCase
 ) : BaseViewModel() {
 
     private val _navigateToChat = MutableSharedFlow<String>(extraBufferCapacity = 1)
@@ -47,8 +53,6 @@ class DeepLinkViewModel @Inject constructor(
 
     private val _isAnonymous = MutableStateFlow(false)
     val isAnonymous = _isAnonymous.asStateFlow()
-
-    private var pendingAdminId: String? = null
 
     override fun loadData() {
         _uiState.value = UiState.Success
@@ -75,9 +79,9 @@ class DeepLinkViewModel @Inject constructor(
                 getUserNameUseCase(userId)
                     .onSuccess { name ->
                         if (name.name.isEmpty()) {
-                            pendingAdminId = adminId
-                            _showNameOverlay.value = true
+                            savePendingAdminIdUseCase(adminId)
                             _isAnonymous.value = true
+                            _showNameOverlay.value = true
                         } else {
                             startChat(adminId, userId, name.name)
                         }
@@ -98,12 +102,24 @@ class DeepLinkViewModel @Inject constructor(
     fun updateName(data: UserName) {
         viewModelScope.launch {
             val userId = getCurrentUserUseCase() ?: return@launch
+            val adminId = getPendingAdminIdUseCase()
             updateUserNameUseCase(data)
                 .onSuccess {
                     _showNameOverlay.value = false
-                    pendingAdminId?.let { adminId ->
+                    if (adminId != null) {
                         startChat(adminId, userId, data.name)
-                        pendingAdminId = null
+                    } else {
+                        getChatForUserUseCase(userId)
+                            .onSuccess { chatId ->
+                                if (chatId != null) {
+                                    _navigateToChat.emit(chatId)
+                                } else {
+                                    _toastEvent.emit("Please scan the QR code again to start your chat")
+                                }
+                            }
+                            .onFailure {
+                                _toastEvent.emit("Failed to load chat. Please scan the QR code again.")
+                            }
                     }
                 }
         }
@@ -112,33 +128,38 @@ class DeepLinkViewModel @Inject constructor(
     fun findExistingChat() {
         viewModelScope.launch {
             val userId = getCurrentUserUseCase()
-            if (userId != null && isAnonymousUseCase()) {
-                val nameResult = getUserNameUseCase(userId)
-                val name = nameResult.getOrElse {
-                    _toastEvent.emit(it.message ?: "Failed to load user name")
-                    return@launch
-                }
-                if (name.name.isEmpty()) {
-                    _showNameOverlay.value = true
-                    return@launch
-                }
 
-                getChatForUserUseCase(userId)
-                    .onSuccess { chatId ->
-                        if (chatId != null) {
-                            _navigateToChat.emit(chatId)
+            if (userId == null || !isAnonymousUseCase()) return@launch
+
+            val name = getUserNameUseCase(userId).getOrElse {
+                _toastEvent.emit(it.message ?: "Failed to load user name")
+                return@launch
+            }
+
+            if (name.name.isEmpty()) {
+                _isAnonymous.value = true
+                _showNameOverlay.value = true
+                return@launch
+            }
+
+            getChatForUserUseCase(userId)
+                .onSuccess { chatId ->
+                    if (chatId != null) {
+                        _navigateToChat.emit(chatId)
+                    } else {
+                        val recoveredAdminId = getPendingAdminIdUseCase()
+                        if (recoveredAdminId != null) {
+                            startChat(recoveredAdminId, userId, name.name)
                         } else {
-                            logoutUseCase()
-                                .onFailure { e -> _toastEvent.emit("Logout failed: ${e.message}") }
-                            _logoutEvent.emit(Unit)
+                            _toastEvent.emit("Please scan the QR code again to start your chat")
                         }
                     }
-                    .onFailure {
-                        logoutUseCase()
-                            .onFailure { e -> _toastEvent.emit("Logout failed: ${e.message}") }
-                        _logoutEvent.emit(Unit)
-                    }
-            }
+                }
+                .onFailure {
+                    logoutUseCase()
+                        .onFailure { e -> _toastEvent.emit("Logout failed: ${e.message}") }
+                    _logoutEvent.emit(Unit)
+                }
         }
     }
 
@@ -150,7 +171,10 @@ class DeepLinkViewModel @Inject constructor(
                 senderName = name
             )
         )
-            .onSuccess { chatId -> _navigateToChat.emit(chatId) }
+            .onSuccess { chatId ->
+                clearPendingAdminIdUseCase()
+                _navigateToChat.emit(chatId)
+            }
             .onFailure {
                 logoutUseCase()
                     .onFailure { e -> _toastEvent.emit("Logout failed: ${e.message}") }
