@@ -31,10 +31,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.example.helpdeskchatapp.theme.Dimens
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.helpdeskchatapp.R
 import com.example.helpdeskchatapp.domain.model.consumer.Message
 import com.example.helpdeskchatapp.domain.viewmodel.ChatViewModel
 import com.example.helpdeskchatapp.theme.MyApplicationTheme
@@ -56,6 +56,7 @@ fun ChatRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val messages by viewModel.messages.collectAsStateWithLifecycle()
     val chatTitleData by viewModel.chatTitle.collectAsStateWithLifecycle()
+    val isAnonymous by viewModel.isAnonymous.collectAsStateWithLifecycle()
     val context = composeContext()
 
     LaunchedEffect(viewModel.toastEvent) {
@@ -72,7 +73,8 @@ fun ChatRoute(
         uiState = uiState,
         title = chatTitleData.name,
         subtitle = chatTitleData.company.takeIf { it.isNotBlank() },
-        avatarInitials = chatTitleData.name.toInitials(),
+        avatarRes = if (isAnonymous) R.drawable.avatar_qr else null,
+        avatarInitials = if (!isAnonymous) chatTitleData.name.toInitials() else null,
         canNavigateBack = canNavigateBack,
         onBackClick = onBack,
         onRetry = { viewModel.loadData() },

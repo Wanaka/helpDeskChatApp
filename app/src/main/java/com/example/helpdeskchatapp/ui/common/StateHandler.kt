@@ -16,6 +16,7 @@ fun StateHandler(
     title: String,
     subtitle: String? = null,
     avatarInitials: String? = null,
+    avatarRes: Int? = null,
     canNavigateBack: Boolean = false,
     onBackClick: () -> Unit = {},
     onRetry: (() -> Unit)? = null,
@@ -29,6 +30,7 @@ fun StateHandler(
                 title = title,
                 subtitle = subtitle,
                 avatarInitials = avatarInitials,
+                avatarRes = avatarRes,
                 canNavigateBack = canNavigateBack,
                 onBackClick = onBackClick,
                 actions = actions

@@ -15,6 +15,7 @@ fun NavToolbar(
     title: String,
     subtitle: String? = null,
     avatarInitials: String? = null,
+    avatarRes: Int? = null,
     canNavigateBack: Boolean = false,
     onBackClick: () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {}
@@ -24,7 +25,8 @@ fun NavToolbar(
             NavToolbarTitle(
                 title = title,
                 subtitle = subtitle,
-                avatarInitials = avatarInitials
+                avatarInitials = avatarInitials,
+                avatarRes = avatarRes
             )
         },
         navigationIcon = {

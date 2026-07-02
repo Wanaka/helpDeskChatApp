@@ -43,6 +43,9 @@ class ChatViewModel @Inject constructor(
         MutableStateFlow(UserNameViewEntity(name = "", company = ""))
     val chatTitle = _chatTitle.asStateFlow()
 
+    private val _isAnonymous = MutableStateFlow(false)
+    val isAnonymous = _isAnonymous.asStateFlow()
+
     override fun onCleared() {
         super.onCleared()
         ActiveChatTracker.currentConversationId = null
@@ -56,8 +59,10 @@ class ChatViewModel @Inject constructor(
         ActiveChatTracker.currentConversationId = id
         viewModelScope.launch {
             currentUserId = getCurrentUserUseCase() ?: ""
+            val anonymous = isAnonymousUseCase()
+            _isAnonymous.value = anonymous
             loadData()
-            if (!isAnonymousUseCase()) getUserNameSetTitle() else getAdminNameSetTitle()
+            if (!anonymous) getUserNameSetTitle() else getAdminNameSetTitle()
         }
     }
 
