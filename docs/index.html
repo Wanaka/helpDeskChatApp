@@ -31,13 +31,13 @@
     const params  = new URLSearchParams(window.location.search);
     const adminId = params.get('adminId') || '';
 
-    const appLink   = 'https://wanaka.github.io/helpDeskChatApp/?adminId=' + adminId;
+    const appLink   = 'https://helpdeskchatapp.web.app/?adminId=' + adminId;
     const playStore = 'https://play.google.com/store/apps/details'
                     + '?id=haag.your.next.developer'
                     + '&referrer=' + encodeURIComponent('adminId=' + adminId);
 
     // Try to open the app via App Link; fall back to Play Store after 1.5 s
-    window.location.href = 'https://wanaka.github.io/helpDeskChatApp/?adminId=' + adminId;
+    window.location.href = 'https://helpdeskchatapp.web.app/?adminId=' + adminId;
     setTimeout(function () {
       window.location.href = playStore;
     }, 1500);

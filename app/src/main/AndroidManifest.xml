@@ -44,8 +44,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="https"
-                    android:host="wanaka.github.io"
-                    android:pathPrefix="/helpDeskChatApp/" />
+                    android:host="helpdeskchatapp.web.app"
+                    android:pathPrefix="/" />
             </intent-filter>
         </activity>
     </application>
