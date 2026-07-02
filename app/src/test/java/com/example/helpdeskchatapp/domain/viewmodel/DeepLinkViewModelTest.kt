@@ -3,14 +3,20 @@ package haag.your.next.developer.domain.viewmodel
 import app.cash.turbine.test
 import haag.your.next.developer.domain.model.consumer.UserName
 import haag.your.next.developer.domain.model.producer.UserNameViewEntity
+import haag.your.next.developer.data.repository.PendingAdminIdRepository
+import io.mockk.every
+import io.mockk.mockk
+import haag.your.next.developer.domain.usecase.ClearPendingAdminIdUseCase
 import haag.your.next.developer.domain.usecase.CreateChatUseCase
 import haag.your.next.developer.domain.usecase.GetChatForUserUseCase
 import haag.your.next.developer.domain.usecase.GetCurrentUserUseCase
 import haag.your.next.developer.domain.usecase.GetFcmTokenUseCase
+import haag.your.next.developer.domain.usecase.GetPendingAdminIdUseCase
 import haag.your.next.developer.domain.usecase.GetUserNameUseCase
 import haag.your.next.developer.domain.usecase.IsAnonymousUseCase
 import haag.your.next.developer.domain.usecase.LoginAnonymouslyUseCase
 import haag.your.next.developer.domain.usecase.LogoutUseCase
+import haag.your.next.developer.domain.usecase.SavePendingAdminIdUseCase
 import haag.your.next.developer.domain.usecase.UpdateFcmTokenUseCase
 import haag.your.next.developer.domain.usecase.UpdateUserNameUseCase
 import haag.your.next.developer.fakes.FakeAdminRepository
@@ -33,6 +39,18 @@ class DeepLinkViewModelTest {
     private val userRepository = FakeUserRepository()
     private val adminRepository = FakeAdminRepository()
 
+    /**
+     * MockK mock of the concrete PendingAdminIdRepository (no Android Context needed).
+     * We maintain state manually so save/get/clear behave consistently across coroutine
+     * boundaries within each test.
+     */
+    private val pendingAdminIdRepository: PendingAdminIdRepository = mockk<PendingAdminIdRepository>(relaxed = true).also { repo ->
+        var stored: String? = null
+        every { repo.save(ofType<String>()) } answers { stored = firstArg<String>() }
+        every { repo.get() } answers { stored }
+        every { repo.clear() } answers { stored = null }
+    }
+
     private fun viewModel() = DeepLinkViewModel(
         GetCurrentUserUseCase(userRepository),
         IsAnonymousUseCase(userRepository),
@@ -43,7 +61,10 @@ class DeepLinkViewModelTest {
         GetUserNameUseCase(adminRepository),
         UpdateUserNameUseCase(userRepository),
         GetFcmTokenUseCase(userRepository),
-        UpdateFcmTokenUseCase(userRepository)
+        UpdateFcmTokenUseCase(userRepository),
+        SavePendingAdminIdUseCase(pendingAdminIdRepository),
+        GetPendingAdminIdUseCase(pendingAdminIdRepository),
+        ClearPendingAdminIdUseCase(pendingAdminIdRepository)
     )
 
     @Test
@@ -132,13 +153,13 @@ class DeepLinkViewModelTest {
         }
 
     @Test
-    fun `findExistingChat_whenNoChatExists_emitsLogoutEvent`() =
+    fun `findExistingChat_whenGetChatFails_emitsLogoutEvent`() =
         runTest(mainDispatcherRule.testDispatcher) {
             userRepository.currentUserId = "user-1"
             userRepository.anonymous = true
             adminRepository.getUserNameResult =
                 Result.success(UserNameViewEntity(name = "Alice", company = "Acme"))
-            adminRepository.chatForUserResult = Result.success(null)
+            adminRepository.chatForUserResult = Result.failure(RuntimeException("network error"))
             val vm = viewModel()
 
             vm.logoutEvent.test {
