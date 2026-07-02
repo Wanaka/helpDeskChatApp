@@ -18,12 +18,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
+import haag.your.next.developer.domain.usecase.SavePendingAdminIdUseCase
 import haag.your.next.developer.navigation.AppNavigation
 import haag.your.next.developer.theme.MyApplicationTheme
+import haag.your.next.developer.util.checkInstallReferrer
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject lateinit var savePendingAdminIdUseCase: SavePendingAdminIdUseCase
 
     private var conversationIdState by mutableStateOf<String?>(null)
 
@@ -42,6 +47,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         askNotificationPermission()
+        checkInstallReferrer(this, savePendingAdminIdUseCase)
 
         conversationIdState = getConversationIdFromIntent(intent)
 

@@ -103,4 +103,5 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.messaging)
     implementation(libs.zxing.core)
+    implementation("com.android.installreferrer:installreferrer:2.2")
 }
