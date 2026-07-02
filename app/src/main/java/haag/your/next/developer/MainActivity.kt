@@ -80,7 +80,7 @@ class MainActivity : ComponentActivity() {
 
     private fun getConversationIdFromIntent(intent: Intent?): String? {
         return if (intent?.action == Intent.ACTION_VIEW) {
-            intent.data?.lastPathSegment
+            intent.data?.getQueryParameter("adminId") ?: intent.data?.lastPathSegment
         } else {
             null
         }
