@@ -58,13 +58,13 @@ fun ChatRoute(
     val isAnonymous by viewModel.isAnonymous.collectAsStateWithLifecycle()
     val context = composeContext()
 
-    LaunchedEffect(viewModel.toastEvent) {
+    LaunchedEffect(Unit) {
         viewModel.toastEvent.collect { message ->
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         }
     }
 
-    LaunchedEffect(conversationId) {
+    LaunchedEffect(Unit) {
         viewModel.initConversation(conversationId)
     }
 
