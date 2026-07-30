@@ -53,6 +53,7 @@ class ChatViewModel @Inject constructor(
         currentConversationId = id
         ActiveChatTracker.currentConversationId = id
         viewModelScope.launch {
+            saveLocalReadTimestampUseCase(id)
             val session = initChatSessionUseCase()
             _currentUserId.value = session.userId
             _isAnonymous.value = session.isAnonymous
