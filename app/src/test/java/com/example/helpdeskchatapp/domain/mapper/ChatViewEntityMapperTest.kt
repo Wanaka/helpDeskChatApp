@@ -23,31 +23,31 @@ class ChatViewEntityMapperTest {
     // ── withBadges ───────────────────────────────────────────────────────────
 
     @Test
-    fun `withBadges_mapsTitle_fromSenderField`() = runTest {
+    fun withBadgesMapsTitleFromSenderField() = runTest {
         val result = listOf(entity(sender = "Alice")).withBadges(null) { null }
         assertEquals("Alice", result.single().title)
     }
 
     @Test
-    fun `withBadges_mapsSecondSubtitle_fromCompanyField`() = runTest {
+    fun withBadgesMapsSecondSubtitleFromCompanyField() = runTest {
         val result = listOf(entity(company = "Acme")).withBadges(null) { null }
         assertEquals("Acme", result.single().secondSubtitle)
     }
 
     @Test
-    fun `withBadges_mapsThirdSubtitle_fromMessageField`() = runTest {
+    fun withBadgesMapsThirdSubtitleFromMessageField() = runTest {
         val result = listOf(entity(message = "Hello world")).withBadges(null) { null }
         assertEquals("Hello world", result.single().thirdSubtitle)
     }
 
     @Test
-    fun `withBadges_whenCompanyBlank_secondSubtitleIsNull`() = runTest {
+    fun withBadgesWhenCompanyBlankSecondSubtitleIsNull() = runTest {
         val result = listOf(entity(company = "")).withBadges(null) { null }
         assertNull(result.single().secondSubtitle)
     }
 
     @Test
-    fun `withBadges_whenMessageExceeds40Chars_truncatesWithEllipsis`() = runTest {
+    fun withBadgesWhenMessageExceeds40CharsTruncatesWithEllipsis() = runTest {
         val longMessage = "A".repeat(50)
         val result = listOf(entity(message = longMessage)).withBadges(null) { null }
         val subtitle = result.single().thirdSubtitle!!
@@ -56,7 +56,7 @@ class ChatViewEntityMapperTest {
     }
 
     @Test
-    fun `withBadges_whenMessageExactly40Chars_noEllipsis`() = runTest {
+    fun withBadgesWhenMessageExactly40CharsNoEllipsis() = runTest {
         val message = "A".repeat(40)
         val result = listOf(entity(message = message)).withBadges(null) { null }
         assertFalse(result.single().thirdSubtitle!!.endsWith("…"))
@@ -65,37 +65,37 @@ class ChatViewEntityMapperTest {
     // ── hasUnreadBadge ───────────────────────────────────────────────────────
 
     @Test
-    fun `hasUnreadBadge_whenActiveConversation_returnsFalse`() {
+    fun hasUnreadBadgeWhenActiveConversationReturnsFalse() {
         val e = entity(id = "conv-1", lastMessageTimestamp = 1000L)
         assertFalse(e.hasUnreadBadge(activeConversationId = "conv-1", lastRead = null))
     }
 
     @Test
-    fun `hasUnreadBadge_whenNoTimestamp_returnsFalse`() {
+    fun hasUnreadBadgeWhenNoTimestampReturnsFalse() {
         val e = entity(id = "conv-1", lastMessageTimestamp = null)
         assertFalse(e.hasUnreadBadge(activeConversationId = null, lastRead = null))
     }
 
     @Test
-    fun `hasUnreadBadge_whenNeverRead_returnsTrue`() {
+    fun hasUnreadBadgeWhenNeverReadReturnsTrue() {
         val e = entity(id = "conv-1", lastMessageTimestamp = 1000L)
         assertTrue(e.hasUnreadBadge(activeConversationId = null, lastRead = null))
     }
 
     @Test
-    fun `hasUnreadBadge_whenLastReadOlderThanTimestamp_returnsTrue`() {
+    fun hasUnreadBadgeWhenLastReadOlderThanTimestampReturnsTrue() {
         val e = entity(id = "conv-1", lastMessageTimestamp = 2000L)
         assertTrue(e.hasUnreadBadge(activeConversationId = null, lastRead = 1000L))
     }
 
     @Test
-    fun `hasUnreadBadge_whenLastReadNewerThanTimestamp_returnsFalse`() {
+    fun hasUnreadBadgeWhenLastReadNewerThanTimestampReturnsFalse() {
         val e = entity(id = "conv-1", lastMessageTimestamp = 1000L)
         assertFalse(e.hasUnreadBadge(activeConversationId = null, lastRead = 2000L))
     }
 
     @Test
-    fun `hasUnreadBadge_whenLastReadEqualsTimestamp_returnsFalse`() {
+    fun hasUnreadBadgeWhenLastReadEqualsTimestampReturnsFalse() {
         val e = entity(id = "conv-1", lastMessageTimestamp = 1000L)
         assertFalse(e.hasUnreadBadge(activeConversationId = null, lastRead = 1000L))
     }
@@ -103,14 +103,14 @@ class ChatViewEntityMapperTest {
     // ── withBadges showBadge propagation ─────────────────────────────────────
 
     @Test
-    fun `withBadges_setsShowBadge_whenHasUnread`() = runTest {
+    fun withBadgesSetsShowBadgeWhenHasUnread() = runTest {
         val e = entity(id = "conv-1", lastMessageTimestamp = 2000L)
         val result = listOf(e).withBadges(activeConversationId = null) { 1000L }
         assertTrue(result.single().showBadge)
     }
 
     @Test
-    fun `withBadges_clearsShowBadge_whenRead`() = runTest {
+    fun withBadgesClearsShowBadgeWhenRead() = runTest {
         val e = entity(id = "conv-1", lastMessageTimestamp = 1000L)
         val result = listOf(e).withBadges(activeConversationId = null) { 2000L }
         assertFalse(result.single().showBadge)

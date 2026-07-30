@@ -1,7 +1,7 @@
 package haag.your.next.developer.domain.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import haag.your.next.developer.domain.model.consumer.Login
+import haag.your.next.developer.domain.model.consumer.EmailCredentials
 import haag.your.next.developer.domain.usecase.LoginUseCase
 import haag.your.next.developer.domain.usecase.PostAuthSetupUseCase
 import haag.your.next.developer.domain.usecase.RegisterUseCase
@@ -26,23 +26,25 @@ class AuthViewModel @Inject constructor(
         _uiState.value = UiState.Success
     }
 
-    fun login(params: Login) = authenticate(params, isRegister = false)
+    fun login(params: EmailCredentials) = performAuth(params, loginUseCase::invoke, "Login failed")
 
-    fun register(params: Login) = authenticate(params, isRegister = true)
+    fun register(params: EmailCredentials) = performAuth(params, registerUseCase::invoke, "Registration failed")
 
-    private fun authenticate(params: Login, isRegister: Boolean) {
+    private fun performAuth(
+        params: EmailCredentials,
+        authAction: suspend (EmailCredentials) -> Result<Unit>,
+        errorMessage: String
+    ) {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
-            val result = if (isRegister) registerUseCase(params) else loginUseCase(params)
-            result.fold(
+            authAction(params).fold(
                 onSuccess = {
                     postAuthSetupUseCase()
-                        .onFailure { _toastEvent.emit("Failed to update notification token") }
                     _uiState.value = UiState.Success
                     _navigateToAdmin.emit(Unit)
                 },
                 onFailure = { error ->
-                    _uiState.value = UiState.Error(error.message ?: if (isRegister) "Registration failed" else "Login failed")
+                    _uiState.value = UiState.Error(error.message ?: errorMessage)
                 }
             )
         }

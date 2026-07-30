@@ -1,11 +1,12 @@
 package haag.your.next.developer.domain.viewmodel
 
 import app.cash.turbine.test
-import haag.your.next.developer.domain.model.consumer.Login
+import haag.your.next.developer.domain.model.consumer.EmailCredentials
 import haag.your.next.developer.domain.usecase.GetFcmTokenUseCase
 import haag.your.next.developer.domain.usecase.LoginUseCase
 import haag.your.next.developer.domain.usecase.PostAuthSetupUseCase
 import haag.your.next.developer.domain.usecase.RegisterUseCase
+import haag.your.next.developer.domain.usecase.SyncFcmTokenUseCase
 import haag.your.next.developer.domain.usecase.UpdateFcmTokenUseCase
 import haag.your.next.developer.fakes.FakeUserRepository
 import haag.your.next.developer.ui.common.UiState
@@ -29,15 +30,17 @@ class AuthViewModelTest {
         LoginUseCase(userRepository),
         RegisterUseCase(userRepository),
         PostAuthSetupUseCase(
-            GetFcmTokenUseCase(userRepository),
-            UpdateFcmTokenUseCase(userRepository)
+            SyncFcmTokenUseCase(
+                GetFcmTokenUseCase(userRepository),
+                UpdateFcmTokenUseCase(userRepository)
+            )
         )
     )
 
     // ── login ───────────────────────────────────────────────────────────────
 
     @Test
-    fun `login_success_emitsNavigateToAdminAndSuccessState`() =
+    fun loginSuccessEmitsNavigateToAdminAndSuccessState() =
         runTest(mainDispatcherRule.testDispatcher) {
             userRepository.loginResult = Result.success(Unit)
             // Make postAuthSetup a no-op so Firebase FCM is never touched
@@ -45,7 +48,7 @@ class AuthViewModelTest {
             val vm = viewModel()
 
             vm.navigateToAdmin.test {
-                vm.login(Login("admin@x.com", "pw"))
+                vm.login(EmailCredentials("admin@x.com", "pw"))
                 assertEquals(Unit, awaitItem())
                 cancelAndConsumeRemainingEvents()
             }
@@ -53,12 +56,12 @@ class AuthViewModelTest {
         }
 
     @Test
-    fun `login_failure_setsErrorStateWithMessage`() =
+    fun loginFailureSetsErrorStateWithMessage() =
         runTest(mainDispatcherRule.testDispatcher) {
             userRepository.loginResult = Result.failure(RuntimeException("bad creds"))
             val vm = viewModel()
 
-            vm.login(Login("admin@x.com", "wrong"))
+            vm.login(EmailCredentials("admin@x.com", "wrong"))
 
             val state = vm.uiState.value
             assertTrue(state is UiState.Error)
@@ -66,12 +69,12 @@ class AuthViewModelTest {
         }
 
     @Test
-    fun `login_failure_withNullMessage_usesDefaultErrorText`() =
+    fun loginFailureWithNullMessageUsesDefaultErrorText() =
         runTest(mainDispatcherRule.testDispatcher) {
             userRepository.loginResult = Result.failure(RuntimeException())
             val vm = viewModel()
 
-            vm.login(Login("admin@x.com", "wrong"))
+            vm.login(EmailCredentials("admin@x.com", "wrong"))
 
             val state = vm.uiState.value
             assertTrue(state is UiState.Error)
@@ -79,7 +82,7 @@ class AuthViewModelTest {
         }
 
     @Test
-    fun `login_setsLoadingStateDuringOperation`() =
+    fun loginSetsLoadingStateDuringOperation() =
         runTest(mainDispatcherRule.testDispatcher) {
             // Arrange: login will fail, but Loading must be emitted before that
             userRepository.loginResult = Result.failure(RuntimeException("err"))
@@ -91,19 +94,19 @@ class AuthViewModelTest {
             // After the coroutine runs with UnconfinedTestDispatcher the final
             // state is Error, but Loading was the intermediate value — we
             // confirm the end state here; Loading is ephemeral with Unconfined.
-            vm.login(Login("a@b.com", "pw"))
+            vm.login(EmailCredentials("a@b.com", "pw"))
             assertTrue(vm.uiState.value is UiState.Error)
         }
 
     @Test
-    fun `login_whenPostAuthSetupFails_stillNavigatesToAdmin`() =
+    fun loginWhenPostAuthSetupFailsStillNavigatesToAdmin() =
         runTest(mainDispatcherRule.testDispatcher) {
             userRepository.loginResult = Result.success(Unit)
             userRepository.getFcmTokenResult = Result.failure(RuntimeException("FCM unavailable"))
             val vm = viewModel()
 
             vm.navigateToAdmin.test {
-                vm.login(Login("admin@x.com", "pw"))
+                vm.login(EmailCredentials("admin@x.com", "pw"))
                 assertEquals(Unit, awaitItem())
                 cancelAndConsumeRemainingEvents()
             }
@@ -112,14 +115,14 @@ class AuthViewModelTest {
     // ── register ────────────────────────────────────────────────────────────
 
     @Test
-    fun `register_success_emitsNavigateToAdminAndSuccessState`() =
+    fun registerSuccessEmitsNavigateToAdminAndSuccessState() =
         runTest(mainDispatcherRule.testDispatcher) {
             userRepository.registerResult = Result.success(Unit)
             userRepository.getFcmTokenResult = Result.failure(RuntimeException("no token"))
             val vm = viewModel()
 
             vm.navigateToAdmin.test {
-                vm.register(Login("new@x.com", "pw"))
+                vm.register(EmailCredentials("new@x.com", "pw"))
                 assertEquals(Unit, awaitItem())
                 cancelAndConsumeRemainingEvents()
             }
@@ -127,12 +130,12 @@ class AuthViewModelTest {
         }
 
     @Test
-    fun `register_failure_setsErrorStateWithMessage`() =
+    fun registerFailureSetsErrorStateWithMessage() =
         runTest(mainDispatcherRule.testDispatcher) {
             userRepository.registerResult = Result.failure(RuntimeException("email taken"))
             val vm = viewModel()
 
-            vm.register(Login("new@x.com", "pw"))
+            vm.register(EmailCredentials("new@x.com", "pw"))
 
             val state = vm.uiState.value
             assertTrue(state is UiState.Error)
@@ -140,12 +143,12 @@ class AuthViewModelTest {
         }
 
     @Test
-    fun `register_failure_withNullMessage_usesDefaultErrorText`() =
+    fun registerFailureWithNullMessageUsesDefaultErrorText() =
         runTest(mainDispatcherRule.testDispatcher) {
             userRepository.registerResult = Result.failure(RuntimeException())
             val vm = viewModel()
 
-            vm.register(Login("new@x.com", "pw"))
+            vm.register(EmailCredentials("new@x.com", "pw"))
 
             val state = vm.uiState.value
             assertTrue(state is UiState.Error)

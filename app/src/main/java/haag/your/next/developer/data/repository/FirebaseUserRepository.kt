@@ -1,7 +1,7 @@
 package haag.your.next.developer.data.repository
 
 import haag.your.next.developer.data.interfaces.UserRepository
-import haag.your.next.developer.domain.model.consumer.Login
+import haag.your.next.developer.domain.model.consumer.EmailCredentials
 import haag.your.next.developer.domain.model.consumer.UserName
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -19,7 +19,7 @@ class FirebaseUserRepository @Inject constructor(
     private val messaging: FirebaseMessaging,
 ) : UserRepository {
     
-    override suspend fun login(params: Login): Result<Unit> {
+    override suspend fun login(params: EmailCredentials): Result<Unit> {
         return try {
             auth.signInWithEmailAndPassword(params.email, params.password).await()
             Result.success(Unit)
@@ -28,7 +28,7 @@ class FirebaseUserRepository @Inject constructor(
         }
     }
 
-    override suspend fun register(params: Login): Result<Unit> {
+    override suspend fun register(params: EmailCredentials): Result<Unit> {
         return try {
             val result = auth.createUserWithEmailAndPassword(params.email, params.password).await()
             val user = result.user

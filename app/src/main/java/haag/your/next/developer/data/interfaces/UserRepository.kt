@@ -1,11 +1,11 @@
 package haag.your.next.developer.data.interfaces
 
-import haag.your.next.developer.domain.model.consumer.Login
+import haag.your.next.developer.domain.model.consumer.EmailCredentials
 import haag.your.next.developer.domain.model.consumer.UserName
 
 interface UserRepository {
-    suspend fun login(params: Login): Result<Unit>
-    suspend fun register(params: Login): Result<Unit>
+    suspend fun login(params: EmailCredentials): Result<Unit>
+    suspend fun register(params: EmailCredentials): Result<Unit>
     suspend fun loginAnonymously(): Result<String>
     suspend fun updateUserName(params: UserName): Result<Unit>
     suspend fun getFcmToken(): Result<String>

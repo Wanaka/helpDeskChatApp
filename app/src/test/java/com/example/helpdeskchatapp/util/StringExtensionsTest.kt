@@ -7,42 +7,42 @@ import org.junit.Test
 class StringExtensionsTest {
 
     @Test
-    fun `toInitials_singleWord_returnsFirstLetterUppercase`() {
+    fun toInitialsSingleWordReturnsFirstLetterUppercase() {
         assertEquals("A", "alice".toInitials())
     }
 
     @Test
-    fun `toInitials_twoWords_returnsBothFirstLettersUppercase`() {
+    fun toInitialsTwoWordsReturnsBothFirstLettersUppercase() {
         assertEquals("AB", "alice bob".toInitials())
     }
 
     @Test
-    fun `toInitials_moreThantTwoWords_returnsOnlyFirstTwoInitials`() {
+    fun toInitialsMoreThantTwoWordsReturnsOnlyFirstTwoInitials() {
         assertEquals("AB", "alice bob charlie".toInitials())
     }
 
     @Test
-    fun `toInitials_alreadyUppercase_returnsSameInitials`() {
+    fun toInitialsAlreadyUppercaseReturnsSameInitials() {
         assertEquals("AB", "Alice Bob".toInitials())
     }
 
     @Test
-    fun `toInitials_mixedCase_uppercasesFirstLetter`() {
+    fun toInitialsMixedCaseUppercasesFirstLetter() {
         assertEquals("AB", "alice Bob".toInitials())
     }
 
     @Test
-    fun `toInitials_emptyString_returnsNull`() {
+    fun toInitialsEmptyStringReturnsNull() {
         assertNull("".toInitials())
     }
 
     @Test
-    fun `toInitials_blankString_returnsNull`() {
+    fun toInitialsBlankStringReturnsNull() {
         assertNull("   ".toInitials())
     }
 
     @Test
-    fun `toInitials_multipleSpacesBetweenWords_filtersBlankTokens`() {
+    fun toInitialsMultipleSpacesBetweenWordsFiltersBlankTokens() {
         assertEquals("AB", "alice  bob".toInitials())
     }
 }

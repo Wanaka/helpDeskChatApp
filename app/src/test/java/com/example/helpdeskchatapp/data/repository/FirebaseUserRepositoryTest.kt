@@ -1,6 +1,6 @@
 package haag.your.next.developer.data.repository
 
-import haag.your.next.developer.domain.model.consumer.Login
+import haag.your.next.developer.domain.model.consumer.EmailCredentials
 import haag.your.next.developer.util.failedTask
 import haag.your.next.developer.util.succeededTask
 import com.google.firebase.auth.AuthResult
@@ -22,46 +22,46 @@ class FirebaseUserRepositoryTest {
     private fun repository() = FirebaseUserRepository(auth, firestore, messaging)
 
     @Test
-    fun `login_whenFirebaseSucceeds_returnsSuccess`() = runTest {
+    fun loginWhenFirebaseSucceedsReturnsSuccess() = runTest {
         every {
             auth.signInWithEmailAndPassword("admin@x.com", "pw")
         } returns succeededTask(mockk<AuthResult>())
 
-        val result = repository().login(Login("admin@x.com", "pw"))
+        val result = repository().login(EmailCredentials("admin@x.com", "pw"))
 
         assertTrue(result.isSuccess)
     }
 
     @Test
-    fun `login_whenFirebaseThrows_returnsFailure`() = runTest {
+    fun loginWhenFirebaseThrowsReturnsFailure() = runTest {
         every {
             auth.signInWithEmailAndPassword(any(), any())
         } returns failedTask(RuntimeException("invalid credentials"))
 
-        val result = repository().login(Login("admin@x.com", "wrong"))
+        val result = repository().login(EmailCredentials("admin@x.com", "wrong"))
 
         assertTrue(result.isFailure)
     }
 
     @Test
-    fun `register_whenFirebaseSucceeds_returnsSuccess`() = runTest {
+    fun registerWhenFirebaseSucceedsReturnsSuccess() = runTest {
         val authResult = mockk<AuthResult> { every { user } returns null }
         every {
             auth.createUserWithEmailAndPassword("admin@x.com", "pw")
         } returns succeededTask(authResult)
 
-        val result = repository().register(Login("admin@x.com", "pw"))
+        val result = repository().register(EmailCredentials("admin@x.com", "pw"))
 
         assertTrue(result.isSuccess)
     }
 
     @Test
-    fun `register_whenFirebaseThrows_returnsFailure`() = runTest {
+    fun registerWhenFirebaseThrowsReturnsFailure() = runTest {
         every {
             auth.createUserWithEmailAndPassword(any(), any())
         } returns failedTask(RuntimeException("email already in use"))
 
-        val result = repository().register(Login("admin@x.com", "pw"))
+        val result = repository().register(EmailCredentials("admin@x.com", "pw"))
 
         assertTrue(result.isFailure)
     }

@@ -32,7 +32,7 @@ class FirestoreChatRepositoryTest {
     // ── getAdminName ─────────────────────────────────────────────────────────
 
     @Test
-    fun `getAdminName_whenFieldPresent_returnsAdminName`() = runTest {
+    fun getAdminNameWhenFieldPresentReturnsAdminName() = runTest {
         val snapshot = mockk<DocumentSnapshot> {
             every { getString("adminName") } returns "Alice Support"
         }
@@ -46,7 +46,7 @@ class FirestoreChatRepositoryTest {
     }
 
     @Test
-    fun `getAdminName_whenFieldMissing_returnsEmptyString`() = runTest {
+    fun getAdminNameWhenFieldMissingReturnsEmptyString() = runTest {
         val snapshot = mockk<DocumentSnapshot> {
             every { getString("adminName") } returns null
         }
@@ -60,7 +60,7 @@ class FirestoreChatRepositoryTest {
     }
 
     @Test
-    fun `getAdminName_whenFirestoreThrows_returnsFailure`() = runTest {
+    fun getAdminNameWhenFirestoreThrowsReturnsFailure() = runTest {
         stubConversationDocument("conv-1")
         every { conversationDocument.get() } returns failedTask(RuntimeException("offline"))
 
@@ -72,7 +72,7 @@ class FirestoreChatRepositoryTest {
     // ── sendMessage ──────────────────────────────────────────────────────────
 
     @Test
-    fun `sendMessage_whenFirestoreSucceeds_returnsSuccess`() = runTest {
+    fun sendMessageWhenFirestoreSucceedsReturnsSuccess() = runTest {
         stubConversationDocument("conv-1")
         every { conversationDocument.collection("messages") } returns messagesCollection
         every { messagesCollection.add(any()) } returns succeededTask(messagesDocument)
@@ -89,7 +89,7 @@ class FirestoreChatRepositoryTest {
     }
 
     @Test
-    fun `sendMessage_whenAddFails_returnsFailure`() = runTest {
+    fun sendMessageWhenAddFailsReturnsFailure() = runTest {
         stubConversationDocument("conv-1")
         every { conversationDocument.collection("messages") } returns messagesCollection
         every { messagesCollection.add(any()) } returns failedTask(RuntimeException("write denied"))
@@ -105,7 +105,7 @@ class FirestoreChatRepositoryTest {
     }
 
     @Test
-    fun `sendMessage_whenUpdateFails_returnsFailure`() = runTest {
+    fun sendMessageWhenUpdateFailsReturnsFailure() = runTest {
         stubConversationDocument("conv-1")
         every { conversationDocument.collection("messages") } returns messagesCollection
         every { messagesCollection.add(any()) } returns succeededTask(messagesDocument)

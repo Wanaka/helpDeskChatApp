@@ -4,19 +4,15 @@ import androidx.lifecycle.viewModelScope
 import haag.your.next.developer.domain.mapper.toListRowEntity
 import haag.your.next.developer.domain.model.consumer.Message
 import haag.your.next.developer.domain.model.producer.UserNameViewEntity
-import haag.your.next.developer.domain.usecase.GetAdminNameUseCase
 import haag.your.next.developer.domain.usecase.GetChatMessagesUseCase
-import haag.your.next.developer.domain.usecase.GetCurrentUserUseCase
-import haag.your.next.developer.domain.usecase.GetUserNameUseCase
-import haag.your.next.developer.domain.usecase.IsAnonymousUseCase
+import haag.your.next.developer.domain.usecase.GetChatTitleUseCase
+import haag.your.next.developer.domain.usecase.InitChatSessionUseCase
 import haag.your.next.developer.domain.usecase.SaveLocalReadTimestampUseCase
 import haag.your.next.developer.domain.usecase.SendMessageUseCase
 import haag.your.next.developer.ui.common.ActiveChatTracker
 import haag.your.next.developer.ui.common.UiState
 import haag.your.next.developer.ui.model.ListRowEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -26,15 +22,14 @@ import javax.inject.Inject
 class ChatViewModel @Inject constructor(
     private val getChatMessagesUseCase: GetChatMessagesUseCase,
     private val sendMessageUseCase: SendMessageUseCase,
-    private val isAnonymousUseCase: IsAnonymousUseCase,
-    private val getUserNameUseCase: GetUserNameUseCase,
-    private val getAdminNameUseCase: GetAdminNameUseCase,
-    private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val initChatSessionUseCase: InitChatSessionUseCase,
+    private val getChatTitleUseCase: GetChatTitleUseCase,
     private val saveLocalReadTimestampUseCase: SaveLocalReadTimestampUseCase
 ) : BaseViewModel() {
 
     private var currentConversationId: String = ""
-    private var currentUserId: String = ""
+    private val _currentUserId = MutableStateFlow("")
+    private val currentUserId get() = _currentUserId.value
     private val _messages =
         MutableStateFlow<List<ListRowEntity>>(emptyList())
     val messages = _messages.asStateFlow()
@@ -49,7 +44,7 @@ class ChatViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         ActiveChatTracker.currentConversationId = null
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
             saveLocalReadTimestampUseCase(currentConversationId)
         }
     }
@@ -58,15 +53,18 @@ class ChatViewModel @Inject constructor(
         currentConversationId = id
         ActiveChatTracker.currentConversationId = id
         viewModelScope.launch {
-            currentUserId = getCurrentUserUseCase() ?: ""
-            val anonymous = isAnonymousUseCase()
-            _isAnonymous.value = anonymous
-            loadData()
-            if (!anonymous) getUserNameSetTitle() else getAdminNameSetTitle()
+            saveLocalReadTimestampUseCase(id)
+            val session = initChatSessionUseCase()
+            _currentUserId.value = session.userId ?: return@launch
+            _isAnonymous.value = session.isAnonymous
+            loadMessages()
+            getChatTitleUseCase(id)
+                .onSuccess { _chatTitle.value = it }
+                .onFailure { _toastEvent.emit(it.message ?: "Failed to load chat title") }
         }
     }
 
-    override fun loadData() {
+    fun loadMessages() {
         if (currentConversationId.isEmpty()) return
 
         viewModelScope.launch {
@@ -79,30 +77,6 @@ class ChatViewModel @Inject constructor(
                     if (_uiState.value is UiState.Loading) {
                         _uiState.value = UiState.Success
                     }
-                }
-        }
-    }
-
-    private fun getUserNameSetTitle() {
-        viewModelScope.launch {
-            getUserNameUseCase(currentConversationId)
-                .onSuccess { userName ->
-                    _chatTitle.value = userName
-                }
-                .onFailure { error ->
-                    _toastEvent.emit(error.message ?: "Failed to load chat title")
-                }
-        }
-    }
-
-    private fun getAdminNameSetTitle() {
-        viewModelScope.launch {
-            getAdminNameUseCase(currentConversationId)
-                .onSuccess { adminName ->
-                    _chatTitle.value = UserNameViewEntity(name = adminName, company = "")
-                }
-                .onFailure { error ->
-                    _toastEvent.emit(error.message ?: "Failed to load chat title")
                 }
         }
     }

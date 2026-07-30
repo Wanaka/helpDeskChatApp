@@ -15,7 +15,4 @@ abstract class BaseViewModel : ViewModel() {
     protected val _toastEvent = MutableSharedFlow<String>(extraBufferCapacity = 1)
     val toastEvent = _toastEvent.asSharedFlow()
 
-// Trigger it
-
-    open fun loadData() {}
 }

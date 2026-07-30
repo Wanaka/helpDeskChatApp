@@ -4,7 +4,7 @@ import haag.your.next.developer.data.interfaces.AdminRepository
 import haag.your.next.developer.data.interfaces.ChatRepository
 import haag.your.next.developer.data.interfaces.ReadTimestampRepository
 import haag.your.next.developer.data.interfaces.UserRepository
-import haag.your.next.developer.domain.model.consumer.Login
+import haag.your.next.developer.domain.model.consumer.EmailCredentials
 import haag.your.next.developer.domain.model.consumer.Message
 import haag.your.next.developer.domain.model.consumer.UserName
 import haag.your.next.developer.domain.model.producer.ChatMessageViewEntity
@@ -29,8 +29,8 @@ class FakeUserRepository : UserRepository {
     var logoutCalled: Boolean = false
     var updatedFcmToken: String? = null
 
-    override suspend fun login(params: Login): Result<Unit> = loginResult
-    override suspend fun register(params: Login): Result<Unit> = registerResult
+    override suspend fun login(params: EmailCredentials): Result<Unit> = loginResult
+    override suspend fun register(params: EmailCredentials): Result<Unit> = registerResult
     override suspend fun loginAnonymously(): Result<String> = loginAnonymouslyResult
     override suspend fun updateUserName(params: UserName): Result<Unit> = updateUserNameResult
     override suspend fun getFcmToken(): Result<String> = getFcmTokenResult

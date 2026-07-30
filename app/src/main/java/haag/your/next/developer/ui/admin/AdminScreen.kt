@@ -44,13 +44,13 @@ fun AdminRoute(
     var showQrCode by remember { mutableStateOf(false) }
     val context = composeContext()
 
-    LaunchedEffect(viewModel.toastEvent) {
+    LaunchedEffect(Unit) {
         viewModel.toastEvent.collect { message ->
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         }
     }
 
-    LaunchedEffect(viewModel) {
+    LaunchedEffect(Unit) {
         viewModel.logoutEvent.collect { onLogout() }
     }
 
@@ -63,7 +63,7 @@ fun AdminRoute(
     StateHandler(
         uiState = uiState,
         title = "Admin Chats",
-        onRetry = { viewModel.loadData() },
+        onRetry = { viewModel.loadChats() },
         actions = {
             IconButton(onClick = { showQrCode = true }) {
                 Icon(imageVector = Icons.Default.QrCode, contentDescription = "Show QR Code")
@@ -74,7 +74,7 @@ fun AdminRoute(
                 chats = chats,
                 paddingValues = paddingValues,
                 onNavigateToChat = { conversationId ->
-                    viewModel.markChatOpened(conversationId)
+                    viewModel.removeBadgeWhenChatOpens(conversationId)
                     onNavigateToChat(conversationId)
                 },
                 onLogout = viewModel::logout

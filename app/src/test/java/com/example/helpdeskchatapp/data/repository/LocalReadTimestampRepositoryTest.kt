@@ -29,7 +29,7 @@ class LocalReadTimestampRepositoryTest {
     // ── getLastRead ──────────────────────────────────────────────────────────
 
     @Test
-    fun `getLastRead_whenTimestampStored_returnsStoredValue`() {
+    fun getLastReadWhenTimestampStoredReturnsStoredValue() {
         every { prefs.getLong("conv-1", -1L) } returns 1_000_000L
 
         val result = repository.getLastRead("conv-1")
@@ -38,7 +38,7 @@ class LocalReadTimestampRepositoryTest {
     }
 
     @Test
-    fun `getLastRead_whenNoTimestampStored_returnsNull`() {
+    fun getLastReadWhenNoTimestampStoredReturnsNull() {
         every { prefs.getLong("conv-1", -1L) } returns -1L
 
         val result = repository.getLastRead("conv-1")
@@ -49,7 +49,7 @@ class LocalReadTimestampRepositoryTest {
     // ── saveLastRead ─────────────────────────────────────────────────────────
 
     @Test
-    fun `saveLastRead_writesCurrentTimeToPrefsForConversationId`() {
+    fun saveLastReadWritesCurrentTimeToPrefsForConversationId() {
         repository.saveLastRead("conv-1")
 
         verify { editor.putLong(eq("conv-1"), any()) }

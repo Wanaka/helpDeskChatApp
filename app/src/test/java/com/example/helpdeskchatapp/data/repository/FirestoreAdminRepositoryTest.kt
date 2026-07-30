@@ -29,7 +29,7 @@ class FirestoreAdminRepositoryTest {
     }
 
     @Test
-    fun `getUserName_whenDocumentExists_returnsNameAndCompany`() = runTest {
+    fun getUserNameWhenDocumentExistsReturnsNameAndCompany() = runTest {
         val snapshot = mockk<DocumentSnapshot> {
             every { getString("name") } returns "Bob"
             every { getString("company") } returns "Acme"
@@ -43,7 +43,7 @@ class FirestoreAdminRepositoryTest {
     }
 
     @Test
-    fun `getUserName_whenFieldsMissing_defaultsToEmptyStrings`() = runTest {
+    fun getUserNameWhenFieldsMissingDefaultsToEmptyStrings() = runTest {
         val snapshot = mockk<DocumentSnapshot> {
             every { getString("name") } returns null
             every { getString("company") } returns null
@@ -57,7 +57,7 @@ class FirestoreAdminRepositoryTest {
     }
 
     @Test
-    fun `getUserName_whenFirestoreThrows_returnsFailure`() = runTest {
+    fun getUserNameWhenFirestoreThrowsReturnsFailure() = runTest {
         every { firestore.collection("users") } returns collection
         every { collection.document("u1") } returns document
         every { document.get() } returns failedTask(RuntimeException("offline"))
