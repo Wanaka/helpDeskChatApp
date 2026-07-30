@@ -13,8 +13,6 @@ import haag.your.next.developer.ui.common.ActiveChatTracker
 import haag.your.next.developer.ui.common.UiState
 import haag.your.next.developer.ui.model.ListRowEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -30,7 +28,8 @@ class ChatViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     private var currentConversationId: String = ""
-    private var currentUserId: String = ""
+    private val _currentUserId = MutableStateFlow("")
+    private val currentUserId get() = _currentUserId.value
     private val _messages =
         MutableStateFlow<List<ListRowEntity>>(emptyList())
     val messages = _messages.asStateFlow()
@@ -45,7 +44,7 @@ class ChatViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         ActiveChatTracker.currentConversationId = null
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
             saveLocalReadTimestampUseCase(currentConversationId)
         }
     }
@@ -55,7 +54,7 @@ class ChatViewModel @Inject constructor(
         ActiveChatTracker.currentConversationId = id
         viewModelScope.launch {
             val session = initChatSessionUseCase()
-            currentUserId = session.userId
+            _currentUserId.value = session.userId
             _isAnonymous.value = session.isAnonymous
             loadData()
             getChatTitleUseCase(id)
