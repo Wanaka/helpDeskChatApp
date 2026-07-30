@@ -7,9 +7,8 @@ import javax.inject.Inject
 class SubmitUserNameUseCase @Inject constructor(
     private val getNameUpdateContextUseCase: GetNameUpdateContextUseCase,
     private val updateUserNameUseCase: UpdateUserNameUseCase,
-    private val createChatUseCase: CreateChatUseCase,
-    private val getChatForUserUseCase: GetChatForUserUseCase,
-    private val clearPendingAdminIdUseCase: ClearPendingAdminIdUseCase
+    private val startChatUseCase: StartChatUseCase,
+    private val getChatForUserUseCase: GetChatForUserUseCase
 ) : UseCase<UserName, Result<String?>>() {
 
     override suspend operator fun invoke(params: UserName): Result<String?> {
@@ -19,8 +18,7 @@ class SubmitUserNameUseCase @Inject constructor(
         updateUserNameUseCase(params).getOrElse { return Result.failure(it) }
 
         return if (adminId != null) {
-            createChatUseCase(CreateChat(adminId = adminId, userId = userId, senderName = params.name))
-                .onSuccess { clearPendingAdminIdUseCase() }
+            startChatUseCase(CreateChat(adminId = adminId, userId = userId, senderName = params.name))
         } else {
             getChatForUserUseCase(userId)
         }

@@ -16,8 +16,7 @@ class FindExistingChatUseCase @Inject constructor(
     private val getUserNameUseCase: GetUserNameUseCase,
     private val getChatForUserUseCase: GetChatForUserUseCase,
     private val getPendingAdminIdUseCase: GetPendingAdminIdUseCase,
-    private val createChatUseCase: CreateChatUseCase,
-    private val clearPendingAdminIdUseCase: ClearPendingAdminIdUseCase
+    private val startChatUseCase: StartChatUseCase
 ) : ProducerUseCase<Result<ExistingChatResult>>() {
 
     override suspend operator fun invoke(): Result<ExistingChatResult> {
@@ -35,8 +34,7 @@ class FindExistingChatUseCase @Inject constructor(
             } else {
                 val adminId = getPendingAdminIdUseCase()
                 if (adminId != null) {
-                    createChatUseCase(CreateChat(adminId = adminId, userId = userId, senderName = userName))
-                        .onSuccess { clearPendingAdminIdUseCase() }
+                    startChatUseCase(CreateChat(adminId = adminId, userId = userId, senderName = userName))
                         .map { ExistingChatResult.NavigateToChat(it) }
                         .getOrElse { throw it }
                 } else {

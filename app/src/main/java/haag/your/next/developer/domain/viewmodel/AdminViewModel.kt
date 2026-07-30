@@ -48,22 +48,16 @@ class AdminViewModel @Inject constructor(
     private fun checkAdminName() {
         viewModelScope.launch {
             checkAdminNameUseCase()
-                .onSuccess { shouldShow ->
-                    if (shouldShow) _showNameOverlay.value = true
-                }
-                .onFailure {
-                    _toastEvent.emit("Failed to load admin name")
-                }
+                .onSuccess { shouldShow -> if (shouldShow) _showNameOverlay.value = true }
+                .onFailure { _toastEvent.emit("Failed to load admin name") }
         }
     }
 
     fun updateName(data: UserName) {
         viewModelScope.launch {
-            updateUserNameUseCase(data).onSuccess {
-                _showNameOverlay.value = false
-            }.onFailure {
-                _toastEvent.emit("Failed to update name")
-            }
+            updateUserNameUseCase(data)
+                .onSuccess { _showNameOverlay.value = false }
+                .onFailure { _toastEvent.emit("Failed to update name") }
         }
     }
 

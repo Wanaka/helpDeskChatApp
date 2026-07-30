@@ -7,13 +7,12 @@ class GetChatTitleUseCase @Inject constructor(
     private val isAnonymousUseCase: IsAnonymousUseCase,
     private val getUserNameUseCase: GetUserNameUseCase,
     private val getAdminNameUseCase: GetAdminNameUseCase
-) {
-    suspend operator fun invoke(conversationId: String): Result<UserNameViewEntity> {
+) : UseCase<String, Result<UserNameViewEntity>>() {
+    override suspend operator fun invoke(params: String): Result<UserNameViewEntity> {
         return if (isAnonymousUseCase()) {
-            getAdminNameUseCase(conversationId)
-                .map { UserNameViewEntity(name = it, company = "") }
+            getAdminNameUseCase(params).map { UserNameViewEntity(name = it, company = "") }
         } else {
-            getUserNameUseCase(conversationId)
+            getUserNameUseCase(params)
         }
     }
 }

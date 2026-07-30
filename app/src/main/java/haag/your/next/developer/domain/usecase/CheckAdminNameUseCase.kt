@@ -9,8 +9,8 @@ class CheckAdminNameUseCase @Inject constructor(
     override suspend fun invoke(): Result<Boolean> {
         val adminId = getCurrentUserUseCase()
             ?: return Result.failure(IllegalStateException("User not authenticated"))
-        return getUserNameUseCase(adminId).map { name ->
-            name.name.isEmpty() || name.name == "Admin"
+        return getUserNameUseCase(adminId).map { entity ->
+            entity.name.isEmpty() || entity.name == "Admin"
         }
     }
 }
