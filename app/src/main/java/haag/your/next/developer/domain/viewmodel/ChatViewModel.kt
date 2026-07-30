@@ -55,7 +55,7 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             saveLocalReadTimestampUseCase(id)
             val session = initChatSessionUseCase()
-            _currentUserId.value = session.userId
+            _currentUserId.value = session.userId ?: return@launch
             _isAnonymous.value = session.isAnonymous
             loadMessages()
             getChatTitleUseCase(id)
