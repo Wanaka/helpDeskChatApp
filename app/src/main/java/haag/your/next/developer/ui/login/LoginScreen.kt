@@ -20,7 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import haag.your.next.developer.R
-import haag.your.next.developer.domain.model.consumer.Login
+import haag.your.next.developer.domain.model.consumer.EmailCredentials
 import haag.your.next.developer.domain.viewmodel.AuthViewModel
 import haag.your.next.developer.theme.Dimens
 import haag.your.next.developer.theme.MyApplicationTheme
@@ -52,7 +52,7 @@ fun LoginRoute(
 
 @Composable
 fun LoginScreen(
-    onLogin: (Login) -> Unit,
+    onLogin: (EmailCredentials) -> Unit,
     onNavigateToRegister: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
@@ -93,7 +93,7 @@ fun LoginScreen(
 
         PrimaryButton(
             text = stringResource(R.string.login_button),
-            onClick = { onLogin(Login(email.trim(), password.trim())) }
+            onClick = { onLogin(EmailCredentials(email.trim(), password.trim())) }
         )
 
         Spacer(modifier = Modifier.height(Dimens.dp16))

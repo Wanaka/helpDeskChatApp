@@ -63,7 +63,7 @@ fun AdminRoute(
     StateHandler(
         uiState = uiState,
         title = "Admin Chats",
-        onRetry = { viewModel.loadData() },
+        onRetry = { viewModel.loadChats() },
         actions = {
             IconButton(onClick = { showQrCode = true }) {
                 Icon(imageVector = Icons.Default.QrCode, contentDescription = "Show QR Code")

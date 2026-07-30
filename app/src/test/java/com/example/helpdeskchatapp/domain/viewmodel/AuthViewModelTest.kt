@@ -1,7 +1,7 @@
 package haag.your.next.developer.domain.viewmodel
 
 import app.cash.turbine.test
-import haag.your.next.developer.domain.model.consumer.Login
+import haag.your.next.developer.domain.model.consumer.EmailCredentials
 import haag.your.next.developer.domain.usecase.GetFcmTokenUseCase
 import haag.your.next.developer.domain.usecase.LoginUseCase
 import haag.your.next.developer.domain.usecase.PostAuthSetupUseCase
@@ -45,7 +45,7 @@ class AuthViewModelTest {
             val vm = viewModel()
 
             vm.navigateToAdmin.test {
-                vm.login(Login("admin@x.com", "pw"))
+                vm.login(EmailCredentials("admin@x.com", "pw"))
                 assertEquals(Unit, awaitItem())
                 cancelAndConsumeRemainingEvents()
             }
@@ -58,7 +58,7 @@ class AuthViewModelTest {
             userRepository.loginResult = Result.failure(RuntimeException("bad creds"))
             val vm = viewModel()
 
-            vm.login(Login("admin@x.com", "wrong"))
+            vm.login(EmailCredentials("admin@x.com", "wrong"))
 
             val state = vm.uiState.value
             assertTrue(state is UiState.Error)
@@ -71,7 +71,7 @@ class AuthViewModelTest {
             userRepository.loginResult = Result.failure(RuntimeException())
             val vm = viewModel()
 
-            vm.login(Login("admin@x.com", "wrong"))
+            vm.login(EmailCredentials("admin@x.com", "wrong"))
 
             val state = vm.uiState.value
             assertTrue(state is UiState.Error)
@@ -91,7 +91,7 @@ class AuthViewModelTest {
             // After the coroutine runs with UnconfinedTestDispatcher the final
             // state is Error, but Loading was the intermediate value — we
             // confirm the end state here; Loading is ephemeral with Unconfined.
-            vm.login(Login("a@b.com", "pw"))
+            vm.login(EmailCredentials("a@b.com", "pw"))
             assertTrue(vm.uiState.value is UiState.Error)
         }
 
@@ -103,7 +103,7 @@ class AuthViewModelTest {
             val vm = viewModel()
 
             vm.navigateToAdmin.test {
-                vm.login(Login("admin@x.com", "pw"))
+                vm.login(EmailCredentials("admin@x.com", "pw"))
                 assertEquals(Unit, awaitItem())
                 cancelAndConsumeRemainingEvents()
             }
@@ -119,7 +119,7 @@ class AuthViewModelTest {
             val vm = viewModel()
 
             vm.navigateToAdmin.test {
-                vm.register(Login("new@x.com", "pw"))
+                vm.register(EmailCredentials("new@x.com", "pw"))
                 assertEquals(Unit, awaitItem())
                 cancelAndConsumeRemainingEvents()
             }
@@ -132,7 +132,7 @@ class AuthViewModelTest {
             userRepository.registerResult = Result.failure(RuntimeException("email taken"))
             val vm = viewModel()
 
-            vm.register(Login("new@x.com", "pw"))
+            vm.register(EmailCredentials("new@x.com", "pw"))
 
             val state = vm.uiState.value
             assertTrue(state is UiState.Error)
@@ -145,7 +145,7 @@ class AuthViewModelTest {
             userRepository.registerResult = Result.failure(RuntimeException())
             val vm = viewModel()
 
-            vm.register(Login("new@x.com", "pw"))
+            vm.register(EmailCredentials("new@x.com", "pw"))
 
             val state = vm.uiState.value
             assertTrue(state is UiState.Error)

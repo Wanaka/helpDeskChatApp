@@ -42,7 +42,7 @@ class AdminViewModel @Inject constructor(
 
     init {
         checkAdminName()
-        loadData()
+        loadChats()
     }
 
     private fun checkAdminName() {
@@ -81,7 +81,7 @@ class AdminViewModel @Inject constructor(
         }
     }
 
-    override fun loadData() {
+    fun loadChats() {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
             getAdminChatsUseCase()

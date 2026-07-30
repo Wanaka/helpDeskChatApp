@@ -56,14 +56,14 @@ class ChatViewModel @Inject constructor(
             val session = initChatSessionUseCase()
             _currentUserId.value = session.userId
             _isAnonymous.value = session.isAnonymous
-            loadData()
+            loadMessages()
             getChatTitleUseCase(id)
                 .onSuccess { _chatTitle.value = it }
                 .onFailure { _toastEvent.emit(it.message ?: "Failed to load chat title") }
         }
     }
 
-    override fun loadData() {
+    fun loadMessages() {
         if (currentConversationId.isEmpty()) return
 
         viewModelScope.launch {

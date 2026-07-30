@@ -76,7 +76,7 @@ fun ChatRoute(
         avatarInitials = if (!isAnonymous) chatTitleData.name.toInitials() else null,
         canNavigateBack = canNavigateBack,
         onBackClick = onBack,
-        onRetry = { viewModel.loadData() },
+        onRetry = { viewModel.loadMessages() },
         content = { paddingValues ->
             ChatScreen(
                 messages,
