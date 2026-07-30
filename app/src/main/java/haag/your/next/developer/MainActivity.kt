@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -18,36 +17,24 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
-import haag.your.next.developer.domain.usecase.SavePendingAdminIdUseCase
+import dagger.hilt.android.AndroidEntryPoint
 import haag.your.next.developer.navigation.AppNavigation
 import haag.your.next.developer.theme.MyApplicationTheme
-import haag.your.next.developer.util.checkInstallReferrer
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject lateinit var savePendingAdminIdUseCase: SavePendingAdminIdUseCase
-
-    private var conversationIdState by mutableStateOf<String?>(null)
+private var conversationIdState by mutableStateOf<String?>(null)
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-            Log.d("MainActivity", "Notification permission granted")
-        } else {
-            Log.d("MainActivity", "Notification permission denied")
-        }
-    }
+    ) {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         askNotificationPermission()
-        checkInstallReferrer(this, savePendingAdminIdUseCase)
 
         conversationIdState = getConversationIdFromIntent(intent)
 
@@ -80,7 +67,7 @@ class MainActivity : ComponentActivity() {
 
     private fun getConversationIdFromIntent(intent: Intent?): String? {
         return if (intent?.action == Intent.ACTION_VIEW) {
-            intent.data?.getQueryParameter("adminId") ?: intent.data?.lastPathSegment
+            intent.data?.getQueryParameter("adminId")
         } else {
             null
         }

@@ -29,23 +29,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <intent-filter android:label="Chat Deep Link">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:host="chat"
-                    android:scheme="haag.your.next.developer" />
-            </intent-filter>
-
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:scheme="https"
                     android:host="helpdeskchatapp.web.app"
-                    android:pathPrefix="/" />
+                    android:pathPrefix="/"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
     </application>
