@@ -22,7 +22,7 @@ class FirebaseUserRepositoryTest {
     private fun repository() = FirebaseUserRepository(auth, firestore, messaging)
 
     @Test
-    fun `login_whenFirebaseSucceeds_returnsSuccess`() = runTest {
+    fun loginWhenFirebaseSucceedsReturnsSuccess() = runTest {
         every {
             auth.signInWithEmailAndPassword("admin@x.com", "pw")
         } returns succeededTask(mockk<AuthResult>())
@@ -33,7 +33,7 @@ class FirebaseUserRepositoryTest {
     }
 
     @Test
-    fun `login_whenFirebaseThrows_returnsFailure`() = runTest {
+    fun loginWhenFirebaseThrowsReturnsFailure() = runTest {
         every {
             auth.signInWithEmailAndPassword(any(), any())
         } returns failedTask(RuntimeException("invalid credentials"))
@@ -44,7 +44,7 @@ class FirebaseUserRepositoryTest {
     }
 
     @Test
-    fun `register_whenFirebaseSucceeds_returnsSuccess`() = runTest {
+    fun registerWhenFirebaseSucceedsReturnsSuccess() = runTest {
         val authResult = mockk<AuthResult> { every { user } returns null }
         every {
             auth.createUserWithEmailAndPassword("admin@x.com", "pw")
@@ -56,7 +56,7 @@ class FirebaseUserRepositoryTest {
     }
 
     @Test
-    fun `register_whenFirebaseThrows_returnsFailure`() = runTest {
+    fun registerWhenFirebaseThrowsReturnsFailure() = runTest {
         every {
             auth.createUserWithEmailAndPassword(any(), any())
         } returns failedTask(RuntimeException("email already in use"))

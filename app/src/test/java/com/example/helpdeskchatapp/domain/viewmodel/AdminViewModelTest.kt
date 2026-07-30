@@ -3,6 +3,8 @@ package haag.your.next.developer.domain.viewmodel
 import app.cash.turbine.test
 import haag.your.next.developer.domain.model.consumer.UserName
 import haag.your.next.developer.domain.model.producer.UserNameViewEntity
+import haag.your.next.developer.domain.usecase.CheckAdminNameUseCase
+import haag.your.next.developer.domain.usecase.GetAdminChatsUseCase
 import haag.your.next.developer.domain.usecase.GetChatsUseCase
 import haag.your.next.developer.domain.usecase.GetCurrentUserUseCase
 import haag.your.next.developer.domain.usecase.GetLocalReadTimestampUseCase
@@ -35,18 +37,18 @@ class AdminViewModelTest {
     private fun viewModel(): AdminViewModel {
         // AdminViewModel.init calls getCurrentUserUseCase() — provide a user id
         userRepository.currentUserId = "admin-uid"
+        val getCurrentUserUseCase = GetCurrentUserUseCase(userRepository)
         return AdminViewModel(
-            GetChatsUseCase(adminRepository),
+            GetAdminChatsUseCase(getCurrentUserUseCase, GetChatsUseCase(adminRepository)),
             LogoutUseCase(userRepository),
-            GetUserNameUseCase(adminRepository),
+            CheckAdminNameUseCase(getCurrentUserUseCase, GetUserNameUseCase(adminRepository)),
             UpdateUserNameUseCase(userRepository),
-            GetCurrentUserUseCase(userRepository),
             GetLocalReadTimestampUseCase(timestampRepository)
         )
     }
 
     @Test
-    fun `init_whenStoredNameIsBlank_showsNameOverlay`() =
+    fun initWhenStoredNameIsBlankShowsNameOverlay() =
         runTest(mainDispatcherRule.testDispatcher) {
             adminRepository.getUserNameResult =
                 Result.success(UserNameViewEntity(name = "", company = ""))
@@ -57,7 +59,7 @@ class AdminViewModelTest {
         }
 
     @Test
-    fun `init_whenStoredNameIsDefaultAdmin_showsNameOverlay`() =
+    fun initWhenStoredNameIsDefaultAdminShowsNameOverlay() =
         runTest(mainDispatcherRule.testDispatcher) {
             adminRepository.getUserNameResult =
                 Result.success(UserNameViewEntity(name = "Admin", company = ""))
@@ -68,7 +70,7 @@ class AdminViewModelTest {
         }
 
     @Test
-    fun `init_whenStoredNameIsSet_doesNotShowOverlay`() =
+    fun initWhenStoredNameIsSetDoesNotShowOverlay() =
         runTest(mainDispatcherRule.testDispatcher) {
             adminRepository.getUserNameResult =
                 Result.success(UserNameViewEntity(name = "Bob", company = "Acme"))
@@ -79,7 +81,7 @@ class AdminViewModelTest {
         }
 
     @Test
-    fun `updateName_success_hidesOverlay`() =
+    fun updateNameSuccessHidesOverlay() =
         runTest(mainDispatcherRule.testDispatcher) {
             adminRepository.getUserNameResult =
                 Result.success(UserNameViewEntity(name = "", company = ""))
@@ -92,7 +94,7 @@ class AdminViewModelTest {
         }
 
     @Test
-    fun `updateName_failure_emitsToast`() =
+    fun updateNameFailureEmitsToast() =
         runTest(mainDispatcherRule.testDispatcher) {
             adminRepository.getUserNameResult =
                 Result.success(UserNameViewEntity(name = "Bob", company = "Acme"))
@@ -107,7 +109,7 @@ class AdminViewModelTest {
         }
 
     @Test
-    fun `logout_invokesUseCaseAndEmitsLogoutEvent`() =
+    fun logoutInvokesUseCaseAndEmitsLogoutEvent() =
         runTest(mainDispatcherRule.testDispatcher) {
             adminRepository.getUserNameResult =
                 Result.success(UserNameViewEntity(name = "Bob", company = "Acme"))

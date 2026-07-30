@@ -8,15 +8,21 @@ import io.mockk.every
 import io.mockk.mockk
 import haag.your.next.developer.domain.usecase.ClearPendingAdminIdUseCase
 import haag.your.next.developer.domain.usecase.CreateChatUseCase
+import haag.your.next.developer.domain.usecase.FindExistingChatUseCase
 import haag.your.next.developer.domain.usecase.GetChatForUserUseCase
 import haag.your.next.developer.domain.usecase.GetCurrentUserUseCase
 import haag.your.next.developer.domain.usecase.GetFcmTokenUseCase
+import haag.your.next.developer.domain.usecase.GetNameUpdateContextUseCase
 import haag.your.next.developer.domain.usecase.GetPendingAdminIdUseCase
 import haag.your.next.developer.domain.usecase.GetUserNameUseCase
 import haag.your.next.developer.domain.usecase.IsAnonymousUseCase
 import haag.your.next.developer.domain.usecase.LoginAnonymouslyUseCase
 import haag.your.next.developer.domain.usecase.LogoutUseCase
+import haag.your.next.developer.domain.usecase.PrepareDeepLinkSessionUseCase
 import haag.your.next.developer.domain.usecase.SavePendingAdminIdUseCase
+import haag.your.next.developer.domain.usecase.StartChatUseCase
+import haag.your.next.developer.domain.usecase.SubmitUserNameUseCase
+import haag.your.next.developer.domain.usecase.SyncFcmTokenUseCase
 import haag.your.next.developer.domain.usecase.UpdateFcmTokenUseCase
 import haag.your.next.developer.domain.usecase.UpdateUserNameUseCase
 import haag.your.next.developer.fakes.FakeAdminRepository
@@ -51,24 +57,50 @@ class DeepLinkViewModelTest {
         every { repo.clear() } answers { stored = null }
     }
 
-    private fun viewModel() = DeepLinkViewModel(
-        GetCurrentUserUseCase(userRepository),
-        IsAnonymousUseCase(userRepository),
-        LogoutUseCase(userRepository),
-        LoginAnonymouslyUseCase(userRepository),
-        CreateChatUseCase(adminRepository),
-        GetChatForUserUseCase(adminRepository),
-        GetUserNameUseCase(adminRepository),
-        UpdateUserNameUseCase(userRepository),
-        GetFcmTokenUseCase(userRepository),
-        UpdateFcmTokenUseCase(userRepository),
-        SavePendingAdminIdUseCase(pendingAdminIdRepository),
-        GetPendingAdminIdUseCase(pendingAdminIdRepository),
-        ClearPendingAdminIdUseCase(pendingAdminIdRepository)
-    )
+    private fun viewModel(): DeepLinkViewModel {
+        val getCurrentUserUseCase = GetCurrentUserUseCase(userRepository)
+        val isAnonymousUseCase = IsAnonymousUseCase(userRepository)
+        val getUserNameUseCase = GetUserNameUseCase(adminRepository)
+        val syncFcmTokenUseCase = SyncFcmTokenUseCase(
+            GetFcmTokenUseCase(userRepository),
+            UpdateFcmTokenUseCase(userRepository)
+        )
+        val getPendingAdminIdUseCase = GetPendingAdminIdUseCase(pendingAdminIdRepository)
+        val clearPendingAdminIdUseCase = ClearPendingAdminIdUseCase(pendingAdminIdRepository)
+        val savePendingAdminIdUseCase = SavePendingAdminIdUseCase(pendingAdminIdRepository)
+        val createChatUseCase = CreateChatUseCase(adminRepository)
+        val startChatUseCase = StartChatUseCase(createChatUseCase, clearPendingAdminIdUseCase)
+        val getChatForUserUseCase = GetChatForUserUseCase(adminRepository)
+
+        return DeepLinkViewModel(
+            LogoutUseCase(userRepository),
+            PrepareDeepLinkSessionUseCase(
+                getCurrentUserUseCase,
+                LoginAnonymouslyUseCase(userRepository),
+                syncFcmTokenUseCase,
+                getUserNameUseCase
+            ),
+            startChatUseCase,
+            SubmitUserNameUseCase(
+                GetNameUpdateContextUseCase(getCurrentUserUseCase, getPendingAdminIdUseCase),
+                UpdateUserNameUseCase(userRepository),
+                startChatUseCase,
+                getChatForUserUseCase
+            ),
+            FindExistingChatUseCase(
+                getCurrentUserUseCase,
+                isAnonymousUseCase,
+                getUserNameUseCase,
+                getChatForUserUseCase,
+                getPendingAdminIdUseCase,
+                startChatUseCase
+            ),
+            savePendingAdminIdUseCase
+        )
+    }
 
     @Test
-    fun `handleDeepLink_whenUserHasName_emitsNavigateToChat`() =
+    fun handleDeepLinkWhenUserHasNameEmitsNavigateToChat() =
         runTest(mainDispatcherRule.testDispatcher) {
             userRepository.currentUserId = "user-1"
             userRepository.getFcmTokenResult = Result.failure(RuntimeException("no token"))
@@ -85,7 +117,7 @@ class DeepLinkViewModelTest {
         }
 
     @Test
-    fun `handleDeepLink_whenUserHasNoName_showsNameOverlay`() =
+    fun handleDeepLinkWhenUserHasNoNameShowsNameOverlay() =
         runTest(mainDispatcherRule.testDispatcher) {
             userRepository.currentUserId = "user-1"
             userRepository.getFcmTokenResult = Result.failure(RuntimeException("no token"))
@@ -100,7 +132,7 @@ class DeepLinkViewModelTest {
         }
 
     @Test
-    fun `handleDeepLink_whenGetUserNameFails_emitsLogoutEvent`() =
+    fun handleDeepLinkWhenGetUserNameFailsEmitsLogoutEvent() =
         runTest(mainDispatcherRule.testDispatcher) {
             userRepository.currentUserId = "user-1"
             userRepository.getFcmTokenResult = Result.failure(RuntimeException("no token"))
@@ -115,7 +147,7 @@ class DeepLinkViewModelTest {
         }
 
     @Test
-    fun `updateName_success_hidesOverlayAndNavigatesToChat`() =
+    fun updateNameSuccessHidesOverlayAndNavigatesToChat() =
         runTest(mainDispatcherRule.testDispatcher) {
             userRepository.currentUserId = "user-1"
             userRepository.getFcmTokenResult = Result.failure(RuntimeException("no token"))
@@ -136,7 +168,7 @@ class DeepLinkViewModelTest {
         }
 
     @Test
-    fun `findExistingChat_whenChatExists_emitsNavigateToChat`() =
+    fun findExistingChatWhenChatExistsEmitsNavigateToChat() =
         runTest(mainDispatcherRule.testDispatcher) {
             userRepository.currentUserId = "user-1"
             userRepository.anonymous = true
@@ -153,7 +185,7 @@ class DeepLinkViewModelTest {
         }
 
     @Test
-    fun `findExistingChat_whenGetChatFails_emitsLogoutEvent`() =
+    fun findExistingChatWhenGetChatFailsEmitsLogoutEvent() =
         runTest(mainDispatcherRule.testDispatcher) {
             userRepository.currentUserId = "user-1"
             userRepository.anonymous = true

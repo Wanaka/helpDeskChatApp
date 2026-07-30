@@ -5,8 +5,10 @@ import haag.your.next.developer.domain.model.consumer.Message
 import haag.your.next.developer.domain.model.producer.UserNameViewEntity
 import haag.your.next.developer.domain.usecase.GetAdminNameUseCase
 import haag.your.next.developer.domain.usecase.GetChatMessagesUseCase
+import haag.your.next.developer.domain.usecase.GetChatTitleUseCase
 import haag.your.next.developer.domain.usecase.GetCurrentUserUseCase
 import haag.your.next.developer.domain.usecase.GetUserNameUseCase
+import haag.your.next.developer.domain.usecase.InitChatSessionUseCase
 import haag.your.next.developer.domain.usecase.IsAnonymousUseCase
 import haag.your.next.developer.domain.usecase.SaveLocalReadTimestampUseCase
 import haag.your.next.developer.domain.usecase.SendMessageUseCase
@@ -35,15 +37,13 @@ class ChatViewModelTest {
     private fun viewModel() = ChatViewModel(
         GetChatMessagesUseCase(chatRepository),
         SendMessageUseCase(chatRepository),
-        IsAnonymousUseCase(userRepository),
-        GetUserNameUseCase(adminRepository),
-        GetAdminNameUseCase(chatRepository),
-        GetCurrentUserUseCase(userRepository),
+        InitChatSessionUseCase(GetCurrentUserUseCase(userRepository), IsAnonymousUseCase(userRepository)),
+        GetChatTitleUseCase(IsAnonymousUseCase(userRepository), GetUserNameUseCase(adminRepository), GetAdminNameUseCase(chatRepository)),
         SaveLocalReadTimestampUseCase(timestampRepository)
     )
 
     @Test
-    fun `sendMessage_delegatesToUseCaseWithMessageText`() =
+    fun sendMessageDelegatesToUseCaseWithMessageText() =
         runTest(mainDispatcherRule.testDispatcher) {
             chatRepository.sendMessageResult = Result.success("msg-id")
             val vm = viewModel()
@@ -54,7 +54,7 @@ class ChatViewModelTest {
         }
 
     @Test
-    fun `sendMessage_failure_emitsToast`() =
+    fun sendMessageFailureEmitsToast() =
         runTest(mainDispatcherRule.testDispatcher) {
             chatRepository.sendMessageResult = Result.failure(RuntimeException("send failed"))
             val vm = viewModel()
@@ -67,7 +67,7 @@ class ChatViewModelTest {
         }
 
     @Test
-    fun `initConversation_whenNotAnonymous_setsChatTitleFromUserName`() =
+    fun initConversationWhenNotAnonymousSetsChatTitleFromUserName() =
         runTest(mainDispatcherRule.testDispatcher) {
             userRepository.anonymous = false
             userRepository.currentUserId = "user-1"
