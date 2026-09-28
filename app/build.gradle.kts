@@ -8,10 +8,10 @@ plugins {
 }
 
 android {
-    namespace = "jonas.haag.your.next.developer"
+    namespace = "haag.your.next.developer"
     compileSdk = 36
     defaultConfig {
-        applicationId = "jonas.haag.your.next.developer"
+        applicationId = "haag.your.next.developer"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
