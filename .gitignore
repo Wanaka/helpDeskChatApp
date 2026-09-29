@@ -18,3 +18,5 @@ local.properties
 .claude/worktrees/
 .claude/settings.local.json
 .idea/deploymentTargetSelector.xml
+.idea/misc.xml
+.firebase/
